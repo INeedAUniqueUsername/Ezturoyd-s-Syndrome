@@ -2,8 +2,8 @@ import javax.swing.JFrame;
 
 public class GameWindow {
 
-	public static final int WIDTH = 2000;
-	public static final int HEIGHT = 1200;
+	public static final int WIDTH = 1600;
+	public static final int HEIGHT = 900;
 	GamePanel panel;
 	JFrame frame;
 	
@@ -21,6 +21,7 @@ public class GameWindow {
 		panel = new GamePanel();
 		frame.add(panel);
 		frame.addMouseListener(panel);
+		frame.addKeyListener(panel);
 		
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

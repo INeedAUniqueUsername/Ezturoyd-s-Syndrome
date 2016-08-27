@@ -18,6 +18,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	final int INTERVAL = 10;
 	Spaceship player;
+	Asteroid rock;
 	public GamePanel()
 	{
 		Timer ticker = new Timer(INTERVAL, this);
@@ -28,6 +29,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		player = new Spaceship(800, 450);
 		player.setVel(5, 5);
+		
+		rock = new Asteroid();
 	}
 	
 	public void paintComponent(Graphics g)
@@ -37,6 +40,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		player.update();
 		player.draw(g);
+		
+		rock.update();
+		rock.draw(g);
 		
 	}
 
@@ -77,28 +83,28 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == e.VK_UP)
-			{
-				//Accelerate forward
-			}
-		else if(e.getKeyCode() == e.VK_LEFT)
-		{
-			player.rotateLeft(5);
-		}
-		else if(e.getKeyCode() == e.VK_RIGHT)
-		{
-			player.rotateRight(5);
-		}
-		else if(e.getKeyCode() == e.VK_DOWN)
-		{
-			player.decelerate(player.THRUST);
-		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getKeyCode() == e.VK_UP)
+		{
+			//Accelerate forward
+			player.thrust();
+		}
+		else if(e.getKeyCode() == e.VK_LEFT)
+		{
+			player.rotateLeft(player.ROTATION_ACCEL);
+		}
+		else if(e.getKeyCode() == e.VK_RIGHT)
+		{
+			player.rotateRight(player.ROTATION_ACCEL);
+		}
+		else if(e.getKeyCode() == e.VK_DOWN)
+		{
+			player.decelerate(player.DECEL);
+		}
 	}
 
 	@Override
