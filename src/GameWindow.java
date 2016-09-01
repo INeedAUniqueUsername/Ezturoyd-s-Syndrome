@@ -23,12 +23,25 @@ public class GameWindow {
 		frame.addMouseListener(panel);
 		frame.addKeyListener(panel);
 		
-		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		frame.setTitle("Ezturoyd's Syndrome");
 		
+		frame.setVisible(true);
+		
 		panel.newGame();
+	}
+	
+	public double scaleLinear(double input, double minFrom, double maxFrom, double minTo, double maxTo)
+	{
+		double rangeFrom = maxFrom - minFrom;
+		double rangeTo = maxTo - minTo;
+		
+		double rangeRatio = rangeTo/rangeFrom;
+		
+		double inputDiff = input - minFrom;
+		
+		return minTo + inputDiff*rangeRatio;
 	}
 
 }

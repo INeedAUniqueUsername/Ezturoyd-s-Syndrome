@@ -32,7 +32,7 @@ public class Spaceship {
 	
 	public void draw(Graphics g)
 	{
-		g.setColor(Color.GREEN);
+		g.setColor(Color.RED);
 		
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
@@ -92,10 +92,11 @@ public class Spaceship {
 	
 	public void update()
 	{
+		angle = (int) (angle + rSpeed);
+		
 		double rSpeedAbs = Math.abs(rSpeed);
 		if(rSpeedAbs > 0)
 		{
-			angle = (int) (angle + rSpeed);
 			if(rSpeed < 0)
 			{
 				if(rSpeed < -ROTATION_MAX)
@@ -127,6 +128,7 @@ public class Spaceship {
 				}
 			}
 		}
+		
 		xPos = xPos + xSpeed;
 		yPos = yPos + ySpeed;
 		
@@ -219,6 +221,10 @@ public class Spaceship {
 		return result;
 	}
 	
+	public void fire()
+	{
+		
+	}
 	
 	public void accelerate(int angle, double thrust)
 	{
@@ -229,14 +235,17 @@ public class Spaceship {
 	public void decelerate(double thrust)
 	{
 		int velAngle = (int) tanDegrees(ySpeed, xSpeed);
+		double xSpeedOriginal = xSpeed;
+		double ySpeedOriginal = ySpeed;
+		
 		xSpeed = (xSpeed + thrust*cosDegrees(velAngle+180));
 		ySpeed = (ySpeed + thrust*sinDegrees(velAngle+180));
 		
-		if(Math.abs(xSpeed) < 0)
+		if(Math.abs(xSpeed) > Math.abs(xSpeedOriginal))
 		{
 			xSpeed = 0;
 		}
-		if(Math.abs(ySpeed) < 0)
+		if(Math.abs(ySpeed) > Math.abs(ySpeedOriginal))
 		{
 			ySpeed = 0;
 		}

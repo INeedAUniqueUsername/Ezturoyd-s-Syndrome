@@ -19,6 +19,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	final int INTERVAL = 10;
 	Spaceship player;
 	Asteroid rock;
+	ArrayList<Projectile> projectiles;
+	
 	public GamePanel()
 	{
 		Timer ticker = new Timer(INTERVAL, this);
@@ -93,17 +95,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			//Accelerate forward
 			player.thrust();
 		}
-		else if(e.getKeyCode() == e.VK_LEFT)
+		else if(e.getKeyCode() == e.VK_DOWN)
+		{
+			player.decelerate(player.DECEL);
+		}
+		if(e.getKeyCode() == e.VK_LEFT)
 		{
 			player.rotateLeft(player.ROTATION_ACCEL);
 		}
 		else if(e.getKeyCode() == e.VK_RIGHT)
 		{
 			player.rotateRight(player.ROTATION_ACCEL);
-		}
-		else if(e.getKeyCode() == e.VK_DOWN)
-		{
-			player.decelerate(player.DECEL);
 		}
 	}
 

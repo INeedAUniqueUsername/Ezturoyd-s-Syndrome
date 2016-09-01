@@ -11,8 +11,9 @@ public class Asteroid {
 	double rSpeed;
 	int points_count;
 	int[] points_distances;
-	int points_angleDiff;
+	int points_interval;
 	
+	final int MIN_SIZE = 25;
 	final int MAX_SIZE = 100;
 	final int MAX_SPEED = 5;
 	final int MAX_POINTS = 10;
@@ -20,24 +21,36 @@ public class Asteroid {
 	
 	public Asteroid()
 	{
-		xPos = random(GameWindow.WIDTH);
-		yPos = random(GameWindow.HEIGHT);
 		points_count = (int) (random(MAX_POINTS));
 		points_distances = new int[points_count];
-		points_angleDiff = 360/points_count;
+		points_interval = 360/points_count;
+
+		System.out.println("Count: " + points_count);
+		System.out.println("Interval: " + points_interval);
+		
 		for(int i = 0; i < points_count; i++)
 		{
-			points_distances[i] = (int) (Math.random()*MAX_SIZE);
+			points_distances[i] = (int) (randomMin(MIN_SIZE, MAX_SIZE));
+			System.out.println("Distance at angle " + points_interval*i + ": " + points_distances[i]);
 		}
+		
+		xPos = random(GameWindow.WIDTH);
+		yPos = random(GameWindow.HEIGHT);
 		rPos = (int) (random(360));
 		xSpeed = random(MAX_SPEED)*cosDegrees((int) (random(360)));
 		ySpeed = random(MAX_SPEED)*sinDegrees((int) (random(360)));
 		rSpeed = random(MAX_ROTATION);
+		
 	}
 	
 	public double random(double input)
 	{
 		return Math.random()*input;
+	}
+	
+	public double randomMin(double minimum, double input)
+	{
+		return (minimum + Math.random()*(input - minimum));
 	}
 	
 	public void draw(Graphics g)
@@ -48,15 +61,47 @@ public class Asteroid {
 		int[] bodyY = new int[points_count+1];
 		for(int i = 0; i < points_count; i++)
 		{
-			int point_angle = (points_angleDiff*i) + rPos;
+			int point_angle = (points_interval*i) + rPos;
 			int point_distance = points_distances[i];
 			bodyX[i] = (int) (xPos + point_distance*cosDegrees(point_angle));
-			bodyY[i] = (int) (GameWindow.HEIGHT - (yPos + point_distance*cosDegrees(point_angle)));
+			bodyY[i] = (int) (GameWindow.HEIGHT - (yPos + point_distance*sinDegrees(point_angle)));
 		}
 		bodyX[points_count] = bodyX[0];
 		bodyY[points_count] = bodyY[0];
 		
 		g.drawPolygon(bodyX, bodyY, points_count);
+	}
+	
+	public void getCollisionDistance(int angle)
+	{
+		int leftPoint;
+		int rightPoint;
+		
+		for(int i = 0; i < points_count; i++)
+		{
+			int rightAngle = (i*points_interval - rPos);
+			if(angle < rightAngle)
+			{
+				rightPoint = i;
+				leftPoint = i - 1;
+				if(leftPoint < 0)
+				{
+					leftPoint = points_count - 1;
+				}
+				break;
+			}
+		}
+		
+	}
+	
+	public double scaleLinearUp(double input, double minFrom, double maxFrom, double minTo, double maxTo)
+	{
+		double rangeFrom = maxFrom - minFrom;
+		double rangeTo = maxTo - minTo;
+		double rangeRatio = rangeTo/rangeFrom;
+		double inputDiff = input - minFrom;
+		
+		return minTo + inputDiff*rangeRatio;
 	}
 	
 	public void update()
