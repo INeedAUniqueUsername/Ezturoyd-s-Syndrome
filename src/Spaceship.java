@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 
 public class Spaceship {
 	
@@ -18,6 +19,8 @@ public class Spaceship {
 	double rSpeed;
 	int angle;
 	boolean thrusting;
+	Polygon body;
+	Polygon head;
 	
 	public Spaceship(int x, int y)
 	{
@@ -86,8 +89,11 @@ public class Spaceship {
 		
 		int thrustLineStartX = thrustCos
 		*/
-		g.drawPolygon(bodyX, bodyY, 4);
-		g.drawPolygon(headX, headY, 4);
+		body = new Polygon(bodyX,bodyY, 4);
+		head = new Polygon(headX, headY, 4);
+		
+		g.drawPolygon(body);
+		g.drawPolygon(head);
 	}
 	
 	public void update()
@@ -258,5 +264,11 @@ public class Spaceship {
 	public void rotateRight(int accel)
 	{
 		rSpeed = rSpeed - accel;
+	}
+	public Polygon getHead() {
+		return head;
+	}
+	public Polygon getBody() {
+		return body;
 	}
 }

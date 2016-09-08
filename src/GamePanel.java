@@ -1,12 +1,14 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -20,7 +22,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	Spaceship player;
 	Asteroid rock;
 	ArrayList<Projectile> projectiles;
-	
+	//counter for hits
+	int hits= 0;
 	public GamePanel()
 	{
 		Timer ticker = new Timer(INTERVAL, this);
@@ -45,6 +48,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		rock.update();
 		rock.draw(g);
+		if(testIntersection(player.getBody(), rock.getBody()))
+				System.out.println("HITT!"+ (hits++));
 		
 	}
 
@@ -114,5 +119,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public static boolean testIntersection(Shape shapeA, Shape shapeB) {
+		   Area areaA = new Area(shapeA);
+		   areaA.intersect(new Area(shapeB));
+		   return !areaA.isEmpty();
+		}
 
 }

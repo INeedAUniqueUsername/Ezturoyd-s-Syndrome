@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 
 public class Asteroid {
 
@@ -18,6 +19,7 @@ public class Asteroid {
 	final int MAX_SPEED = 5;
 	final int MAX_POINTS = 10;
 	final int MAX_ROTATION = 3;
+	Polygon body;
 	
 	public Asteroid()
 	{
@@ -68,10 +70,12 @@ public class Asteroid {
 		}
 		bodyX[points_count] = bodyX[0];
 		bodyY[points_count] = bodyY[0];
-		
-		g.drawPolygon(bodyX, bodyY, points_count);
+		body = new Polygon(bodyX, bodyY, points_count);
+		g.drawPolygon(body);
 	}
-	
+	public Polygon getBody() {
+		return body;
+	}
 	public void getCollisionDistance(int angle)
 	{
 		int leftPoint;

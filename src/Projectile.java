@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
+import java.awt.geom.Area;
 
 public class Projectile {
 
@@ -10,6 +12,7 @@ public class Projectile {
 	double xSpeed;
 	double ySpeed;
 	double rSpeed;
+	Polygon body;
 	
 	int size;
 	
@@ -55,7 +58,8 @@ public class Projectile {
 		
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
-		g.drawPolygon(bodyX, bodyY, 4);
+		body = new Polygon(bodyX, bodyY, 4);
+		g.drawPolygon(body);
 	}
 	
 	public void update()
@@ -139,4 +143,12 @@ public class Projectile {
 		System.out.println("R: " + result);
 		return result;
 	}
+	
+	public Polygon getBody() {
+		return body;
+	}
+	
+
+
+	
 }
