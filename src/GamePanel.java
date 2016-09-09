@@ -48,9 +48,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		rock.update();
 		rock.draw(g);
-		if(testIntersection(player.getBody(), rock.getBody()))
-				System.out.println("HITT!"+ (hits++));
 		
+		if(objectsIntersect(player, rock))
+		{
+			int forceAngle = (int) arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() - rock.getVelX());
+			int rockVelAngle = rock.getVelAngle();
+		}
 	}
 
 	@Override
@@ -90,11 +93,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+		System.out.println("Key Typed");
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
+		System.out.println("Key Pressed");
 		if(e.getKeyCode() == e.VK_UP)
 		{
 			//Accelerate forward
@@ -120,9 +125,51 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 	}
 	
-	public static boolean testIntersection(Shape shapeA, Shape shapeB) {
+	public static double arctanDegrees(double y, double x)
+	{
+		double result;
+		if(x < 0)
+		{
+			result = Math.toDegrees(Math.atan(y/x)) + 180;
+		}
+		else if(x == 0)
+		{
+			if(y < 0)
+			{
+				result = 270;
+			}
+			else if(y == 0)
+			{
+				result = 0;
+			}
+			else //ySpeed > 0
+			{
+				result =  90;
+			}
+		}
+		else if(x > 0)
+		{
+			result = Math.toDegrees(Math.atan(y/x));
+		}
+		else
+		{
+			result = 0;
+		}
+		System.out.println("X: " + y);
+		System.out.println("Y: " + x);
+		System.out.println("R: " + result);
+		return result;
+	}
+
+	public static boolean intersects(Shape shapeA, Shape shapeB) {
 		   Area areaA = new Area(shapeA);
 		   areaA.intersect(new Area(shapeB));
+		   return !areaA.isEmpty();
+		}
+	
+	public static boolean objectsIntersect(Space_Object a, Space_Object b) {
+		   Area areaA = new Area(a.getBody());
+		   areaA.intersect(new Area(b.getBody()));
 		   return !areaA.isEmpty();
 		}
 

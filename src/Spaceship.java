@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
-public class Spaceship {
+public class Spaceship extends Space_Object{
 	
 	final int HEAD_SIZE = 20;
 	final int BODY_SIZE = 30;
@@ -12,33 +12,29 @@ public class Spaceship {
 	final int ROTATION_MAX = 15;
 	final int ROTATION_ACCEL = 4;
 	final double ROTATION_DECEL = .4;
-	double xPos;
-	double yPos;
-	double xSpeed;
-	double ySpeed;
-	double rSpeed;
-	int angle;
 	boolean thrusting;
-	Polygon body;
 	Polygon head;
+	int structure;
 	
 	public Spaceship(int x, int y)
 	{
 		xPos = x;
 		yPos = y;
 		
-		xSpeed = 0;
-		ySpeed = 0;
+		xVel = 0;
+		yVel = 0;
 		
-		angle = 45;
+		rPos = 45;
+		
+		structure = 100;
+		updateBody();
+		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
 	}
 	
 	public void draw(Graphics g)
 	{
 		g.setColor(Color.RED);
-		
-		int[] bodyX = new int[4];
-		int[] bodyY = new int[4];
+		updateBody();
 		
 		int[] headX = new int[4];
 		int[] headY = new int[4];
@@ -52,33 +48,20 @@ public class Spaceship {
 		int bottomLeftCornerX = (int) (xPos+SIZE*cosDegrees(angle+120));
 		int bottomLeftCornerY = (int) (xPos+SIZE*sinDegrees(angle+120));
 		*/
+		int bodyFrontX = body.xpoints[0];
+		int bodyFrontY = body.ypoints[0];
 		
-		int bodyFrontX = (int) 						(xPos+BODY_SIZE*cosDegrees(angle));
-		int bodyFrontY = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(angle)));
-		
-		bodyX[0] = bodyFrontX;
-		bodyY[0] = bodyFrontY;
-		
-		bodyX[1] = (int) 						(xPos+BODY_SIZE*cosDegrees(angle-120));
-		bodyY[1] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(angle-120)));
-		
-		bodyX[2] = (int) 						(xPos+BODY_SIZE*cosDegrees(angle+120));
-		bodyY[2] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(angle+120)));
-		
-		bodyX[3] = bodyFrontX;
-		bodyY[3] = bodyFrontY;
-		
-		int headFrontX = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(angle));
-		int headFrontY = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(angle));
+		int headFrontX = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos));
+		int headFrontY = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos));
 		
 		headX[0] = headFrontX;
 		headY[0] = headFrontY;
 		
-		headX[1] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(angle-120));
-		headY[1] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(angle-120));
+		headX[1] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos-120));
+		headY[1] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos-120));
 		
-		headX[2] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(angle+120));
-		headY[2] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(angle+120));
+		headX[2] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos+120));
+		headY[2] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos+120));
 		
 		headX[3] = headFrontX;
 		headY[3] = headFrontY;
@@ -89,7 +72,6 @@ public class Spaceship {
 		
 		int thrustLineStartX = thrustCos
 		*/
-		body = new Polygon(bodyX,bodyY, 4);
 		head = new Polygon(headX, headY, 4);
 		
 		g.drawPolygon(body);
@@ -98,51 +80,51 @@ public class Spaceship {
 	
 	public void update()
 	{
-		angle = (int) (angle + rSpeed);
+		rPos = (int) (rPos + rVel);
 		
-		double rSpeedAbs = Math.abs(rSpeed);
+		double rSpeedAbs = Math.abs(rVel);
 		if(rSpeedAbs > 0)
 		{
-			if(rSpeed < 0)
+			if(rVel < 0)
 			{
-				if(rSpeed < -ROTATION_MAX)
+				if(rVel < -ROTATION_MAX)
 				{
-					rSpeed = -ROTATION_MAX;
+					rVel = -ROTATION_MAX;
 				}
 				else
 				{
-					rSpeed = rSpeed + ROTATION_DECEL;
-					if(rSpeed > 0)
+					rVel = rVel + ROTATION_DECEL;
+					if(rVel > 0)
 					{
-						rSpeed = 0;
+						rVel = 0;
 					}
 				}
 			}
-			else if(rSpeed > 0)
+			else if(rVel > 0)
 			{
-				if(rSpeed > ROTATION_MAX)
+				if(rVel > ROTATION_MAX)
 				{
-					rSpeed = ROTATION_MAX;
+					rVel = ROTATION_MAX;
 				}
 				else
 				{
-					rSpeed = rSpeed - ROTATION_DECEL;
-					if(rSpeed < 0)
+					rVel = rVel - ROTATION_DECEL;
+					if(rVel < 0)
 					{
-						rSpeed = 0;
+						rVel = 0;
 					}
 				}
 			}
 		}
 		
-		xPos = xPos + xSpeed;
-		yPos = yPos + ySpeed;
+		xPos = xPos + xVel;
+		yPos = yPos + yVel;
 		
-		if(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)) > MAX_SPEED)
+		if(Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2)) > MAX_SPEED)
 		{
-			int velAngle = (int) tanDegrees(ySpeed, xSpeed);
-			xSpeed = MAX_SPEED*cosDegrees(velAngle);
-			ySpeed = MAX_SPEED*sinDegrees(velAngle);
+			int velAngle = (int) arctanDegrees(yVel, xVel);
+			xVel = MAX_SPEED*cosDegrees(velAngle);
+			yVel = MAX_SPEED*sinDegrees(velAngle);
 			
 		}
 		
@@ -165,66 +147,31 @@ public class Spaceship {
 		}
 	}
 	
+	public void updateBody()
+	{
+		int[] bodyX = new int[4];
+		int[] bodyY = new int[4];
+		
+		int bodyFrontX = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos));
+		int bodyFrontY = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos)));
+		
+		bodyX[0] = bodyFrontX;
+		bodyY[0] = bodyFrontY;
+		
+		bodyX[1] = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos-120));
+		bodyY[1] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos-120)));
+		
+		bodyX[2] = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos+120));
+		bodyY[2] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos+120)));
+		
+		bodyX[3] = bodyFrontX;
+		bodyY[3] = bodyFrontY;
+		body = new Polygon(bodyX,bodyY, 4);
+	}
+	
 	public void thrust()
 	{
-		accelerate(angle, THRUST);
-	}
-	
-	public void setVel(int x, int y)
-	{
-		xSpeed = x;
-		ySpeed = y;
-	}
-	
-	public void setAngle(int newAngle)
-	{
-		angle = newAngle;
-	}
-	
-	public double cosDegrees (int angle)
-	{
-		return Math.cos(Math.toRadians(angle));
-	}
-	
-	public double sinDegrees (int angle)
-	{
-		return Math.sin(Math.toRadians(angle));
-	}
-	
-	public double tanDegrees(double ySpeed, double xSpeed)
-	{
-		double result;
-		if(xSpeed < 0)
-		{
-			result = Math.toDegrees(Math.atan(ySpeed/xSpeed)) + 180;
-		}
-		else if(xSpeed == 0)
-		{
-			if(ySpeed < 0)
-			{
-				result = 270;
-			}
-			else if(ySpeed == 0)
-			{
-				result = 0;
-			}
-			else //ySpeed > 0
-			{
-				result =  90;
-			}
-		}
-		else if(xSpeed > 0)
-		{
-			result = Math.toDegrees(Math.atan(ySpeed/xSpeed));
-		}
-		else
-		{
-			result = 0;
-		}
-		System.out.println("X: " + xSpeed);
-		System.out.println("Y: " + ySpeed);
-		System.out.println("R: " + result);
-		return result;
+		accelerate(rPos, THRUST);
 	}
 	
 	public void fire()
@@ -232,39 +179,11 @@ public class Spaceship {
 		
 	}
 	
-	public void accelerate(int angle, double thrust)
+	public void damage(int damage)
 	{
-		xSpeed = (xSpeed + thrust*cosDegrees(angle));
-		ySpeed = (ySpeed + thrust*sinDegrees(angle));
+		structure = structure - damage;
 	}
 	
-	public void decelerate(double thrust)
-	{
-		int velAngle = (int) tanDegrees(ySpeed, xSpeed);
-		double xSpeedOriginal = xSpeed;
-		double ySpeedOriginal = ySpeed;
-		
-		xSpeed = (xSpeed + thrust*cosDegrees(velAngle+180));
-		ySpeed = (ySpeed + thrust*sinDegrees(velAngle+180));
-		
-		if(Math.abs(xSpeed) > Math.abs(xSpeedOriginal))
-		{
-			xSpeed = 0;
-		}
-		if(Math.abs(ySpeed) > Math.abs(ySpeedOriginal))
-		{
-			ySpeed = 0;
-		}
-	}
-	
-	public void rotateLeft(int accel)
-	{
-		rSpeed = rSpeed + accel;
-	}
-	public void rotateRight(int accel)
-	{
-		rSpeed = rSpeed - accel;
-	}
 	public Polygon getHead() {
 		return head;
 	}

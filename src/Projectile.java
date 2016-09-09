@@ -3,16 +3,7 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 
-public class Projectile {
-
-	double xPos;
-	double yPos;
-	int rPos;
-	
-	double xSpeed;
-	double ySpeed;
-	double rSpeed;
-	Polygon body;
+public class Projectile extends Space_Object{
 	
 	int size;
 	
@@ -21,20 +12,10 @@ public class Projectile {
 		xPos = posX;
 		yPos = posY;
 		rPos = posR;
-		xSpeed = speedX;
-		ySpeed = speedY;
-		rSpeed = speedR;
+		xVel = speedX;
+		yVel = speedY;
+		rVel = speedR;
 		this.size = size;
-	}
-	
-	public double random(double input)
-	{
-		return Math.random()*input;
-	}
-	
-	public double randomMin(double minimum, double input)
-	{
-		return (minimum + Math.random()*(input - minimum));
 	}
 	
 	public void draw(Graphics g)
@@ -64,9 +45,9 @@ public class Projectile {
 	
 	public void update()
 	{
-		rPos = (int) (rPos + rSpeed);
-		xPos = xPos + xSpeed;
-		yPos = yPos + ySpeed;
+		rPos = (int) (rPos + rVel);
+		xPos = xPos + xVel;
+		yPos = yPos + yVel;
 		
 		if(xPos < 0)
 		{
@@ -86,69 +67,4 @@ public class Projectile {
 			yPos = 0;
 		}
 	}
-	
-	public void setVel(int x, int y)
-	{
-		xSpeed = x;
-		ySpeed = y;
-	}
-	
-	public void setAngle(int newAngle)
-	{
-		rPos = newAngle;
-	}
-	
-	public double cosDegrees (int angle)
-	{
-		return Math.cos(Math.toRadians(angle));
-	}
-	
-	public double sinDegrees (int angle)
-	{
-		return Math.sin(Math.toRadians(angle));
-	}
-	
-	public double tanDegrees(double y, double x)
-	{
-		double result;
-		if(x < 0)
-		{
-			result = Math.toDegrees(Math.atan(y/x)) + 180;
-		}
-		else if(x == 0)
-		{
-			if(y < 0)
-			{
-				result = 270;
-			}
-			else if(y == 0)
-			{
-				result = 0;
-			}
-			else //ySpeed > 0
-			{
-				result =  90;
-			}
-		}
-		else if(x > 0)
-		{
-			result = Math.toDegrees(Math.atan(y/x));
-		}
-		else
-		{
-			result = 0;
-		}
-		System.out.println("X: " + xSpeed);
-		System.out.println("Y: " + ySpeed);
-		System.out.println("R: " + result);
-		return result;
-	}
-	
-	public Polygon getBody() {
-		return body;
-	}
-	
-
-
-	
 }
