@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.util.ArrayList;
 
 public class Spaceship extends Space_Object{
 	
@@ -15,6 +16,8 @@ public class Spaceship extends Space_Object{
 	boolean thrusting;
 	Polygon head;
 	int structure;
+	
+	ArrayList<Weapon> weapons = new ArrayList();
 	
 	public Spaceship(int x, int y)
 	{
@@ -79,9 +82,7 @@ public class Spaceship extends Space_Object{
 	}
 	
 	public void update()
-	{
-		rPos = (int) (rPos + rVel);
-		
+	{	
 		double rSpeedAbs = Math.abs(rVel);
 		if(rSpeedAbs > 0)
 		{
@@ -116,34 +117,13 @@ public class Spaceship extends Space_Object{
 				}
 			}
 		}
-		
-		xPos = xPos + xVel;
-		yPos = yPos + yVel;
-		
+		updatePosition();
 		if(Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2)) > MAX_SPEED)
 		{
 			int velAngle = (int) arctanDegrees(yVel, xVel);
 			xVel = MAX_SPEED*cosDegrees(velAngle);
 			yVel = MAX_SPEED*sinDegrees(velAngle);
 			
-		}
-		
-		if(xPos < 0)
-		{
-			xPos = GameWindow.WIDTH;
-		}
-		else if(xPos > GameWindow.WIDTH)
-		{
-			xPos = 0;
-		}
-		
-		if(yPos < 0)
-		{
-			yPos = GameWindow.HEIGHT;
-		}
-		if(yPos > GameWindow.HEIGHT)
-		{
-			yPos = 0;
 		}
 	}
 	
@@ -174,11 +154,6 @@ public class Spaceship extends Space_Object{
 		accelerate(rPos, THRUST);
 	}
 	
-	public void fire()
-	{
-		
-	}
-	
 	public void damage(int damage)
 	{
 		structure = structure - damage;
@@ -189,5 +164,18 @@ public class Spaceship extends Space_Object{
 	}
 	public Polygon getBody() {
 		return body;
+	}
+	
+	public void setFiring(boolean state)
+	{
+		for(Weapon weapon: weapons)
+		{
+			weapon.setFiring(state);
+		}
+	}
+	
+	public void installWeapon(Weapon item)
+	{
+		weapons.add(item);
 	}
 }

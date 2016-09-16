@@ -5,17 +5,15 @@ import java.awt.geom.Area;
 
 public class Projectile extends Space_Object{
 	
-	int size;
+	int lifetime;
 	
-	public Projectile(double posX, double posY, int posR, double speedX, double speedY, double speedR, int size)
+	public Projectile(double posX, double posY, double posR, int life)
 	{
 		xPos = posX;
 		yPos = posY;
 		rPos = posR;
-		xVel = speedX;
-		yVel = speedY;
-		rVel = speedR;
-		this.size = size;
+		
+		lifetime = life;
 	}
 	
 	public void draw(Graphics g)
@@ -45,26 +43,12 @@ public class Projectile extends Space_Object{
 	
 	public void update()
 	{
-		rPos = (int) (rPos + rVel);
-		xPos = xPos + xVel;
-		yPos = yPos + yVel;
-		
-		if(xPos < 0)
-		{
-			xPos = GameWindow.WIDTH;
-		}
-		else if(xPos > GameWindow.WIDTH)
-		{
-			xPos = 0;
-		}
-		
-		if(yPos < 0)
-		{
-			yPos = GameWindow.HEIGHT;
-		}
-		if(yPos > GameWindow.HEIGHT)
-		{
-			yPos = 0;
-		}
+		updatePosition();
+		lifetime--;
+	}
+	
+	public int getLifetime()
+	{
+		return lifetime;
 	}
 }

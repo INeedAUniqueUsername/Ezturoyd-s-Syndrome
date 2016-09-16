@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 
@@ -6,7 +7,7 @@ public class Space_Object {
 
 	double xPos;
 	double yPos;
-	int rPos;
+	double rPos;
 	
 	double xVel;
 	double yVel;
@@ -14,10 +15,20 @@ public class Space_Object {
 	Polygon body;
 	double size;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
-	public void setVel(int x, int y)
+	public void setVelRectangular(double x, double y)
 	{
 		xVel = x;
 		yVel = y;
+	}
+	
+	public void setVelPolar(double angle, double speed)
+	{
+		setVelRectangular(speed*cosDegrees(angle), speed*sinDegrees(angle));
+	}
+	
+	public void incVelRectangular(double x, double y)
+	{
+		setVelRectangular(getVelX() + x, getVelY() + y);
 	}
 	
 	public void setAngle(int newAngle)
@@ -27,7 +38,7 @@ public class Space_Object {
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
 	
-	public void accelerate(int angle, double thrust)
+	public void accelerate(double angle, double thrust)
 	{
 		xVel = (xVel + thrust*cosDegrees(angle));
 		yVel = (yVel + thrust*sinDegrees(angle));
@@ -54,12 +65,12 @@ public class Space_Object {
 	
 	/*	=	=	=	=		Trigonometry		=	=	=	=	=*/
 	
-	public double cosDegrees (int angle)
+	public double cosDegrees (double angle)
 	{
 		return Math.cos(Math.toRadians(angle));
 	}
 	
-	public double sinDegrees (int angle)
+	public double sinDegrees (double angle)
 	{
 		return Math.sin(Math.toRadians(angle));
 	}
@@ -133,9 +144,9 @@ public class Space_Object {
 		return minTo + inputDiff*rangeRatio;
 	}
 	
-	public int getVelAngle()
+	public double getVelAngle()
 	{
-		return (int) arctanDegrees(yVel, xVel);
+		return arctanDegrees(yVel, xVel);
 	}
 	
 	public double getVelX()
@@ -160,9 +171,9 @@ public class Space_Object {
 	
 	public double getForceAngled(int angle)
 	{
-		int angleCW = Math.abs(rPos - angle);
-		int angleCCW = Math.abs(angle - rPos);
-		int angleDiff;
+		double angleCW = Math.abs(rPos - angle);
+		double angleCCW = Math.abs(angle - rPos);
+		double angleDiff;
 		if(angleCW < angleCCW)
 		{
 			angleDiff = angleCW;
@@ -185,6 +196,51 @@ public class Space_Object {
 	      j = i;  //j is previous vertex to i
 	    }
 	  return area/2;
+	}
+	
+	public void update()
+	{
+		
+	}
+	
+	public void updatePosition()
+	{
+		rPos = (int) (rPos + rVel);
+		xPos = xPos + xVel;
+		yPos = yPos + yVel;
+		
+		if(xPos < 0)
+		{
+			xPos = GameWindow.WIDTH;
+		}
+		else if(xPos > GameWindow.WIDTH)
+		{
+			xPos = 0;
+		}
+		
+		if(yPos < 0)
+		{
+			yPos = GameWindow.HEIGHT;
+		}
+		if(yPos > GameWindow.HEIGHT)
+		{
+			yPos = 0;
+		}
+	}
+	
+	public double getPosX()
+	{
+		return xPos;
+	}
+	
+	public double getPosY()
+	{
+		return yPos;
+	}
+	
+	public double getPosR()
+	{
+		return rPos;
 	}
 	
 }

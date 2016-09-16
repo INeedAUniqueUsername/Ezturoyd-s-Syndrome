@@ -24,6 +24,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Projectile> projectiles;
 	//counter for hits
 	int hits= 0;
+	ArrayList<Weapon> weapons;
+	
+	int tick;
 	public GamePanel()
 	{
 		Timer ticker = new Timer(INTERVAL, this);
@@ -32,10 +35,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	public void newGame()
 	{
+		tick = 0;
+		System.out.println("*" + tick + "*");
+		weapons = new ArrayList();
+		projectiles = new ArrayList();
 		player = new Spaceship(800, 450);
-		player.setVel(5, 5);
+		player.setVelRectangular(5, 5);
 		
 		rock = new Asteroid();
+		
+		addWeapon(player, new Weapon(0, 10));
 	}
 	
 	public void paintComponent(Graphics g)
@@ -43,16 +52,42 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		
+		tick++;
+		
 		player.update();
 		player.draw(g);
 		
 		rock.update();
 		rock.draw(g);
 		
+		for(Weapon weapon: weapons)
+		{
+			weapon.update();
+			weapon.draw(g);
+			if(weapon.getFiring() && (weapon.getFireCooldownTime() > weapon.getFireCooldownMax()))
+			{
+				Space_Object owner = weapon.getOwner();
+				Projectile shot = new Projectile(weapon.getPosX(), weapon.getPosY(), weapon.getFireAngle(), weapon.getProjectileLifetime());
+				shot.setVelPolar(weapon.getFireAngle(), weapon.getProjectileSpeed());
+				shot.incVelRectangular(owner.getVelX(), owner.getVelY());
+				projectiles.add(shot);
+				weapon.setFireCooldownTime(0);
+			}
+		}
+		for(Projectile projectile: projectiles)
+		{
+			projectile.update();
+			projectile.draw(g);
+			if(projectile.getLifetime() < 0)
+			{
+				projectiles.remove(projectile);
+			}
+		}
+		
 		if(objectsIntersect(player, rock))
 		{
 			int forceAngle = (int) arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() - rock.getVelX());
-			int rockVelAngle = rock.getVelAngle();
+			double rockVelAngle = rock.getVelAngle();
 		}
 	}
 
@@ -117,12 +152,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		{
 			player.rotateRight(player.ROTATION_ACCEL);
 		}
+		if(e.getKeyCode() == e.VK_X)
+		{
+			player.setFiring(true);
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getKeyCode() == e.VK_X)
+		{
+			player.setFiring(false);
+		}
 	}
 	
 	public static double arctanDegrees(double y, double x)
@@ -172,5 +214,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		   areaA.intersect(new Area(b.getBody()));
 		   return !areaA.isEmpty();
 		}
+	
+	public void addWeapon(Spaceship ship, Weapon item)
+	{
+		ship.installWeapon(item);
+		item.setOwner(ship);
+		weapons.add(item);
+	}
+	
+	public void print(String message)
+	{
+		System.out.println(tick + ". " + message);
+	}
 
 }

@@ -40,7 +40,7 @@ public class Asteroid extends Space_Object{
 		updateBody();
 		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
 	}
-	
+	/*
 	public void getCollisionDistance(int angle)
 	{
 		int leftPoint;
@@ -48,7 +48,7 @@ public class Asteroid extends Space_Object{
 		
 		for(int i = 0; i < points_count; i++)
 		{
-			int rightAngle = (i*points_interval - rPos);
+			double rightAngle = (i*points_interval - rPos);
 			if(angle < rightAngle)
 			{
 				rightPoint = i;
@@ -62,7 +62,7 @@ public class Asteroid extends Space_Object{
 		}
 		
 	}
-	
+	*/
 	public void draw(Graphics g)
 	{
 		g.setColor(Color.WHITE);
@@ -73,35 +73,7 @@ public class Asteroid extends Space_Object{
 	
 	public void update()
 	{
-		rPos = (int) (rPos + rVel);
-		xPos = xPos + xVel;
-		yPos = yPos + yVel;
-		
-		if(Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2)) > MAX_SPEED)
-		{
-			int velAngle = (int) arctanDegrees(yVel, xVel);
-			xVel = MAX_SPEED*cosDegrees(velAngle);
-			yVel = MAX_SPEED*sinDegrees(velAngle);
-			
-		}
-		
-		if(xPos < 0)
-		{
-			xPos = GameWindow.WIDTH;
-		}
-		else if(xPos > GameWindow.WIDTH)
-		{
-			xPos = 0;
-		}
-		
-		if(yPos < 0)
-		{
-			yPos = GameWindow.HEIGHT;
-		}
-		if(yPos > GameWindow.HEIGHT)
-		{
-			yPos = 0;
-		}
+		updatePosition();
 	}
 	
 	public void updateBody()
@@ -110,7 +82,7 @@ public class Asteroid extends Space_Object{
 		int[] bodyY = new int[points_count+1];
 		for(int i = 0; i < points_count; i++)
 		{
-			int point_angle = (points_interval*i) + rPos;
+			double point_angle = (points_interval*i) + rPos;
 			int point_distance = points_distances[i];
 			bodyX[i] = (int) (xPos + point_distance*cosDegrees(point_angle));
 			bodyY[i] = (int) (GameWindow.HEIGHT - (yPos + point_distance*sinDegrees(point_angle)));
