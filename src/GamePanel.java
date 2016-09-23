@@ -20,8 +20,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	final int INTERVAL = 10;
 	Spaceship player;
-	Asteroid rock;
+	ArrayList<Space_Object> world;
+	ArrayList<Spaceship> ships;
 	ArrayList<Projectile> projectiles;
+	ArrayList<Asteroid> asteroids;
+	
 	//counter for hits
 	int hits= 0;
 	ArrayList<Weapon> weapons;
@@ -37,14 +40,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		tick = 0;
 		System.out.println("*" + tick + "*");
-		weapons = new ArrayList();
+		
+		world = new ArrayList();
+		ships = new ArrayList();
 		projectiles = new ArrayList();
+		asteroids = new ArrayList();
+		
+		weapons = new ArrayList();
+		
 		player = new Spaceship(800, 450);
-		player.setVelRectangular(5, 5);
 		
-		rock = new Asteroid();
-		
+		addSpaceship(player);
 		addWeapon(player, new Weapon(0, 10));
+		addAsteroid(new Asteroid());
 	}
 	
 	public void paintComponent(Graphics g)
@@ -53,42 +61,69 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		
 		tick++;
+		for(Space_Object object: world)
+		{
+			
+			if(object.getActive())
+			{
+				object.update();
+				object.draw(g);
+			}
+			else
+			{
+				object.destroy();
+				world.remove(object);
+				if(ships.contains(object))
+				{
+					ships.remove(object);
+				}
+				else if(projectiles.contains(object))
+				{
+					projectiles.remove(object);
+				}
+				else if(asteroids.contains(asteroids))
+				{
+					asteroids.remove(object);
+				}
+			}
+		}
 		
-		player.update();
-		player.draw(g);
-		
-		rock.update();
-		rock.draw(g);
+		for(Asteroid a1: asteroids)
+		{
+			for(Projectile p: projectiles)
+			{
+				if(objectsIntersect(a1, p))
+				{
+					System.out.println("--> GamePanel: Asteroid-Projectile Collision");
+					a1.collisionProjectile(p);
+					p.destroy();
+					removeProjectile(p);
+					System.out.println("<-- GamePanel: Asteroid-Projectile Collision");
+				}
+			}
+		}
 		
 		for(Weapon weapon: weapons)
 		{
+			System.out.println("--> Human Shot First");
 			weapon.update();
 			weapon.draw(g);
 			if(weapon.getFiring() && (weapon.getFireCooldownTime() > weapon.getFireCooldownMax()))
 			{
-				Space_Object owner = weapon.getOwner();
-				Projectile shot = new Projectile(weapon.getPosX(), weapon.getPosY(), weapon.getFireAngle(), weapon.getProjectileLifetime());
-				shot.setVelPolar(weapon.getFireAngle(), weapon.getProjectileSpeed());
-				shot.incVelRectangular(owner.getVelX(), owner.getVelY());
-				projectiles.add(shot);
+				Projectile shot = weapon.getShot();
+				addProjectile(shot);
 				weapon.setFireCooldownTime(0);
 			}
-		}
-		for(Projectile projectile: projectiles)
-		{
-			projectile.update();
-			projectile.draw(g);
-			if(projectile.getLifetime() < 0)
-			{
-				projectiles.remove(projectile);
-			}
+			System.out.println("<-- Human Shot First");
 		}
 		
+		/*
 		if(objectsIntersect(player, rock))
 		{
 			int forceAngle = (int) arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() - rock.getVelX());
 			double rockVelAngle = rock.getVelAngle();
 		}
+		*/
 	}
 
 	@Override
@@ -220,6 +255,40 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		ship.installWeapon(item);
 		item.setOwner(ship);
 		weapons.add(item);
+	}
+	
+	
+	
+	public void addSpaceship(Spaceship ship)
+	{
+		ships.add(ship);
+		world.add(ship);
+	}
+	public void addProjectile(Projectile projectile)
+	{
+		projectiles.add(projectile);
+		world.add(projectile);
+	}
+	public void addAsteroid(Asteroid asteroid)
+	{
+		asteroids.add(asteroid);
+		world.add(asteroid);
+	}
+	
+	public void removeSpaceship(Spaceship ship)
+	{
+		ships.remove(ship);
+		world.remove(ship);
+	}
+	public void removeProjectile(Projectile projectile)
+	{
+		projectiles.remove(projectile);
+		world.remove(projectile);
+	}
+	public void removeAsteroid(Asteroid asteroid)
+	{
+		asteroids.remove(asteroid);
+		world.remove(asteroid);
 	}
 	
 	public void print(String message)

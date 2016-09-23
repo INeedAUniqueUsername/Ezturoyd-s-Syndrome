@@ -14,6 +14,8 @@ public class Space_Object {
 	double rVel;
 	Polygon body;
 	double size;
+	
+	boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
 	public void setVelRectangular(double x, double y)
 	{
@@ -107,7 +109,7 @@ public class Space_Object {
 		}
 		System.out.println("X: " + y);
 		System.out.println("Y: " + x);
-		System.out.println("R: " + result);
+		System.out.println("arctan(y/x) = " + result);
 		return result;
 	}
 	
@@ -124,6 +126,15 @@ public class Space_Object {
 		return body;
 	}
 	
+	public double modRange(double input, double range)
+	{
+		double result = input % range;
+		while(result < range)
+		{
+			result = result + range;
+		}
+		return result;
+	}
 	public double random(double input)
 	{
 		return Math.random()*input;
@@ -142,6 +153,89 @@ public class Space_Object {
 		double inputDiff = input - minFrom;
 		
 		return minTo + inputDiff*rangeRatio;
+	}
+	
+	//Source: http://www.mathopenref.com/coordpolygonarea2.html
+	public double polygonArea(int[] X, int[] Y, int numPoints) 
+	{ 
+	  double area = 0;         // Accumulates area in the loop
+	  int j = numPoints-1;  // The last vertex is the 'previous' one to the first
+
+	  for (int i=0; i<numPoints; i++)
+	    { area = area +  (X[j]+X[i]) * (Y[j]-Y[i]); 
+	      j = i;  //j is previous vertex to i
+	    }
+	  return area/2;
+	}
+	
+	public void update()
+	{
+		
+	}
+	
+	public void draw(Graphics g)
+	{
+		
+	}
+	
+	public void destroy()
+	{
+		
+	}
+	
+	public double getAngleTowards(Space_Object other)
+	{
+		return arctanDegrees(getPosY() - other.getPosY(), getPosX() - other.getPosX());
+	}
+	public double getAngleFrom(Space_Object other)
+	{
+		return arctanDegrees(other.getPosY() - getPosY(), other.getPosX() - getPosX());
+	}
+	
+	public void updatePosition()
+	{
+		rPos = (int) (rPos + rVel);
+		xPos = xPos + xVel;
+		yPos = yPos + yVel;
+		
+		if(xPos < 0)
+		{
+			xPos = GameWindow.WIDTH;
+		}
+		else if(xPos > GameWindow.WIDTH)
+		{
+			xPos = 0;
+		}
+		
+		if(yPos < 0)
+		{
+			yPos = GameWindow.HEIGHT;
+		}
+		if(yPos > GameWindow.HEIGHT)
+		{
+			yPos = 0;
+		}
+		
+	}
+	
+	public double getPosX()
+	{
+		return xPos;
+	}
+	
+	public double getPosY()
+	{
+		return yPos;
+	}
+	
+	public double getPosR()
+	{
+		return rPos;
+	}
+	
+	public boolean getActive()
+	{
+		return active;
 	}
 	
 	public double getVelAngle()
@@ -183,64 +277,6 @@ public class Space_Object {
 			angleDiff = angleCCW;
 		}
 		return getForce()*Math.cos(angleDiff);
-	}
-	
-	//Source: http://www.mathopenref.com/coordpolygonarea2.html
-	public double polygonArea(int[] X, int[] Y, int numPoints) 
-	{ 
-	  double area = 0;         // Accumulates area in the loop
-	  int j = numPoints-1;  // The last vertex is the 'previous' one to the first
-
-	  for (int i=0; i<numPoints; i++)
-	    { area = area +  (X[j]+X[i]) * (Y[j]-Y[i]); 
-	      j = i;  //j is previous vertex to i
-	    }
-	  return area/2;
-	}
-	
-	public void update()
-	{
-		
-	}
-	
-	public void updatePosition()
-	{
-		rPos = (int) (rPos + rVel);
-		xPos = xPos + xVel;
-		yPos = yPos + yVel;
-		
-		if(xPos < 0)
-		{
-			xPos = GameWindow.WIDTH;
-		}
-		else if(xPos > GameWindow.WIDTH)
-		{
-			xPos = 0;
-		}
-		
-		if(yPos < 0)
-		{
-			yPos = GameWindow.HEIGHT;
-		}
-		if(yPos > GameWindow.HEIGHT)
-		{
-			yPos = 0;
-		}
-	}
-	
-	public double getPosX()
-	{
-		return xPos;
-	}
-	
-	public double getPosY()
-	{
-		return yPos;
-	}
-	
-	public double getPosR()
-	{
-		return rPos;
 	}
 	
 }

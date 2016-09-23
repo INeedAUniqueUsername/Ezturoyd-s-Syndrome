@@ -9,6 +9,7 @@ public class Asteroid extends Space_Object{
 	int[] points_distances;
 	int points_interval;
 	
+	
 	final int MIN_SIZE = 25;
 	final int MAX_SIZE = 100;
 	final int MAX_SPEED = 5;
@@ -63,6 +64,22 @@ public class Asteroid extends Space_Object{
 		
 	}
 	*/
+	public void collisionProjectile(Projectile p)
+	{
+		System.out.println("--> Collision (Projectile)");
+		double collisionAngle = rPos - modRange(getAngleTowards(p), 360);
+		while(collisionAngle < 0)
+		{
+			collisionAngle = collisionAngle + 360;
+		}
+		int index = (int) (collisionAngle/points_interval);
+		
+		System.out.println("Collision Angle: " + collisionAngle);
+		System.out.println("Point Index: " + index);
+		points_distances[index] = points_distances[index] - 5;
+		System.out.println("<-- Collision (Projectile)");
+	}
+	
 	public void draw(Graphics g)
 	{
 		g.setColor(Color.WHITE);

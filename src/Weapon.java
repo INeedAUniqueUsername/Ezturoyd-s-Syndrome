@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -6,7 +7,7 @@ public class Weapon {
 
 	Space_Object owner;
 	
-	final int SIZE = 5;
+	final int SIZE = 10;
 	
 	boolean firing = false;
 	
@@ -44,6 +45,7 @@ public class Weapon {
 	
 	public void draw(Graphics g)
 	{
+		g.setColor(Color.WHITE);
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 		
@@ -62,6 +64,20 @@ public class Weapon {
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
 		g.drawPolygon(new Polygon(bodyX,bodyY, 4));
+	}
+	
+	public Projectile getShotType()
+	{
+		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileLifetime());
+	}
+	
+	public Projectile getShot()
+	{
+		Projectile shot = getShotType();
+		shot.setVelPolar(getFireAngle(), getProjectileSpeed());
+		shot.incVelRectangular(owner.getVelX(), owner.getVelY());
+		shot.setOwner(owner);
+		return shot;
 	}
 	
 	public void setFiring(boolean state)
