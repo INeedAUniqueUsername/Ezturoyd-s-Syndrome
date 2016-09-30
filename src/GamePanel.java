@@ -41,6 +41,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		tick = 0;
 		System.out.println("*" + tick + "*");
 		
+		Space_Object.world = this;
+		
 		world = new ArrayList();
 		ships = new ArrayList();
 		projectiles = new ArrayList();
@@ -52,7 +54,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		addSpaceship(player);
 		addWeapon(player, new Weapon(0, 10));
-		addAsteroid(new Asteroid());
+		
+		Asteroid rock = new Asteroid();
+		rock.setVelRectangular(0, 0);
+		rock.setPosRectangular(500, 500);
+		addAsteroid(rock);
 	}
 	
 	public void paintComponent(Graphics g)
@@ -81,7 +87,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				{
 					projectiles.remove(object);
 				}
-				else if(asteroids.contains(asteroids))
+				else if(asteroids.contains(object))
 				{
 					asteroids.remove(object);
 				}
@@ -96,9 +102,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				{
 					System.out.println("--> GamePanel: Asteroid-Projectile Collision");
 					a1.collisionProjectile(p);
+					
+					
 					p.destroy();
 					removeProjectile(p);
 					System.out.println("<-- GamePanel: Asteroid-Projectile Collision");
+				}
+			}
+			for(Spaceship s: ships)
+			{
+				if(objectsIntersect(a1, s))
+				{
+					System.out.println("--> GamePanel: Asteroid-Spaceship Collision");
+					a1.collisionSpaceship(s);
+					System.out.println("<-- GamePanel: Asteroid-Spaceship Collision");
 				}
 			}
 		}
@@ -289,6 +306,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		asteroids.remove(asteroid);
 		world.remove(asteroid);
+	}
+	
+	public boolean exists(Object what)
+	{
+		return what != null;
 	}
 	
 	public void print(String message)

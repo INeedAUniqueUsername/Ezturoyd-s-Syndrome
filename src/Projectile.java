@@ -11,9 +11,9 @@ public class Projectile extends Space_Object{
 	
 	public Projectile(double posX, double posY, double posR, int life)
 	{
-		xPos = posX;
-		yPos = posY;
-		rPos = posR;
+		pos_x = posX;
+		pos_y = posY;
+		pos_r = posR;
 		
 		lifetime = life;
 		
@@ -53,17 +53,17 @@ public class Projectile extends Space_Object{
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 		
-		int bodyFrontX = (int) 						(xPos+width*cosDegrees(rPos));
-		int bodyFrontY = (int) (GameWindow.HEIGHT-	(yPos+width*sinDegrees(rPos)));
+		int bodyFrontX = (int) 						(pos_x+width*cosDegrees(pos_r));
+		int bodyFrontY = (int) (GameWindow.HEIGHT-	(pos_y+width*sinDegrees(pos_r)));
 		
 		bodyX[0] = bodyFrontX;
 		bodyY[0] = bodyFrontY;
 		
-		bodyX[1] = (int) 						(xPos+width*cosDegrees(rPos-120));
-		bodyY[1] = (int) (GameWindow.HEIGHT-	(yPos+width*sinDegrees(rPos-120)));
+		bodyX[1] = (int) 						(pos_x+width*cosDegrees(pos_r-120));
+		bodyY[1] = (int) (GameWindow.HEIGHT-	(pos_y+width*sinDegrees(pos_r-120)));
 		
-		bodyX[2] = (int) 						(xPos+width*cosDegrees(rPos+120));
-		bodyY[2] = (int) (GameWindow.HEIGHT-	(yPos+width*sinDegrees(rPos+120)));
+		bodyX[2] = (int) 						(pos_x+width*cosDegrees(pos_r+120));
+		bodyY[2] = (int) (GameWindow.HEIGHT-	(pos_y+width*sinDegrees(pos_r+120)));
 		
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;

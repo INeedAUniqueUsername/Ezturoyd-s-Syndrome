@@ -21,13 +21,13 @@ public class Spaceship extends Space_Object{
 	
 	public Spaceship(int x, int y)
 	{
-		xPos = x;
-		yPos = y;
+		pos_x = x;
+		pos_y = y;
 		
-		xVel = 0;
-		yVel = 0;
+		vel_x = 0;
+		vel_y = 0;
 		
-		rPos = 45;
+		pos_r = 45;
 		
 		structure = 100;
 		updateBody();
@@ -54,17 +54,17 @@ public class Spaceship extends Space_Object{
 		int bodyFrontX = body.xpoints[0];
 		int bodyFrontY = body.ypoints[0];
 		
-		int headFrontX = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos));
-		int headFrontY = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos));
+		int headFrontX = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(pos_r));
+		int headFrontY = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(pos_r));
 		
 		headX[0] = headFrontX;
 		headY[0] = headFrontY;
 		
-		headX[1] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos-120));
-		headY[1] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos-120));
+		headX[1] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(pos_r-120));
+		headY[1] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(pos_r-120));
 		
-		headX[2] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(rPos+120));
-		headY[2] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(rPos+120));
+		headX[2] = (int) (bodyFrontX+HEAD_SIZE*cosDegrees(pos_r+120));
+		headY[2] = (int) (bodyFrontY-HEAD_SIZE*sinDegrees(pos_r+120));
 		
 		headX[3] = headFrontX;
 		headY[3] = headFrontY;
@@ -83,46 +83,46 @@ public class Spaceship extends Space_Object{
 	
 	public void update()
 	{	
-		double rSpeedAbs = Math.abs(rVel);
+		double rSpeedAbs = Math.abs(vel_r);
 		if(rSpeedAbs > 0)
 		{
-			if(rVel < 0)
+			if(vel_r < 0)
 			{
-				if(rVel < -ROTATION_MAX)
+				if(vel_r < -ROTATION_MAX)
 				{
-					rVel = -ROTATION_MAX;
+					vel_r = -ROTATION_MAX;
 				}
 				else
 				{
-					rVel = rVel + ROTATION_DECEL;
-					if(rVel > 0)
+					vel_r = vel_r + ROTATION_DECEL;
+					if(vel_r > 0)
 					{
-						rVel = 0;
+						vel_r = 0;
 					}
 				}
 			}
-			else if(rVel > 0)
+			else if(vel_r > 0)
 			{
-				if(rVel > ROTATION_MAX)
+				if(vel_r > ROTATION_MAX)
 				{
-					rVel = ROTATION_MAX;
+					vel_r = ROTATION_MAX;
 				}
 				else
 				{
-					rVel = rVel - ROTATION_DECEL;
-					if(rVel < 0)
+					vel_r = vel_r - ROTATION_DECEL;
+					if(vel_r < 0)
 					{
-						rVel = 0;
+						vel_r = 0;
 					}
 				}
 			}
 		}
 		updatePosition();
-		if(Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2)) > MAX_SPEED)
+		if(Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > MAX_SPEED)
 		{
-			int velAngle = (int) arctanDegrees(yVel, xVel);
-			xVel = MAX_SPEED*cosDegrees(velAngle);
-			yVel = MAX_SPEED*sinDegrees(velAngle);
+			int velAngle = (int) arctanDegrees(vel_y, vel_x);
+			vel_x = MAX_SPEED*cosDegrees(velAngle);
+			vel_y = MAX_SPEED*sinDegrees(velAngle);
 			
 		}
 	}
@@ -132,17 +132,17 @@ public class Spaceship extends Space_Object{
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 		
-		int bodyFrontX = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos));
-		int bodyFrontY = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos)));
+		int bodyFrontX = (int) 						(pos_x+BODY_SIZE*cosDegrees(pos_r));
+		int bodyFrontY = (int) (GameWindow.HEIGHT-	(pos_y+BODY_SIZE*sinDegrees(pos_r)));
 		
 		bodyX[0] = bodyFrontX;
 		bodyY[0] = bodyFrontY;
 		
-		bodyX[1] = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos-120));
-		bodyY[1] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos-120)));
+		bodyX[1] = (int) 						(pos_x+BODY_SIZE*cosDegrees(pos_r-120));
+		bodyY[1] = (int) (GameWindow.HEIGHT-	(pos_y+BODY_SIZE*sinDegrees(pos_r-120)));
 		
-		bodyX[2] = (int) 						(xPos+BODY_SIZE*cosDegrees(rPos+120));
-		bodyY[2] = (int) (GameWindow.HEIGHT-	(yPos+BODY_SIZE*sinDegrees(rPos+120)));
+		bodyX[2] = (int) 						(pos_x+BODY_SIZE*cosDegrees(pos_r+120));
+		bodyY[2] = (int) (GameWindow.HEIGHT-	(pos_y+BODY_SIZE*sinDegrees(pos_r+120)));
 		
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
@@ -151,7 +151,7 @@ public class Spaceship extends Space_Object{
 	
 	public void thrust()
 	{
-		accelerate(rPos, THRUST);
+		accelerate(pos_r, THRUST);
 	}
 	
 	public void damage(int damage)

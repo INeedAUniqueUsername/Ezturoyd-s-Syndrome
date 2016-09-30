@@ -5,22 +5,31 @@ import java.awt.geom.Area;
 
 public class Space_Object {
 
-	double xPos;
-	double yPos;
-	double rPos;
+	static GamePanel world;
 	
-	double xVel;
-	double yVel;
-	double rVel;
+	double pos_x;
+	double pos_y;
+	double pos_r;
+	
+	double vel_x;
+	double vel_y;
+	double vel_r;
 	Polygon body;
 	double size;
 	
 	boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
+	
+	public void setPosRectangular(double x, double y)
+	{
+		pos_x = x;
+		pos_y = y;
+	}
+	
 	public void setVelRectangular(double x, double y)
 	{
-		xVel = x;
-		yVel = y;
+		vel_x = x;
+		vel_y = y;
 	}
 	
 	public void setVelPolar(double angle, double speed)
@@ -33,35 +42,40 @@ public class Space_Object {
 		setVelRectangular(getVelX() + x, getVelY() + y);
 	}
 	
+	public void incVelPolar(double angle, double speed)
+	{
+		setVelRectangular(getVelX() + speed*cosDegrees(angle), getVelY() + speed*sinDegrees(angle));
+	}
+	
 	public void setAngle(int newAngle)
 	{
-		rPos = newAngle;
+		pos_r = newAngle;
 	}
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
 	
 	public void accelerate(double angle, double thrust)
 	{
-		xVel = (xVel + thrust*cosDegrees(angle));
-		yVel = (yVel + thrust*sinDegrees(angle));
+		vel_x = (vel_x + thrust*cosDegrees(angle));
+		vel_y = (vel_y + thrust*sinDegrees(angle));
 	}
 	
 	public void decelerate(double thrust)
 	{
-		int velAngle = (int) arctanDegrees(yVel, xVel);
-		double xSpeedOriginal = xVel;
-		double ySpeedOriginal = yVel;
+		int velAngle = (int) arctanDegrees(vel_y, vel_x);
+		double xSpeedOriginal = vel_x;
+		double ySpeedOriginal = vel_y;
 		
-		xVel = (xVel + thrust*cosDegrees(velAngle+180));
-		yVel = (yVel + thrust*sinDegrees(velAngle+180));
+		vel_x = (vel_x + thrust*cosDegrees(velAngle+180));
+		vel_y = (vel_y + thrust*sinDegrees(velAngle+180));
 		
-		if(Math.abs(xVel) > Math.abs(xSpeedOriginal))
+		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal))
 		{
-			xVel = 0;
+			vel_x = 0;
 		}
-		if(Math.abs(yVel) > Math.abs(ySpeedOriginal))
+		if(Math.abs(vel_y) > Math.abs(ySpeedOriginal))
 		{
-			yVel = 0;
+			vel_y = 0;
 		}
 	}
 	
@@ -115,11 +129,11 @@ public class Space_Object {
 	
 	public void rotateLeft(int accel)
 	{
-		rVel = rVel + accel;
+		vel_r = vel_r + accel;
 	}
 	public void rotateRight(int accel)
 	{
-		rVel = rVel - accel;
+		vel_r = vel_r - accel;
 	}
 	
 	public Polygon getBody() {
@@ -129,7 +143,7 @@ public class Space_Object {
 	public double modRange(double input, double range)
 	{
 		double result = input % range;
-		while(result < range)
+		while(result < 0)
 		{
 			result = result + range;
 		}
@@ -194,43 +208,50 @@ public class Space_Object {
 	
 	public void updatePosition()
 	{
-		rPos = (int) (rPos + rVel);
-		xPos = xPos + xVel;
-		yPos = yPos + yVel;
+		pos_r = (int) (pos_r + vel_r);
+		pos_x = pos_x + vel_x;
+		pos_y = pos_y + vel_y;
 		
-		if(xPos < 0)
+		if(pos_x < 0)
 		{
-			xPos = GameWindow.WIDTH;
+			pos_x = GameWindow.WIDTH;
 		}
-		else if(xPos > GameWindow.WIDTH)
+		else if(pos_x > GameWindow.WIDTH)
 		{
-			xPos = 0;
-		}
-		
-		if(yPos < 0)
-		{
-			yPos = GameWindow.HEIGHT;
-		}
-		if(yPos > GameWindow.HEIGHT)
-		{
-			yPos = 0;
+			pos_x = 0;
 		}
 		
+		if(pos_y < 0)
+		{
+			pos_y = GameWindow.HEIGHT;
+		}
+		if(pos_y > GameWindow.HEIGHT)
+		{
+			pos_y = 0;
+		}
+		
+	}
+	
+	public Point getPos()
+	{
+		Point result = new Point();
+		result.setLocation(pos_x, pos_y);
+		return result;
 	}
 	
 	public double getPosX()
 	{
-		return xPos;
+		return pos_x;
 	}
 	
 	public double getPosY()
 	{
-		return yPos;
+		return pos_y;
 	}
 	
 	public double getPosR()
 	{
-		return rPos;
+		return pos_r;
 	}
 	
 	public boolean getActive()
@@ -240,22 +261,22 @@ public class Space_Object {
 	
 	public double getVelAngle()
 	{
-		return arctanDegrees(yVel, xVel);
+		return arctanDegrees(vel_y, vel_x);
 	}
 	
 	public double getVelX()
 	{
-		return xVel;
+		return vel_x;
 	}
 	
 	public double getVelY()
 	{
-		return yVel;
+		return vel_y;
 	}
 	
 	public double getVelSpeed()
 	{
-		return Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2));
+		return Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2));
 	}
 	
 	public double getForce()
@@ -263,10 +284,10 @@ public class Space_Object {
 		return getVelSpeed()*size;
 	}
 	
-	public double getForceAngled(int angle)
+	public double getForceAngled(double angle)
 	{
-		double angleCW = Math.abs(rPos - angle);
-		double angleCCW = Math.abs(angle - rPos);
+		double angleCW = Math.abs(pos_r - angle);
+		double angleCCW = Math.abs(angle - pos_r);
 		double angleDiff;
 		if(angleCW < angleCCW)
 		{
@@ -276,7 +297,7 @@ public class Space_Object {
 		{
 			angleDiff = angleCCW;
 		}
-		return getForce()*Math.cos(angleDiff);
+		return getForce()*cosDegrees(angleDiff);
 	}
 	
 }
