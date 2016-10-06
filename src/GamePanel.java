@@ -65,7 +65,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{	
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
+		/*
+		Spaceship player = ships.get(0);
+		Asteroid rock = asteroids.get(0);
+		double angle = player.getAngleTowards(rock);
+		int playerY = (int) player.getPosY();
+		int x = (int) player.getPosX();
+		int y = (int) (GameWindow.HEIGHT - playerY);
+		int x2 = (int) (x + 50 * player.cosDegrees(angle));
+		int y2 = (int) (GameWindow.HEIGHT - (playerY + 50 * player.sinDegrees(angle)));
 		
+		g.setColor(Color.WHITE);
+		g.drawLine(x, y, x2, y2);
+		*/
 		tick++;
 		for(Space_Object object: world)
 		{
@@ -111,8 +123,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			for(Spaceship s: ships)
 			{
-				if(objectsIntersect(a1, s))
+				if(objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10)
 				{
+					a1.lastCollisionTick = tick;
+					s.lastCollisionTick = tick;
 					System.out.println("--> GamePanel: Asteroid-Spaceship Collision");
 					a1.collisionSpaceship(s);
 					System.out.println("<-- GamePanel: Asteroid-Spaceship Collision");

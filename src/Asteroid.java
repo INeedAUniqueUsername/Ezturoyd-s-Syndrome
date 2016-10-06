@@ -44,7 +44,7 @@ public class Asteroid extends Space_Object{
 			System.out.println("Distance at angle " + points_interval*i + ": " + points_distances[i]);
 		}
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 	
 	public void initializeBody(int count)
@@ -58,7 +58,7 @@ public class Asteroid extends Space_Object{
 			System.out.println("Distance at angle " + points_interval*i + ": " + points_distances[i]);
 		}
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 	public void initializeBody(int count, int minSize, int maxSize)
 	{
@@ -71,7 +71,7 @@ public class Asteroid extends Space_Object{
 			System.out.println("Distance at angle " + points_interval*i + ": " + points_distances[i]);
 		}
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 	public void initializeBody(int[] points)
 	{
@@ -79,7 +79,7 @@ public class Asteroid extends Space_Object{
 		points_distances = points;
 		points_interval = 360/points_count;
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 	
 	/*
@@ -111,25 +111,61 @@ public class Asteroid extends Space_Object{
 		double collisionAngle = modRange(pos_r - getAngleTowards(p), 360);
 		
 		int index = (int) (collisionAngle/points_interval);
-		
+		int indexInc = 1;
+		boolean clockwise = true;
 		System.out.println("Collision Angle: " + collisionAngle);
 		System.out.println("Point Index: " + index);
-		int distance = points_distances[index];
-		if(distance >= 5)
+		int damage = p.getDamage();
+		if(points_distances[index] >= damage)
 		{
-			points_distances[index] = distance - 5;
+			points_distances[index] -= damage;
 		}
+		else
+		{
+			points_distances[index] = 0;
+		}
+		/*
+		while(damage > 0)
+		{
+			int applied = (int) range(damage, 0, points_distances[index]);
+			points_distances[index] -= applied;
+			damage -= applied;
+			if(clockwise)
+			{
+				clockwise = false;
+				index += indexInc;
+			}
+			else
+			{
+				clockwise = true;
+				index -= indexInc;
+			}
+			indexInc += 1;
+		}
+		*/
+
 		
 		//world.addAsteroid(new Asteroid());
 		
 		System.out.println("<-- Collision (Projectile)");
 	}
+	
 	public void collisionSpaceship(Spaceship s)
 	{
 		System.out.println("--> Collision (Spaceship)");
-		double collisionAngle = getAngleTowards(s);
-		s.incVelPolar(collisionAngle, getForceAngled(collisionAngle));
+		double angle_asteroid_to_ship = getAngleTowards(s);
+		double angle_ship_to_asteroid = getAngleFrom(s);
+		double asteroidMomentum = getMomentumAngled(angle_asteroid_to_ship);
+		double shipMomentum = s.getMomentumAngled(angle_ship_to_asteroid);
+		double totalMomentum = asteroidMomentum + shipMomentum;
+		double halfMomentum = totalMomentum/2;
+		s.impulse(angle_asteroid_to_ship, halfMomentum);
+		impulse(angle_ship_to_asteroid, halfMomentum);
 		
+		System.out.println("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship);
+		System.out.println("Angle (Asteroid <-- Ship): " + angle_ship_to_asteroid);
+		System.out.println("Momentum (Asteroid) " + asteroidMomentum);
+		System.out.println("Momentum (Ship): " + shipMomentum);
 		System.out.println("<-- Collision (Spaceship)");
 	}
 	
@@ -162,5 +198,6 @@ public class Asteroid extends Space_Object{
 		bodyX[points_count] = bodyX[0];
 		bodyY[points_count] = bodyY[0];
 		body = new Polygon(bodyX, bodyY, points_count);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 }

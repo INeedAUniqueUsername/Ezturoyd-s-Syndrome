@@ -7,15 +7,17 @@ public class Projectile extends Space_Object{
 	
 	int lifetime;
 	int width = 10;
+	int damage;
 	Space_Object owner;
 	
-	public Projectile(double posX, double posY, double posR, int life)
+	public Projectile(double posX, double posY, double posR, int damage, int life)
 	{
 		pos_x = posX;
 		pos_y = posY;
 		pos_r = posR;
 		
 		lifetime = life;
+		this.damage = damage;
 		
 		updateBody();
 		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
@@ -41,6 +43,11 @@ public class Projectile extends Space_Object{
 	public void setOwner(Space_Object object)
 	{
 		owner = object;
+	}
+	
+	public int getDamage()
+	{
+		return damage;
 	}
 	
 	public int getLifetime()

@@ -22,7 +22,7 @@ public class Weapon {
 	int fire_cooldown_max = 10;
 	int fire_cooldown_time = 10;
 	int projectile_speed = 10;
-	int projectile_damage = 50;
+	int projectile_damage = 5;
 	int projectile_lifetime = 60;
 	
 	public Weapon(double angle, double radius)
@@ -68,7 +68,7 @@ public class Weapon {
 	
 	public Projectile getShotType()
 	{
-		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileLifetime());
+		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
 	}
 	
 	public Projectile getShot()
@@ -112,6 +112,12 @@ public class Weapon {
 	{
 		return projectile_speed;
 	}
+	
+	public int getProjectileDamage()
+	{
+		return projectile_damage;
+	}
+	
 	public int getProjectileLifetime()
 	{
 		return projectile_lifetime;

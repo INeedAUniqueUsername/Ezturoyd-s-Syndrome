@@ -17,8 +17,26 @@ public class Space_Object {
 	Polygon body;
 	double size;
 	
+	int lastCollisionTick = 0;
+	
 	boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
+	
+	public int factorialAddition(int input)
+	{
+		int result = 0;
+		while(input > 0)
+		{
+			result += input;
+			input--;
+		}
+		return result;
+	}
+	
+	public void impulse(double angle, double momentum)
+	{
+		incVelPolar(angle, momentum/size);
+	}
 	
 	public void setPosRectangular(double x, double y)
 	{
@@ -121,9 +139,11 @@ public class Space_Object {
 		{
 			result = 0;
 		}
+		/*
 		System.out.println("X: " + y);
 		System.out.println("Y: " + x);
 		System.out.println("arctan(y/x) = " + result);
+		*/
 		return result;
 	}
 	
@@ -148,6 +168,22 @@ public class Space_Object {
 			result = result + range;
 		}
 		return result;
+	}
+	
+	public double range(double input, double min, double max)
+	{
+		if(input > max)
+		{
+			return max;
+		}
+		else if(input < min)
+		{
+			return min;
+		}
+		else
+		{
+			return input;
+		}
 	}
 	public double random(double input)
 	{
@@ -199,11 +235,12 @@ public class Space_Object {
 	
 	public double getAngleTowards(Space_Object other)
 	{
-		return arctanDegrees(getPosY() - other.getPosY(), getPosX() - other.getPosX());
+		return arctanDegrees(other.getPosY() - getPosY(), other.getPosX() - getPosX());
+
 	}
 	public double getAngleFrom(Space_Object other)
 	{
-		return arctanDegrees(other.getPosY() - getPosY(), other.getPosX() - getPosX());
+		return arctanDegrees(getPosY() - other.getPosY(), getPosX() - other.getPosX());
 	}
 	
 	public void updatePosition()
@@ -279,12 +316,15 @@ public class Space_Object {
 		return Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2));
 	}
 	
-	public double getForce()
+	public double getMomentum()
 	{
+		System.out.println("Speed: " + getVelSpeed());
+		System.out.println("Size: " + size);
+		System.out.println("Momentum: " + getVelSpeed()*size);
 		return getVelSpeed()*size;
 	}
 	
-	public double getForceAngled(double angle)
+	public double getMomentumAngled(double angle)
 	{
 		double angleCW = Math.abs(pos_r - angle);
 		double angleCCW = Math.abs(angle - pos_r);
@@ -297,7 +337,7 @@ public class Space_Object {
 		{
 			angleDiff = angleCCW;
 		}
-		return getForce()*cosDegrees(angleDiff);
+		return getMomentum()*cosDegrees(angleDiff);
 	}
 	
 }

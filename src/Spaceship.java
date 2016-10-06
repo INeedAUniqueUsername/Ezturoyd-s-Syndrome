@@ -31,7 +31,7 @@ public class Spaceship extends Space_Object{
 		
 		structure = 100;
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 	
 	public void draw(Graphics g)
