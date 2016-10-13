@@ -15,7 +15,7 @@ public class Spaceship extends Space_Object{
 	final double ROTATION_DECEL = .4;
 	boolean thrusting;
 	Polygon head;
-	int structure;
+	double structure;
 	
 	ArrayList<Weapon> weapons = new ArrayList();
 	
@@ -154,7 +154,7 @@ public class Spaceship extends Space_Object{
 		accelerate(pos_r, THRUST);
 	}
 	
-	public void damage(int damage)
+	public void damage(double damage)
 	{
 		structure = structure - damage;
 	}

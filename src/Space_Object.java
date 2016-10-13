@@ -339,5 +339,8 @@ public class Space_Object {
 		}
 		return getMomentum()*cosDegrees(angleDiff);
 	}
-	
+	public void print(String message)
+	{
+		System.out.println(world.tick + ". " + message);
+	}
 }
