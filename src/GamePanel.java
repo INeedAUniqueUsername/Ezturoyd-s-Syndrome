@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -24,107 +25,96 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Spaceship> spaceships;
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
-	
-	//counter for hits
-	int hits= 0;
+
+	// counter for hits
+	int hits = 0;
 	ArrayList<Weapon> weapons;
-	
+
 	int tick;
-	public GamePanel()
-	{
+
+	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
 	}
-	
-	public void newGame()
-	{
+
+	public void newGame() {
 		tick = 0;
 		print("*" + tick + "*");
-		
+
 		Space_Object.world = this;
-		
+
 		world = new ArrayList();
 		spaceships = new ArrayList();
 		projectiles = new ArrayList();
 		asteroids = new ArrayList();
-		
+
 		weapons = new ArrayList();
-		
+
 		player = new Spaceship(800, 450);
-		
+
 		addSpaceship(player);
-		addWeapon(player, new Weapon(0, 10));
-		
+		addWeapon(player, new Weapon(0, 10, 0, 1, 30, 1, 30, Color.RED));
+
 		Asteroid rock = new Asteroid();
 		rock.setVelRectangular(0, 0);
 		rock.setPosRectangular(500, 500);
 		addAsteroid(rock);
 	}
-	
-	public void paintComponent(Graphics g)
-	{	
+
+	public void paintComponent(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
-		Spaceship player = ships.get(0);
-		Asteroid rock = asteroids.get(0);
-		double angle = player.getAngleTowards(rock);
-		int playerY = (int) player.getPosY();
-		int x = (int) player.getPosX();
-		int y = (int) (GameWindow.HEIGHT - playerY);
-		int x2 = (int) (x + 50 * player.cosDegrees(angle));
-		int y2 = (int) (GameWindow.HEIGHT - (playerY + 50 * player.sinDegrees(angle)));
-		
-		g.setColor(Color.WHITE);
-		g.drawLine(x, y, x2, y2);
-		*/
+		 * Spaceship player = ships.get(0); Asteroid rock = asteroids.get(0);
+		 * double angle = player.getAngleTowards(rock); int playerY = (int)
+		 * player.getPosY(); int x = (int) player.getPosX(); int y = (int)
+		 * (GameWindow.HEIGHT - playerY); int x2 = (int) (x + 50 *
+		 * player.cosDegrees(angle)); int y2 = (int) (GameWindow.HEIGHT -
+		 * (playerY + 50 * player.sinDegrees(angle)));
+		 * 
+		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
+		 */
 		tick++;
-		for(Space_Object object: world)
-		{
-			
-			if(object.getActive())
-			{
+		
+		for (Space_Object object : world) {
+
+			if (object.getActive()) {
 				object.update();
 				object.draw(g);
 			}
+			/*
 			else
 			{
 				object.destroy();
 				world.remove(object);
-				if(spaceships.contains(object))
-				{
+				if (spaceships.contains(object)) {
 					spaceships.remove(object);
-				}
-				else if(projectiles.contains(object))
-				{
+				} else if (projectiles.contains(object)) {
 					projectiles.remove(object);
-				}
-				else if(asteroids.contains(object))
-				{
+				} else if (asteroids.contains(object)) {
 					asteroids.remove(object);
 				}
 			}
+			*/
 		}
-		
-		for(Asteroid a1: asteroids)
-		{
-			for(Projectile p: projectiles)
-			{
-				if(objectsIntersect(a1, p))
-				{
+
+		Iterator<Asteroid> a1_i = asteroids.iterator();
+		while (a1_i.hasNext()) {
+			Asteroid a1 = a1_i.next();
+			for (Projectile p : projectiles) {
+				if (objectsIntersect(a1, p)) {
 					print("--> GamePanel: Asteroid-Projectile Collision");
 					a1.collisionProjectile(p);
-					
-					
+
 					p.destroy();
 					removeProjectile(p);
 					print("<-- GamePanel: Asteroid-Projectile Collision");
 				}
 			}
-			for(Spaceship s: spaceships)
-			{
-				if(objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10)
-				{
+			Iterator<Spaceship> s_i = spaceships.iterator();
+			while (s_i.hasNext()) {
+				Spaceship s = s_i.next();
+				if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
 					a1.lastCollisionTick = tick;
 					s.lastCollisionTick = tick;
 					print("--> GamePanel: Asteroid-Spaceship Collision");
@@ -133,20 +123,21 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
-		
-		for(Spaceship s1: spaceships)
-		{
-			for(Spaceship s2: spaceships)
-			{
-				if(s1 != s2)
-				{
-					if(objectsIntersect(s1, s2))
-					{
+
+		Iterator<Spaceship> s1_i = spaceships.iterator();
+		while (s1_i.hasNext()) {
+			Spaceship s1 = s1_i.next();
+			
+			Iterator<Spaceship> s2_i = spaceships.iterator();
+			while (s2_i.hasNext()) {
+				Spaceship s2 = s2_i.next();
+				if (s1 != s2) {
+					if (objectsIntersect(s1, s2)) {
 						print("--> GamePanel: Spaceship-Spaceship Collision");
 						double angle_s1_s2 = angleBetween(s1, s2);
 						double angle_s2_s1 = angleBetween(s2, s1);
 						double momentum_total = s1.getMomentumAngled(angle_s1_s2) + s2.getMomentumAngled(angle_s2_s1);
-						double momentum_half = momentum_total/2;
+						double momentum_half = momentum_total / 2;
 						s1.impulse(angle_s2_s1, momentum_half);
 						s2.impulse(angle_s1_s2, momentum_half);
 						print("<-- GamePanel: Spaceship-Spaceship Collision");
@@ -154,28 +145,24 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
-		
-		for(Weapon weapon: weapons)
-		{
+
+		for (Weapon weapon : weapons) {
 			print("--> Human Shot First");
 			weapon.update();
 			weapon.draw(g);
-			if(weapon.getFiring() && (weapon.getFireCooldownTime() > weapon.getFireCooldownMax()))
-			{
+			if (weapon.getFiring() && (weapon.getFireCooldownLeft() > weapon.getFireCooldownMax())) {
 				Projectile shot = weapon.getShot();
 				addProjectile(shot);
-				weapon.setFireCooldownTime(0);
+				weapon.setFireCooldownLeft(0);
 			}
 			print("<-- Human Shot First");
 		}
-		
+
 		/*
-		if(objectsIntersect(player, rock))
-		{
-			int forceAngle = (int) arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() - rock.getVelX());
-			double rockVelAngle = rock.getVelAngle();
-		}
-		*/
+		 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
+		 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
+		 * rock.getVelX()); double rockVelAngle = rock.getVelAngle(); }
+		 */
 	}
 
 	@Override
@@ -187,7 +174,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -197,19 +184,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -222,27 +209,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		print("Key Pressed");
-		if(e.getKeyCode() == e.VK_UP)
-		{
-			//Accelerate forward
+		if (e.getKeyCode() == e.VK_UP) {
+			// Accelerate forward
 			player.thrust();
 		}
-		if(e.getKeyCode() == e.VK_DOWN)
-		{
+		if (e.getKeyCode() == e.VK_DOWN) {
 			player.decelerate(player.DECEL);
 		}
-		
-		if(e.getKeyCode() == e.VK_LEFT)
-		{
+
+		if (e.getKeyCode() == e.VK_LEFT) {
 			player.rotateLeft(player.ROTATION_ACCEL);
 		}
-		if(e.getKeyCode() == e.VK_RIGHT)
-		{
+		if (e.getKeyCode() == e.VK_RIGHT) {
 			player.rotateRight(player.ROTATION_ACCEL);
 		}
-		
-		if(e.getKeyCode() == e.VK_X)
-		{
+
+		if (e.getKeyCode() == e.VK_X) {
 			player.setFiring(true);
 		}
 	}
@@ -250,40 +232,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == e.VK_X)
-		{
+		if (e.getKeyCode() == e.VK_X) {
 			player.setFiring(false);
 		}
 	}
-	
-	public double arctanDegrees(double y, double x)
-	{
+
+	public double arctanDegrees(double y, double x) {
 		double result;
-		if(x < 0)
-		{
-			result = Math.toDegrees(Math.atan(y/x)) + 180;
-		}
-		else if(x == 0)
-		{
-			if(y < 0)
-			{
+		if (x < 0) {
+			result = Math.toDegrees(Math.atan(y / x)) + 180;
+		} else if (x == 0) {
+			if (y < 0) {
 				result = 270;
-			}
-			else if(y == 0)
-			{
+			} else if (y == 0) {
 				result = 0;
-			}
-			else //ySpeed > 0
+			} else // ySpeed > 0
 			{
-				result =  90;
+				result = 90;
 			}
-		}
-		else if(x > 0)
-		{
-			result = Math.toDegrees(Math.atan(y/x));
-		}
-		else
-		{
+		} else if (x > 0) {
+			result = Math.toDegrees(Math.atan(y / x));
+		} else {
 			result = 0;
 		}
 		print("X: " + y);
@@ -293,70 +262,61 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public static boolean intersects(Shape shapeA, Shape shapeB) {
-		   Area areaA = new Area(shapeA);
-		   areaA.intersect(new Area(shapeB));
-		   return !areaA.isEmpty();
-		}
-	
+		Area areaA = new Area(shapeA);
+		areaA.intersect(new Area(shapeB));
+		return !areaA.isEmpty();
+	}
+
 	public static boolean objectsIntersect(Space_Object a, Space_Object b) {
-		   Area areaA = new Area(a.getBody());
-		   areaA.intersect(new Area(b.getBody()));
-		   return !areaA.isEmpty();
-		}
-	
-	public void addWeapon(Spaceship ship, Weapon item)
-	{
-		ship.installWeapon(item);
+		Area areaA = new Area(a.getBody());
+		areaA.intersect(new Area(b.getBody()));
+		return !areaA.isEmpty();
+	}
+
+	public void addWeapon(Spaceship ship, Weapon item) {
 		item.setOwner(ship);
 		weapons.add(item);
 	}
-	
-	
-	
-	public void addSpaceship(Spaceship ship)
-	{
+
+	public void addSpaceship(Spaceship ship) {
 		spaceships.add(ship);
 		world.add(ship);
 	}
-	public void addProjectile(Projectile projectile)
-	{
+
+	public void addProjectile(Projectile projectile) {
 		projectiles.add(projectile);
 		world.add(projectile);
 	}
-	public void addAsteroid(Asteroid asteroid)
-	{
+
+	public void addAsteroid(Asteroid asteroid) {
 		asteroids.add(asteroid);
 		world.add(asteroid);
 	}
-	
-	public void removeSpaceship(Spaceship ship)
-	{
+
+	public void removeSpaceship(Spaceship ship) {
 		spaceships.remove(ship);
 		world.remove(ship);
 	}
-	public void removeProjectile(Projectile projectile)
-	{
+
+	public void removeProjectile(Projectile projectile) {
 		projectiles.remove(projectile);
 		world.remove(projectile);
 	}
-	public void removeAsteroid(Asteroid asteroid)
-	{
+
+	public void removeAsteroid(Asteroid asteroid) {
 		asteroids.remove(asteroid);
 		world.remove(asteroid);
 	}
-	
-	public double angleBetween(Space_Object from, Space_Object to)
-	{
+
+	public double angleBetween(Space_Object from, Space_Object to) {
 		return to.getAngleFrom(from);
 	}
-	
-	public boolean exists(Object what)
-	{
+
+	public boolean exists(Object what) {
 		return what != null;
 	}
-	
-	public void print(String message)
-	{
+
+	public void print(String message) {
 		System.out.println(tick + ". " + message);
 	}
 
