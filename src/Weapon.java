@@ -43,14 +43,14 @@ public class Weapon {
 	}
 
 	public void update() {
-		System.out.println("---> Weapon Update");
+		//System.out.println("---> Weapon Update");
 		fire_cooldown_time++;
 		double angle = posAngle + owner.getPosR();
 		posX = owner.getPosX() + posRadius * cosDegrees(angle);
 		posY = owner.getPosY() + posRadius * sinDegrees(angle);
 
 		fire_angle = angle;
-		System.out.println("<--- Weapon Update");
+		//System.out.println("<--- Weapon Update");
 	}
 
 	public void draw(Graphics g) {

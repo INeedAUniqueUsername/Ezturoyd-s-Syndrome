@@ -318,14 +318,15 @@ public class Space_Object {
 	
 	public double getMomentum()
 	{
-		System.out.println("Speed: " + getVelSpeed());
-		System.out.println("Size: " + size);
-		System.out.println("Momentum: " + getVelSpeed()*size);
+		//System.out.println("Speed: " + getVelSpeed());
+		//System.out.println("Size: " + size);
+		//System.out.println("Momentum: " + getVelSpeed()*size);
 		return getVelSpeed()*size;
 	}
 	
 	public double getMomentumAngled(double angle)
 	{
+		/*
 		double angleCW = Math.abs(pos_r - angle);
 		double angleCCW = Math.abs(angle - pos_r);
 		double angleDiff;
@@ -337,7 +338,10 @@ public class Space_Object {
 		{
 			angleDiff = angleCCW;
 		}
+		
 		return getMomentum()*cosDegrees(angleDiff);
+		*/
+		return getMomentum()*cosDegrees(angle + getVelAngle());
 	}
 	public void print(String message)
 	{

@@ -19,8 +19,8 @@ public class Asteroid extends Space_Object {
 	public Asteroid() {
 		initializeBody();
 
-		print("Count: " + points_count);
-		print("Interval: " + points_interval);
+		//print("Count: " + points_count);
+		//print("Interval: " + points_interval);
 
 		pos_x = random(GameWindow.WIDTH);
 		pos_y = random(GameWindow.HEIGHT);
@@ -36,7 +36,7 @@ public class Asteroid extends Space_Object {
 		points_interval = 360 / points_count;
 		for (int i = 0; i < points_count; i++) {
 			points_distances[i] = (int) (randomMin(MIN_SIZE, MAX_SIZE));
-			print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
+			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
 		}
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
@@ -48,7 +48,7 @@ public class Asteroid extends Space_Object {
 		points_interval = 360 / points_count;
 		for (int i = 0; i < points_count; i++) {
 			points_distances[i] = (int) (randomMin(MIN_SIZE, MAX_SIZE));
-			print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
+			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
 		}
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
@@ -60,7 +60,7 @@ public class Asteroid extends Space_Object {
 		points_interval = 360 / points_count;
 		for (int i = 0; i < points_count; i++) {
 			points_distances[i] = (int) (randomMin(minSize, maxSize));
-			print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
+			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
 		}
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
@@ -86,11 +86,11 @@ public class Asteroid extends Space_Object {
 	 * }
 	 */
 	public void collisionProjectile(Projectile p) {
-		print("--> Ateroid-Projectile Collision");
-		double collisionAngle = modRange(pos_r + getAngleTowards(p), 360);
-		int index = (int) (collisionAngle / points_interval);
-		print("Collision Angle: " + collisionAngle);
-		print("Point Index: " + index);
+		//print("--> Ateroid-Projectile Collision");
+		double collisionAngle = getCollisionAngle(p);
+		int index = getAngleIndex(collisionAngle);
+		//print("Collision Angle: " + collisionAngle);
+		//print("Point Index: " + index);
 
 		int damage = p.getDamage();
 
@@ -100,40 +100,20 @@ public class Asteroid extends Space_Object {
 		 * damage; } else { points_distances[index] = 0; }
 		 */
 		int applied_total = damage(index, damage);
-		if (applied_total > 5) {
-			Asteroid fragment = new Asteroid();
-			fragment.initializeBody(5, applied_total, applied_total * 2);
-			fragment.setPosRectangular(p.getPosX(), p.getPosY());
-			fragment.setVelPolar(getAngleTowards(p), applied_total / 2);
-			world.addAsteroid(fragment);
-		} else {
-			double angle = getAngleTowards(p);
-			Projectile fragment = new Projectile(p.getPosX(), p.getPosY(), angle, applied_total, 30, Color.WHITE);
-			fragment.setVelPolar(angle, applied_total / 2);
-			fragment.setOwner(this);
-			world.addProjectile(fragment);
-		}
-		print("<-- Asteroid-Projectile Collision");
+		createFragment(applied_total, getAngleTowards(p), p.getPosX(), p.getPosY());
+		//print("<-- Asteroid-Projectile Collision");
 	}
-
-	public void collisionSpaceship(Spaceship s) {
-		print("--> Collision (Spaceship)");
-		double angle_asteroid_to_ship = getAngleTowards(s);
-		double angle_ship_to_asteroid = getAngleFrom(s);
-		double asteroidMomentum = getMomentumAngled(angle_asteroid_to_ship);
-		double shipMomentum = s.getMomentumAngled(angle_ship_to_asteroid);
-		double totalMomentum = asteroidMomentum + shipMomentum;
-		double halfMomentum = totalMomentum / 2;
-		s.impulse(angle_asteroid_to_ship, halfMomentum);
-		impulse(angle_ship_to_asteroid, halfMomentum);
-
-		s.damage(halfMomentum / 100);
-
-		print("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship);
-		print("Angle (Asteroid <-- Ship): " + angle_ship_to_asteroid);
-		print("Momentum (Asteroid) " + asteroidMomentum);
-		print("Momentum (Ship): " + shipMomentum);
-		print("<-- Collision (Spaceship)");
+	public int getCollisionIndex(Space_Object o)
+	{
+		return getAngleIndex(getCollisionAngle(o));
+	}
+	public double getCollisionAngle(Space_Object o)
+	{
+		return modRange(pos_r + getAngleTowards(o), 360);
+	}
+	public int getAngleIndex(double angle)
+	{
+		return (int) (angle / points_interval);
 	}
 
 	public void draw(Graphics g) {
@@ -144,9 +124,9 @@ public class Asteroid extends Space_Object {
 	}
 
 	public void update() {
-		print("--> Asteroid Update");
+		//print("--> Asteroid Update");
 		updatePosition();
-		print("<-- Asteroid Update");
+		//print("<-- Asteroid Update");
 	}
 
 	public void updateBody() {
@@ -203,12 +183,31 @@ public class Asteroid extends Space_Object {
 			}
 			indexCW -= 1;
 			indexCCW += 1;
+			
+			indexCW = (int) modRange(indexCW, maxIndex);
+			indexCCW = (int) modRange(indexCCW, maxIndex);
 		}
 
 		return applied_total;
 		// world.addAsteroid(new Asteroid());
 	}
 
+	public void createFragment(int damage, double angle, double x, double y)
+	{
+		if (damage > 5) {
+			Asteroid fragment = new Asteroid();
+			fragment.initializeBody(5, damage, damage * 2);
+			fragment.setPosRectangular(x, y);
+			fragment.setVelPolar(angle, damage / 2);
+			world.addAsteroid(fragment);
+		} else {
+			Projectile fragment = new Projectile(x, y, angle, damage, 30, damage, damage, Color.WHITE);
+			fragment.setVelPolar(angle, damage / 2);
+			fragment.setOwner(this);
+			world.addProjectile(fragment);
+		}
+	}
+	
 	public void destroy() {
 		world.removeAsteroid(this);
 	}

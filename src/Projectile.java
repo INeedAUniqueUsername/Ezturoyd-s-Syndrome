@@ -7,10 +7,27 @@ public class Projectile extends Space_Object {
 
 	int lifetime;
 	int width = 3;
+	int height = 5;
 	int damage;
 	Space_Object owner;
 	Color color = Color.RED;
 
+	public Projectile(double posX, double posY, double posR, int damage, int life, int width, int height, Color color) {
+		pos_x = posX;
+		pos_y = posY;
+		pos_r = posR;
+		this.color = color;
+
+		this.width = width;
+		this.height = height;
+		
+		lifetime = life;
+		this.damage = damage;
+
+		updateBody();
+		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+	}
+	
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
 		pos_x = posX;
 		pos_y = posY;
@@ -54,8 +71,8 @@ public class Projectile extends Space_Object {
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 
-		int bodyFrontX = (int) (pos_x + width * cosDegrees(pos_r));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + width * sinDegrees(pos_r)));
+		int bodyFrontX = (int) (pos_x + height * cosDegrees(pos_r));
+		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + height * sinDegrees(pos_r)));
 
 		bodyX[0] = bodyFrontX;
 		bodyY[0] = bodyFrontY;

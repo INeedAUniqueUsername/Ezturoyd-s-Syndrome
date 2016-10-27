@@ -55,10 +55,29 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addSpaceship(player);
 		addWeapon(player, new Weapon(0, 10, 0, 1, 30, 1, 30, Color.RED));
 
+		/*
+		player.setVelRectangular(5, 0);
+		for(int i = 0; i < 360; i++)
+		{
+			print("Momentum at " + i + "°: " + player.getMomentumAngled(i));
+			i++;
+		}
+		*/
+		
 		Asteroid rock = new Asteroid();
 		rock.setVelRectangular(0, 0);
 		rock.setPosRectangular(500, 500);
+		
 		addAsteroid(rock);
+		/*
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		addAsteroid(new Asteroid());
+		*/
 	}
 
 	public void paintComponent(Graphics g) {
@@ -101,14 +120,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		Iterator<Asteroid> a1_i = asteroids.iterator();
 		while (a1_i.hasNext()) {
 			Asteroid a1 = a1_i.next();
-			for (Projectile p : projectiles) {
+			Iterator<Projectile> p_i = projectiles.iterator();
+			while (p_i.hasNext()) {
+				Projectile p = p_i.next();
 				if (objectsIntersect(a1, p)) {
-					print("--> GamePanel: Asteroid-Projectile Collision");
+					//print("--> GamePanel: Asteroid-Projectile Collision");
 					a1.collisionProjectile(p);
 
 					p.destroy();
 					removeProjectile(p);
-					print("<-- GamePanel: Asteroid-Projectile Collision");
+					//print("<-- GamePanel: Asteroid-Projectile Collision");
 				}
 			}
 			Iterator<Spaceship> s_i = spaceships.iterator();
@@ -117,9 +138,24 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
 					a1.lastCollisionTick = tick;
 					s.lastCollisionTick = tick;
-					print("--> GamePanel: Asteroid-Spaceship Collision");
-					a1.collisionSpaceship(s);
-					print("<-- GamePanel: Asteroid-Spaceship Collision");
+					//print("--> GamePanel: Asteroid-Spaceship Collision");
+					collisionAsteroidSpaceship(a1, s);
+					//print("<-- GamePanel: Asteroid-Spaceship Collision");
+				}
+			}
+			Iterator<Asteroid> a2_i = asteroids.iterator();
+			while(a2_i.hasNext())
+			{
+				Asteroid a2 = a2_i.next();
+				if(a1 != a2)
+				{
+					if (objectsIntersect(a1, a2) && tick - a1.lastCollisionTick > 10 && tick - a2.lastCollisionTick > 10) {
+						a1.lastCollisionTick = tick;
+						a2.lastCollisionTick = tick;
+						//print("--> GamePanel: Asteroid-Spaceship Collision");
+						collisionAsteroidAsteroid(a1, a2);
+						//print("<-- GamePanel: Asteroid-Spaceship Collision");
+					}
 				}
 			}
 		}
@@ -133,29 +169,31 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				Spaceship s2 = s2_i.next();
 				if (s1 != s2) {
 					if (objectsIntersect(s1, s2)) {
-						print("--> GamePanel: Spaceship-Spaceship Collision");
+						//print("--> GamePanel: Spaceship-Spaceship Collision");
 						double angle_s1_s2 = angleBetween(s1, s2);
 						double angle_s2_s1 = angleBetween(s2, s1);
 						double momentum_total = s1.getMomentumAngled(angle_s1_s2) + s2.getMomentumAngled(angle_s2_s1);
 						double momentum_half = momentum_total / 2;
 						s1.impulse(angle_s2_s1, momentum_half);
 						s2.impulse(angle_s1_s2, momentum_half);
-						print("<-- GamePanel: Spaceship-Spaceship Collision");
+						//print("<-- GamePanel: Spaceship-Spaceship Collision");
 					}
 				}
 			}
 		}
 
-		for (Weapon weapon : weapons) {
-			print("--> Human Shot First");
-			weapon.update();
-			weapon.draw(g);
-			if (weapon.getFiring() && (weapon.getFireCooldownLeft() > weapon.getFireCooldownMax())) {
-				Projectile shot = weapon.getShot();
+		Iterator<Weapon> w_i = weapons.iterator();
+		while (w_i.hasNext()) {
+			Weapon w = w_i.next();
+			//print("--> Human Shot First");
+			w.update();
+			w.draw(g);
+			if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+				Projectile shot = w.getShot();
 				addProjectile(shot);
-				weapon.setFireCooldownLeft(0);
+				w.setFireCooldownLeft(0);
 			}
-			print("<-- Human Shot First");
+			//print("<-- Human Shot First");
 		}
 
 		/*
@@ -318,6 +356,36 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public void print(String message) {
 		System.out.println(tick + ". " + message);
+	}
+	
+	public void collisionAsteroidSpaceship(Asteroid a, Spaceship s) {
+		//print("--> Collision (Spaceship)");
+		double angle_asteroid_to_ship = a.getAngleTowards(s);
+		double angle_ship_to_asteroid = a.getAngleFrom(s);
+		double asteroidMomentum = a.getMomentumAngled(angle_asteroid_to_ship);
+		double shipMomentum = s.getMomentumAngled(angle_ship_to_asteroid);
+		double totalMomentum = asteroidMomentum + shipMomentum;
+		double halfMomentum = totalMomentum / 2;
+		s.impulse(angle_ship_to_asteroid, totalMomentum);
+		a.impulse(angle_asteroid_to_ship, totalMomentum);
+
+		s.damage(halfMomentum / 100);
+
+		//print("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship);
+		//print("Angle (Asteroid <-- Ship): " + angle_ship_to_asteroid);
+		//print("Momentum (Asteroid) " + asteroidMomentum);
+		//print("Momentum (Ship): " + shipMomentum);
+		//print("<-- Collision (Spaceship)");
+	}
+	public void collisionAsteroidAsteroid(Asteroid a1, Asteroid a2)
+	{
+		double angle_a1_to_a2 = a1.getAngleTowards(a2);
+		double angle_a2_to_a1 = a2.getAngleTowards(a1);
+		double halfMomentum = a1.getMomentumAngled(angle_a1_to_a2) + a2.getMomentumAngled(angle_a2_to_a1);
+		a1.impulse(angle_a2_to_a1, halfMomentum);
+		a2.impulse(angle_a1_to_a2, halfMomentum);
+		a1.damage((int) halfMomentum/1000, a1.getCollisionIndex(a2));
+		a2.damage((int) halfMomentum/1000, a2.getCollisionIndex(a1));
 	}
 
 }
