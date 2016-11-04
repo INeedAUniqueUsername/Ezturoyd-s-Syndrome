@@ -138,6 +138,11 @@ public class Weapon {
 	public Space_Object getOwner() {
 		return owner;
 	}
+	
+	public void setTargetPos(double x, double y)
+	{
+		
+	}
 
 	public void setOwner(Spaceship owner_new) {
 		owner = owner_new;
@@ -174,5 +179,10 @@ public class Weapon {
 
 	public double sinDegrees(double angle) {
 		return Math.sin(Math.toRadians(angle));
+	}
+	
+	public boolean exists(Object o)
+	{
+		return o != null;
 	}
 }

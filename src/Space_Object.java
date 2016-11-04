@@ -7,13 +7,13 @@ public class Space_Object {
 
 	static GamePanel world;
 	
-	double pos_x;
-	double pos_y;
-	double pos_r;
+	double pos_x = 0;
+	double pos_y = 0;
+	double pos_r = 0;
 	
-	double vel_x;
-	double vel_y;
-	double vel_r;
+	double vel_x = 0;
+	double vel_y = 0;
+	double vel_r = 0;
 	Polygon body;
 	double size;
 	
@@ -169,6 +169,10 @@ public class Space_Object {
 		}
 		return result;
 	}
+	public double modRangeDegrees(double input)
+	{
+		return modRange(input, 360);
+	}
 	
 	public double range(double input, double min, double max)
 	{
@@ -236,11 +240,20 @@ public class Space_Object {
 	public double getAngleTowards(Space_Object other)
 	{
 		return arctanDegrees(other.getPosY() - getPosY(), other.getPosX() - getPosX());
-
 	}
 	public double getAngleFrom(Space_Object other)
 	{
 		return arctanDegrees(getPosY() - other.getPosY(), getPosX() - other.getPosX());
+	}
+	
+	public double getAngleTowardsPos (double x, double y)
+	{
+		return arctanDegrees(y - getPosY(), x - getPosX());
+	}
+	
+	public double getAngleFromPos(double x, double y)
+	{
+		return arctanDegrees(getPosY() - y, getPosX() - x);
 	}
 	
 	public void updatePosition()
@@ -346,5 +359,10 @@ public class Space_Object {
 	public void print(String message)
 	{
 		System.out.println(world.tick + ". " + message);
+	}
+	
+	public boolean exists(Object o)
+	{
+		return o != null;
 	}
 }

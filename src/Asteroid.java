@@ -208,7 +208,8 @@ public class Asteroid extends Space_Object {
 		}
 	}
 	
-	public void destroy() {
+	public void destroy()
+	{
 		world.removeAsteroid(this);
 	}
 }

@@ -51,7 +51,7 @@ public class Projectile extends Space_Object {
 		updatePosition();
 		lifetime--;
 		if (lifetime < 0) {
-			active = false;
+			destroy();
 		}
 	}
 
@@ -86,5 +86,9 @@ public class Projectile extends Space_Object {
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
 		body = new Polygon(bodyX, bodyY, 4);
+	}
+	public void destroy()
+	{
+		world.removeProjectile(this);
 	}
 }

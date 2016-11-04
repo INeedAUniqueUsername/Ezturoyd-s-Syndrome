@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
 
@@ -15,20 +16,13 @@ public class Spaceship extends Space_Object {
 	final double ROTATION_DECEL = .4;
 	boolean thrusting;
 	Polygon head;
-	double structure;
+	double structure = 100;
 
-	ArrayList<Weapon> weapons = new ArrayList();
+	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+	ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
+	ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
 
-	public Spaceship(int x, int y) {
-		pos_x = x;
-		pos_y = y;
-
-		vel_x = 0;
-		vel_y = 0;
-
-		pos_r = 45;
-
-		structure = 100;
+	public Spaceship() {
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
@@ -80,6 +74,11 @@ public class Spaceship extends Space_Object {
 	}
 
 	public void update() {
+		updateSpaceship();
+	}
+	
+	public void updateSpaceship()
+	{
 		double rSpeedAbs = Math.abs(vel_r);
 		if (rSpeedAbs > 0) {
 			if (vel_r < 0) {
@@ -107,8 +106,8 @@ public class Spaceship extends Space_Object {
 			int velAngle = (int) arctanDegrees(vel_y, vel_x);
 			vel_x = MAX_SPEED * cosDegrees(velAngle);
 			vel_y = MAX_SPEED * sinDegrees(velAngle);
-
 		}
+		
 	}
 
 	public void updateBody() {
@@ -135,6 +134,33 @@ public class Spaceship extends Space_Object {
 	public void thrust() {
 		accelerate(pos_r, THRUST);
 	}
+	public void turnLeft()
+	{
+		rotateLeft(ROTATION_ACCEL);
+	}
+	public void turnRight()
+	{
+		rotateRight(ROTATION_ACCEL);
+	}
+	public void brake()
+	{
+		decelerate(DECEL);
+	}
+
+	public void setFiringKey(boolean firing)
+	{
+		for(Weapon_Key w: weapons_key)
+		{
+			w.setFiring(firing);
+		}
+	}
+	public void setFiringMouse(boolean firing)
+	{
+		for(Weapon_Mouse w: weapons_mouse)
+		{
+			w.setFiring(firing);
+		}
+	}
 
 	public void damage(double damage) {
 		structure = structure - damage;
@@ -153,8 +179,21 @@ public class Spaceship extends Space_Object {
 			weapon.setFiring(state);
 		}
 	}
+	public void setTargetPos(double x, double y)
+	{
+		for(Weapon weapon: weapons)
+		{
+			weapon.setTargetPos(x, y);
+		}
+			
+	}
 
 	public void installWeapon(Weapon item) {
 		weapons.add(item);
+	}
+	
+	public void destroy()
+	{
+		world.removeSpaceship(this);
 	}
 }

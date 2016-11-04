@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
@@ -50,10 +51,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		weapons = new ArrayList();
 
-		player = new Spaceship(800, 450);
+		player = new Spaceship();
+		player.setPosRectangular(800, 450);
 
 		addSpaceship(player);
-		addWeapon(player, new Weapon(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		addWeaponKey(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		addWeaponMouse(player, new Weapon_Mouse());
 
 		/*
 		player.setVelRectangular(5, 0);
@@ -95,12 +98,28 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 */
 		tick++;
 		
-		for (Space_Object object : world) {
-
-			if (object.getActive()) {
-				object.update();
-				object.draw(g);
+		Iterator<Weapon> w_i = weapons.iterator();
+		while (w_i.hasNext()) {
+			Weapon w = w_i.next();
+			//print("--> Human Shot First");
+			w.update();
+			w.draw(g);
+			if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+				Projectile shot = w.getShot();
+				addProjectile(shot);
+				w.setFireCooldownLeft(0);
 			}
+			//print("<-- Human Shot First");
+		}
+		Iterator<Space_Object> o_i = world.iterator();
+		while (o_i.hasNext()) {
+			Space_Object o = o_i.next();
+			o.update();
+			o.draw(g);
+			/*
+			if (object.getActive()) {
+			}
+			*/
 			/*
 			else
 			{
@@ -182,20 +201,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 		}
 
-		Iterator<Weapon> w_i = weapons.iterator();
-		while (w_i.hasNext()) {
-			Weapon w = w_i.next();
-			//print("--> Human Shot First");
-			w.update();
-			w.draw(g);
-			if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-				Projectile shot = w.getShot();
-				addProjectile(shot);
-				w.setFireCooldownLeft(0);
-			}
-			//print("<-- Human Shot First");
-		}
-
 		/*
 		 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
 		 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
@@ -217,12 +222,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		double x = e.getX();
+		double y = GameWindow.HEIGHT - e.getY();
+		player.setTargetPos(x, y);
+		player.setFiringMouse(true);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		player.setFiringMouse(false);;
 	}
 
 	@Override
@@ -252,26 +261,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			player.thrust();
 		}
 		if (e.getKeyCode() == e.VK_DOWN) {
-			player.decelerate(player.DECEL);
+			player.brake();
 		}
 
 		if (e.getKeyCode() == e.VK_LEFT) {
-			player.rotateLeft(player.ROTATION_ACCEL);
+			player.turnLeft();
 		}
-		if (e.getKeyCode() == e.VK_RIGHT) {
-			player.rotateRight(player.ROTATION_ACCEL);
+		else if (e.getKeyCode() == e.VK_RIGHT) {
+			player.turnRight();
 		}
 
 		if (e.getKeyCode() == e.VK_X) {
-			player.setFiring(true);
+			player.setFiringKey(true);
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getKeyCode() == e.VK_X) {
-			player.setFiring(false);
+		if(e.getKeyCode() == e.VK_X)
+		{
+			player.setFiringKey(false);
 		}
 	}
 
@@ -311,9 +321,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return !areaA.isEmpty();
 	}
 
-	public void addWeapon(Spaceship ship, Weapon item) {
+	public void addWeaponMouse(Spaceship ship, Weapon_Mouse item) {
 		item.setOwner(ship);
 		weapons.add(item);
+	}
+	public void addWeaponKey(Spaceship ship, Weapon_Key item)
+	{
+		
 	}
 
 	public void addSpaceship(Spaceship ship) {
