@@ -20,6 +20,7 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
+	
 	final int INTERVAL = 10;
 	Spaceship player;
 	ArrayList<Space_Object> world;
@@ -55,8 +56,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player.setPosRectangular(800, 450);
 
 		addSpaceship(player);
-		addWeaponKey(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
-		addWeaponMouse(player, new Weapon_Mouse());
+		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		addWeapon(player, new Weapon_Mouse());
+		
+		Spaceship_Enemy enemy = new Spaceship_Enemy();
+		addSpaceship(enemy);
+		enemy.setPosRectangular(400, 225);
+		enemy.setTarget(player);
 
 		/*
 		player.setVelRectangular(5, 0);
@@ -191,7 +197,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						//print("--> GamePanel: Spaceship-Spaceship Collision");
 						double angle_s1_s2 = angleBetween(s1, s2);
 						double angle_s2_s1 = angleBetween(s2, s1);
-						double momentum_total = s1.getMomentumAngled(angle_s1_s2) + s2.getMomentumAngled(angle_s2_s1);
+						double momentum_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
 						double momentum_half = momentum_total / 2;
 						s1.impulse(angle_s2_s1, momentum_half);
 						s2.impulse(angle_s1_s2, momentum_half);
@@ -321,13 +327,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return !areaA.isEmpty();
 	}
 
-	public void addWeaponMouse(Spaceship ship, Weapon_Mouse item) {
-		item.setOwner(ship);
+	public void addWeapon(Spaceship ship, Weapon_Mouse item) {
+		ship.installWeapon(item);
 		weapons.add(item);
 	}
-	public void addWeaponKey(Spaceship ship, Weapon_Key item)
+	public void addWeapon(Spaceship ship, Weapon_Key item)
 	{
-		
+		ship.installWeapon(item);
+		weapons.add(item);
 	}
 
 	public void addSpaceship(Spaceship ship) {
@@ -376,8 +383,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//print("--> Collision (Spaceship)");
 		double angle_asteroid_to_ship = a.getAngleTowards(s);
 		double angle_ship_to_asteroid = a.getAngleFrom(s);
-		double asteroidMomentum = a.getMomentumAngled(angle_asteroid_to_ship);
-		double shipMomentum = s.getMomentumAngled(angle_ship_to_asteroid);
+		double asteroidMomentum = a.getKineticEnergyAngled(angle_asteroid_to_ship);
+		double shipMomentum = s.getKineticEnergyAngled(angle_ship_to_asteroid);
 		double totalMomentum = asteroidMomentum + shipMomentum;
 		double halfMomentum = totalMomentum / 2;
 		s.impulse(angle_ship_to_asteroid, totalMomentum);
@@ -395,7 +402,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		double angle_a1_to_a2 = a1.getAngleTowards(a2);
 		double angle_a2_to_a1 = a2.getAngleTowards(a1);
-		double halfMomentum = a1.getMomentumAngled(angle_a1_to_a2) + a2.getMomentumAngled(angle_a2_to_a1);
+		double halfMomentum = a1.getKineticEnergyAngled(angle_a1_to_a2) + a2.getKineticEnergyAngled(angle_a2_to_a1);
 		a1.impulse(angle_a2_to_a1, halfMomentum);
 		a2.impulse(angle_a1_to_a2, halfMomentum);
 		a1.damage((int) halfMomentum/1000, a1.getCollisionIndex(a2));

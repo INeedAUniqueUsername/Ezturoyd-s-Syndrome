@@ -5,6 +5,8 @@ import java.awt.geom.Area;
 
 public class Space_Object {
 
+	final double c = 9131.35261864;
+	
 	static GamePanel world;
 	
 	double pos_x = 0;
@@ -313,7 +315,10 @@ public class Space_Object {
 	{
 		return arctanDegrees(vel_y, vel_x);
 	}
-	
+	public double getVelAngled(double angle)
+	{
+		return getVelSpeed()*cosDegrees(getVelAngle() - angle);
+	}
 	public double getVelX()
 	{
 		return vel_x;
@@ -324,20 +329,28 @@ public class Space_Object {
 		return vel_y;
 	}
 	
+	public double getVelR()
+	{
+		return vel_r;
+	}
+	
 	public double getVelSpeed()
 	{
 		return Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2));
 	}
-	
-	public double getMomentum()
+	public double getMass()
+	{
+		return size;
+	}
+	public double getKineticEnergy()
 	{
 		//System.out.println("Speed: " + getVelSpeed());
 		//System.out.println("Size: " + size);
 		//System.out.println("Momentum: " + getVelSpeed()*size);
-		return getVelSpeed()*size;
+		return getVelSpeed()*getMass();
 	}
 	
-	public double getMomentumAngled(double angle)
+	public double getKineticEnergyAngled(double angle)
 	{
 		/*
 		double angleCW = Math.abs(pos_r - angle);
@@ -354,7 +367,7 @@ public class Space_Object {
 		
 		return getMomentum()*cosDegrees(angleDiff);
 		*/
-		return getMomentum()*cosDegrees(angle + getVelAngle());
+		return getKineticEnergy()*cosDegrees(getVelAngle()-angle);
 	}
 	public void print(String message)
 	{

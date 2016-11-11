@@ -146,7 +146,6 @@ public class Weapon {
 
 	public void setOwner(Spaceship owner_new) {
 		owner = owner_new;
-		owner_new.installWeapon(this);
 	}
 
 	public void setPosAngle(double angle) {

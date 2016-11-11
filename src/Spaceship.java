@@ -189,7 +189,18 @@ public class Spaceship extends Space_Object {
 	}
 
 	public void installWeapon(Weapon item) {
+		item.setOwner(this);
 		weapons.add(item);
+	}
+	public void installWeapon(Weapon_Key item) {
+		item.setOwner(this);
+		weapons.add(item);
+		weapons_key.add(item);
+	}
+	public void installWeapon(Weapon_Mouse item) {
+		item.setOwner(this);
+		weapons.add(item);
+		weapons_mouse.add(item);
 	}
 	
 	public void destroy()
