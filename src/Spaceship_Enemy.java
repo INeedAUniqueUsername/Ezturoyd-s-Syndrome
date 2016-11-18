@@ -14,7 +14,7 @@ public class Spaceship_Enemy extends Spaceship {
 		{
 			faceTarget();
 		}
-		thrust();
+		//thrust();
 	}
 	public void setTarget(Space_Object target_new)
 	{
@@ -29,26 +29,62 @@ public class Spaceship_Enemy extends Spaceship {
 	{
 		double angle_to_target = getAngleTowards(target);
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
-		double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
+		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
 		//Let's relearn AP Physics I!
-		double pos_r_future = pos_r
+		double pos_r_future =
+				pos_r
 				+ vel_r * r_decel_time
-				//Make sure that the deceleration value has the opposite sign of the rotation velocity
-				+ (1/2) * ((vel_r > 0) ? -ROTATION_DECEL : ROTATION_DECEL) * Math.pow(r_decel_time, 2);
-		double angleDiffCCW = modRangeDegrees(angle_to_target - pos_r_future);
-		double angleDiffCW = modRangeDegrees(pos_r_future - angle_to_target);
-		double angleDiff = (angleDiffCW < angleDiffCCW) ? angleDiffCW : angleDiffCCW;
-		if(angleDiff > getMaxAngleDifference())
+				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
+				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
+		double faceAngleDiffCCW = modRangeDegrees(angle_to_target - pos_r_future);
+		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_to_target);
+		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
+		if(faceAngleDiff > getMaxAngleDifference())
 		{
-			if(angleDiffCCW < angleDiffCW)
+			if(faceAngleDiffCW > faceAngleDiffCCW)
 			{
-				turnLeft();
+				turnCW();
 			}
-			else if(angleDiffCW > angleDiffCCW)
+			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
-				turnRight();
+				turnCCW();
 			}
 		}
+		double velAngle = getVelAngle();
+		double velAngleDiffCCW = modRangeDegrees(angle_to_target - velAngle);
+		double velAngleDiffCW = modRangeDegrees(velAngle - angle_to_target);
+		double velAngleDiff = min(velAngleDiffCCW, velAngleDiffCW);
+		if(velAngleDiff > 120)
+		{
+			brake();
+		}
+		else if(velAngleDiff > 60)
+		{
+			
+		}
+		else
+		{
+			thrust();
+		}
+		/*
+		double velAngle = getVelAngle();
+		double decelAngle = velAngle + 180;
+		double x_decel = DECEL * cosDegrees(decelAngle);
+		double x_decel_time = Math.abs(vel_x/x_decel);
+		double pos_x_future =
+			pos_x
+			+ vel_x * x_decel_time
+			+ (vel_x > 0 ? -1 : 1) * (1/2) * x_decel * Math.pow(x_decel_time, 2)
+			;	//Make sure that the deceleration value has the opposite sign of the velocity
+		
+		double y_decel = DECEL * sinDegrees(decelAngle);
+		double y_decel_time = Math.abs(vel_y/y_decel);
+		double pos_y_future =
+			pos_y
+			+ vel_y * y_decel_time
+			+ (vel_y > 0 ? -1 : 1) * (1/2) * y_decel * Math.pow(y_decel_time, 2);
+		*/
+		
 	}
 	public double getMaxAngleDifference()
 	{

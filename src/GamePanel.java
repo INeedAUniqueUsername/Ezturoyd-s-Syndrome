@@ -27,6 +27,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Spaceship> spaceships;
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
+	ArrayList<String> debug = new ArrayList<String>();
 
 	// counter for hits
 	int hits = 0;
@@ -58,6 +59,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addSpaceship(player);
 		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		addWeapon(player, new Weapon_Mouse());
+		player.setName("Player");
 		
 		Spaceship_Enemy enemy = new Spaceship_Enemy();
 		addSpaceship(enemy);
@@ -73,11 +75,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		*/
 		
+		/*
 		Asteroid rock = new Asteroid();
 		rock.setVelRectangular(0, 0);
 		rock.setPosRectangular(500, 500);
 		
 		addAsteroid(rock);
+		*/
+		
 		/*
 		addAsteroid(new Asteroid());
 		addAsteroid(new Asteroid());
@@ -212,8 +217,25 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
 		 * rock.getVelX()); double rockVelAngle = rock.getVelAngle(); }
 		 */
+		
+		//Print all debug strings on the screen
+		g.setColor(Color.WHITE);
+		
+		int print_height = 0;
+		Iterator<String> print_i = debug.iterator();
+		while(print_i.hasNext())
+		{
+			print_height += 12;
+			g.drawString(print_i.next(), 10, print_height);
+			print_i.remove();
+		}
 	}
 
+	public void printToScreen(String text)
+	{
+		debug.add(text);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -271,10 +293,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 
 		if (e.getKeyCode() == e.VK_LEFT) {
-			player.turnLeft();
+			player.turnCCW();
 		}
 		else if (e.getKeyCode() == e.VK_RIGHT) {
-			player.turnRight();
+			player.turnCW();
 		}
 
 		if (e.getKeyCode() == e.VK_X) {

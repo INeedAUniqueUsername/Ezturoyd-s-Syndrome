@@ -5,6 +5,7 @@ import java.awt.geom.Area;
 
 public class Space_Object {
 
+	String name = "";
 	final double c = 9131.35261864;
 	
 	static GamePanel world;
@@ -23,6 +24,28 @@ public class Space_Object {
 	
 	boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
+	
+	public void setName(String name_new)
+	{
+		name = name_new;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	public void printToWorldScreen(String text)
+	{
+		if(name.equals(""))
+		{
+			world.printToScreen(text);
+		}
+		else
+		{
+			world.printToScreen(name + " - " + text);
+		}
+		
+	}
+	
 	
 	public int factorialAddition(int input)
 	{
@@ -80,14 +103,15 @@ public class Space_Object {
 		vel_y = (vel_y + thrust*sinDegrees(angle));
 	}
 	
-	public void decelerate(double thrust)
+	public void decelerate(double magnitude)
 	{
 		int velAngle = (int) arctanDegrees(vel_y, vel_x);
+		int decelAngle = velAngle + 180;
 		double xSpeedOriginal = vel_x;
 		double ySpeedOriginal = vel_y;
 		
-		vel_x = (vel_x + thrust*cosDegrees(velAngle+180));
-		vel_y = (vel_y + thrust*sinDegrees(velAngle+180));
+		vel_x = (vel_x + magnitude*cosDegrees(decelAngle));
+		vel_y = (vel_y + magnitude*sinDegrees(decelAngle));
 		
 		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal))
 		{
@@ -175,7 +199,10 @@ public class Space_Object {
 	{
 		return modRange(input, 360);
 	}
-	
+	public double min(double number1, double number2)
+	{
+		return (number1 < number2 ? number1 : number2);
+	}
 	public double range(double input, double min, double max)
 	{
 		if(input > max)

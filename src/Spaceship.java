@@ -3,6 +3,12 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Spaceship extends Space_Object {
 
@@ -17,6 +23,7 @@ public class Spaceship extends Space_Object {
 	boolean thrusting;
 	Polygon head;
 	double structure = 100;
+	ArrayList<String> print = new ArrayList<String>();
 
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 	ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
@@ -28,9 +35,10 @@ public class Spaceship extends Space_Object {
 	}
 
 	public void draw(Graphics g) {
+		printToWorldScreen("A");
 		g.setColor(Color.RED);
 		updateBody();
-
+		
 		int[] headX = new int[4];
 		int[] headY = new int[4];
 		/*
@@ -134,11 +142,11 @@ public class Spaceship extends Space_Object {
 	public void thrust() {
 		accelerate(pos_r, THRUST);
 	}
-	public void turnLeft()
+	public void turnCCW()
 	{
 		rotateLeft(ROTATION_ACCEL);
 	}
-	public void turnRight()
+	public void turnCW()
 	{
 		rotateRight(ROTATION_ACCEL);
 	}
