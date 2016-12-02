@@ -20,7 +20,7 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
-	
+	boolean active = true;
 	final int INTERVAL = 10;
 	Spaceship player;
 	ArrayList<Space_Object> world;
@@ -65,6 +65,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addSpaceship(enemy);
 		enemy.setPosRectangular(400, 225);
 		enemy.setTarget(player);
+		enemy.setName("Enemy");
 
 		/*
 		player.setVelRectangular(5, 0);
@@ -107,127 +108,139 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		tick++;
-		
-		Iterator<Weapon> w_i = weapons.iterator();
-		while (w_i.hasNext()) {
-			Weapon w = w_i.next();
-			//print("--> Human Shot First");
-			w.update();
-			w.draw(g);
-			if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-				Projectile shot = w.getShot();
-				addProjectile(shot);
-				w.setFireCooldownLeft(0);
-			}
-			//print("<-- Human Shot First");
-		}
-		Iterator<Space_Object> o_i = world.iterator();
-		while (o_i.hasNext()) {
-			Space_Object o = o_i.next();
-			o.update();
-			o.draw(g);
-			/*
-			if (object.getActive()) {
-			}
-			*/
-			/*
-			else
-			{
-				object.destroy();
-				world.remove(object);
-				if (spaceships.contains(object)) {
-					spaceships.remove(object);
-				} else if (projectiles.contains(object)) {
-					projectiles.remove(object);
-				} else if (asteroids.contains(object)) {
-					asteroids.remove(object);
+		if(active)
+		{
+			debug.clear();
+			tick++;
+			Iterator<Weapon> w_i = weapons.iterator();
+			while (w_i.hasNext()) {
+				Weapon w = w_i.next();
+				//print("--> Human Shot First");
+				w.update();
+				w.draw(g);
+				if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+					Projectile shot = w.getShot();
+					addProjectile(shot);
+					w.setFireCooldownLeft(0);
 				}
+				//print("<-- Human Shot First");
 			}
-			*/
-		}
-
-		Iterator<Asteroid> a1_i = asteroids.iterator();
-		while (a1_i.hasNext()) {
-			Asteroid a1 = a1_i.next();
-			Iterator<Projectile> p_i = projectiles.iterator();
-			while (p_i.hasNext()) {
-				Projectile p = p_i.next();
-				if (objectsIntersect(a1, p)) {
-					//print("--> GamePanel: Asteroid-Projectile Collision");
-					a1.collisionProjectile(p);
-
-					p.destroy();
-					removeProjectile(p);
-					//print("<-- GamePanel: Asteroid-Projectile Collision");
+			player.setFiringMouse(false);
+			Iterator<Space_Object> o_i = world.iterator();
+			while (o_i.hasNext()) {
+				Space_Object o = o_i.next();
+				o.update();
+				o.draw(g);
+				/*
+				if (object.getActive()) {
 				}
-			}
-			Iterator<Spaceship> s_i = spaceships.iterator();
-			while (s_i.hasNext()) {
-				Spaceship s = s_i.next();
-				if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
-					a1.lastCollisionTick = tick;
-					s.lastCollisionTick = tick;
-					//print("--> GamePanel: Asteroid-Spaceship Collision");
-					collisionAsteroidSpaceship(a1, s);
-					//print("<-- GamePanel: Asteroid-Spaceship Collision");
-				}
-			}
-			Iterator<Asteroid> a2_i = asteroids.iterator();
-			while(a2_i.hasNext())
-			{
-				Asteroid a2 = a2_i.next();
-				if(a1 != a2)
+				*/
+				/*
+				else
 				{
-					if (objectsIntersect(a1, a2) && tick - a1.lastCollisionTick > 10 && tick - a2.lastCollisionTick > 10) {
+					object.destroy();
+					world.remove(object);
+					if (spaceships.contains(object)) {
+						spaceships.remove(object);
+					} else if (projectiles.contains(object)) {
+						projectiles.remove(object);
+					} else if (asteroids.contains(object)) {
+						asteroids.remove(object);
+					}
+				}
+				*/
+			}
+	
+			Iterator<Asteroid> a1_i = asteroids.iterator();
+			while (a1_i.hasNext()) {
+				Asteroid a1 = a1_i.next();
+				Iterator<Projectile> p_i = projectiles.iterator();
+				while (p_i.hasNext()) {
+					Projectile p = p_i.next();
+					if (objectsIntersect(a1, p)) {
+						//print("--> GamePanel: Asteroid-Projectile Collision");
+						a1.collisionProjectile(p);
+	
+						p.destroy();
+						removeProjectile(p);
+						//print("<-- GamePanel: Asteroid-Projectile Collision");
+					}
+				}
+				Iterator<Spaceship> s_i = spaceships.iterator();
+				while (s_i.hasNext()) {
+					Spaceship s = s_i.next();
+					if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
 						a1.lastCollisionTick = tick;
-						a2.lastCollisionTick = tick;
+						s.lastCollisionTick = tick;
 						//print("--> GamePanel: Asteroid-Spaceship Collision");
-						collisionAsteroidAsteroid(a1, a2);
+						collisionAsteroidSpaceship(a1, s);
 						//print("<-- GamePanel: Asteroid-Spaceship Collision");
 					}
 				}
-			}
-		}
-
-		Iterator<Spaceship> s1_i = spaceships.iterator();
-		while (s1_i.hasNext()) {
-			Spaceship s1 = s1_i.next();
-			
-			Iterator<Spaceship> s2_i = spaceships.iterator();
-			while (s2_i.hasNext()) {
-				Spaceship s2 = s2_i.next();
-				if (s1 != s2) {
-					if (objectsIntersect(s1, s2)) {
-						//print("--> GamePanel: Spaceship-Spaceship Collision");
-						double angle_s1_s2 = angleBetween(s1, s2);
-						double angle_s2_s1 = angleBetween(s2, s1);
-						double momentum_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
-						double momentum_half = momentum_total / 2;
-						s1.impulse(angle_s2_s1, momentum_half);
-						s2.impulse(angle_s1_s2, momentum_half);
-						//print("<-- GamePanel: Spaceship-Spaceship Collision");
+				Iterator<Asteroid> a2_i = asteroids.iterator();
+				while(a2_i.hasNext())
+				{
+					Asteroid a2 = a2_i.next();
+					if(a1 != a2)
+					{
+						if (objectsIntersect(a1, a2) && tick - a1.lastCollisionTick > 10 && tick - a2.lastCollisionTick > 10) {
+							a1.lastCollisionTick = tick;
+							a2.lastCollisionTick = tick;
+							//print("--> GamePanel: Asteroid-Spaceship Collision");
+							collisionAsteroidAsteroid(a1, a2);
+							//print("<-- GamePanel: Asteroid-Spaceship Collision");
+						}
 					}
 				}
 			}
+	
+			Iterator<Spaceship> s1_i = spaceships.iterator();
+			while (s1_i.hasNext()) {
+				Spaceship s1 = s1_i.next();
+				
+				Iterator<Spaceship> s2_i = spaceships.iterator();
+				while (s2_i.hasNext()) {
+					Spaceship s2 = s2_i.next();
+					if (s1 != s2) {
+						if (objectsIntersect(s1, s2)) {
+							//print("--> GamePanel: Spaceship-Spaceship Collision");
+							double angle_s1_s2 = angleBetween(s1, s2);
+							double angle_s2_s1 = angleBetween(s2, s1);
+							double momentum_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
+							double momentum_half = momentum_total / 2;
+							s1.impulse(angle_s2_s1, momentum_half);
+							s2.impulse(angle_s1_s2, momentum_half);
+							//print("<-- GamePanel: Spaceship-Spaceship Collision");
+						}
+					}
+				}
+			}
+	
+			/*
+			 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
+			 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
+			 * rock.getVelX()); double rockVelAngle = rock.getVelAngle(); }
+			 */
 		}
-
-		/*
-		 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
-		 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
-		 * rock.getVelX()); double rockVelAngle = rock.getVelAngle(); }
-		 */
-		
-		//Print all debug strings on the screen
-		g.setColor(Color.WHITE);
-		
-		int print_height = 0;
-		Iterator<String> print_i = debug.iterator();
-		while(print_i.hasNext())
+		else
 		{
+			for(Space_Object o: world)
+			{
+				o.draw(g);
+			}
+			for(Weapon w: weapons)
+			{
+				w.draw(g);
+			}
+		}
+		
+		//Print all current debug messages on screen. Debug list will only clear when the game is active.
+		g.setColor(Color.WHITE);
+		int print_height = 12;
+		for(String s: debug)
+		{
+			g.drawString(s, 10, print_height);
 			print_height += 12;
-			g.drawString(print_i.next(), 10, print_height);
-			print_i.remove();
 		}
 	}
 
@@ -259,7 +272,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		player.setFiringMouse(false);;
 	}
 
 	@Override
@@ -284,22 +296,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		print("Key Pressed");
-		if (e.getKeyCode() == e.VK_UP) {
+		
+		if(e.getKeyCode() == KeyEvent.VK_Z)
+			active = !active;
+		
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			// Accelerate forward
 			player.thrust();
 		}
-		if (e.getKeyCode() == e.VK_DOWN) {
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 			player.brake();
 		}
 
-		if (e.getKeyCode() == e.VK_LEFT) {
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			player.turnCCW();
 		}
-		else if (e.getKeyCode() == e.VK_RIGHT) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			player.turnCW();
 		}
 
-		if (e.getKeyCode() == e.VK_X) {
+		if (e.getKeyCode() == KeyEvent.VK_X) {
 			player.setFiringKey(true);
 		}
 	}

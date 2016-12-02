@@ -6,7 +6,7 @@ public class Weapon_Mouse extends Weapon{
 	double target_y;
 	public Weapon_Mouse()
 	{
-		
+		color = color.RED;
 	}
 	public double getFireAngle()
 	{

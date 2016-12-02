@@ -33,7 +33,7 @@ public class Space_Object {
 	{
 		return name;
 	}
-	public void printToWorldScreen(String text)
+	public void printToWorld(String text)
 	{
 		if(name.equals(""))
 		{
@@ -41,11 +41,10 @@ public class Space_Object {
 		}
 		else
 		{
-			world.printToScreen(name + " - " + text);
+			world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
 		}
 		
 	}
-	
 	
 	public int factorialAddition(int input)
 	{
@@ -125,17 +124,17 @@ public class Space_Object {
 	
 	/*	=	=	=	=		Trigonometry		=	=	=	=	=*/
 	
-	public double cosDegrees (double angle)
+	public static double cosDegrees (double angle)
 	{
 		return Math.cos(Math.toRadians(angle));
 	}
 	
-	public double sinDegrees (double angle)
+	public static double sinDegrees (double angle)
 	{
 		return Math.sin(Math.toRadians(angle));
 	}
 	
-	public double arctanDegrees(double y, double x)
+	public static double arctanDegrees(double y, double x)
 	{
 		double result;
 		if(x < 0)
@@ -186,7 +185,7 @@ public class Space_Object {
 		return body;
 	}
 	
-	public double modRange(double input, double range)
+	public static double modRange(double input, double range)
 	{
 		double result = input % range;
 		while(result < 0)
@@ -195,15 +194,15 @@ public class Space_Object {
 		}
 		return result;
 	}
-	public double modRangeDegrees(double input)
+	public static double modRangeDegrees(double input)
 	{
 		return modRange(input, 360);
 	}
-	public double min(double number1, double number2)
+	public static double min(double number1, double number2)
 	{
 		return (number1 < number2 ? number1 : number2);
 	}
-	public double range(double input, double min, double max)
+	public static double range(double input, double min, double max)
 	{
 		if(input > max)
 		{
@@ -218,17 +217,17 @@ public class Space_Object {
 			return input;
 		}
 	}
-	public double random(double input)
+	public static double random(double input)
 	{
 		return Math.random()*input;
 	}
 	
-	public double randomMin(double minimum, double input)
+	public static double randomMin(double minimum, double input)
 	{
 		return (minimum + Math.random()*(input - minimum));
 	}
 	
-	public double scaleLinearUp(double input, double minFrom, double maxFrom, double minTo, double maxTo)
+	public static double scaleLinearUp(double input, double minFrom, double maxFrom, double minTo, double maxTo)
 	{
 		double rangeFrom = maxFrom - minFrom;
 		double rangeTo = maxTo - minTo;
@@ -239,7 +238,7 @@ public class Space_Object {
 	}
 	
 	//Source: http://www.mathopenref.com/coordpolygonarea2.html
-	public double polygonArea(int[] X, int[] Y, int numPoints) 
+	public static double polygonArea(int[] X, int[] Y, int numPoints) 
 	{ 
 	  double area = 0;         // Accumulates area in the loop
 	  int j = numPoints-1;  // The last vertex is the 'previous' one to the first
@@ -340,7 +339,7 @@ public class Space_Object {
 	
 	public double getVelAngle()
 	{
-		return arctanDegrees(vel_y, vel_x);
+		return arctanDegrees(-vel_y, vel_x);
 	}
 	public double getVelAngled(double angle)
 	{

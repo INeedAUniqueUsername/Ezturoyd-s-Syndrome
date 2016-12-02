@@ -35,7 +35,6 @@ public class Spaceship extends Space_Object {
 	}
 
 	public void draw(Graphics g) {
-		printToWorldScreen("A");
 		g.setColor(Color.RED);
 		updateBody();
 		
@@ -79,6 +78,27 @@ public class Spaceship extends Space_Object {
 
 		g.drawPolygon(body);
 		g.drawPolygon(head);
+		drawVel(g, headFrontX, headFrontY);
+	}
+	public void drawVel(Graphics g, double x1, double y1)
+	{
+		g.setColor(Color.GREEN);
+		double velAngle = getVelAngle();
+		
+		Point arrow_head = polarOffset(x1, y1, velAngle, 20);
+		double x2 = arrow_head.getX();
+		double y2 = arrow_head.getY();
+		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+		
+		Point arrow_left = polarOffset(x2, y2, velAngle + 120, 10);
+		g.drawLine((int) x2, (int) y2, (int) arrow_left.getX(), (int) arrow_left.getY());
+		
+		Point arrow_right = polarOffset(x2, y2, velAngle - 120, 10);
+		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
+	}
+	public Point polarOffset(double x, double y, double angle, double distance)
+	{
+		return new Point((int) (x + distance * cosDegrees(angle)), (int) (y + distance * sinDegrees(angle)));
 	}
 
 	public void update() {

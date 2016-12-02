@@ -36,12 +36,12 @@ public class Spaceship_Enemy extends Spaceship {
 				+ vel_r * r_decel_time
 				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
-		double faceAngleDiffCCW = modRangeDegrees(angle_to_target - pos_r_future);
-		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_to_target);
+		double faceAngleDiffCCW = modRangeDegrees(angle_to_target - pos_r);
+		double faceAngleDiffCW = modRangeDegrees(pos_r - angle_to_target);
 		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
 		if(faceAngleDiff > getMaxAngleDifference())
 		{
-			if(faceAngleDiffCW > faceAngleDiffCCW)
+			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
 				turnCW();
 			}
@@ -57,15 +57,26 @@ public class Spaceship_Enemy extends Spaceship {
 		if(velAngleDiff > 120)
 		{
 			brake();
+			printToWorld("Status: Brake");
 		}
 		else if(velAngleDiff > 60)
 		{
-			
+			printToWorld("Status: Nothing");			
 		}
 		else
 		{
 			thrust();
+			printToWorld("Status: Thrust");
 		}
+		printToWorld("Angle to Target: " + angle_to_target);
+		printToWorld("Facing Angle Difference CCW: " + faceAngleDiffCCW);
+		printToWorld("Facing Angle Difference CW: " + faceAngleDiffCW);
+		printToWorld("Facing Angle Difference: " + faceAngleDiff);
+		printToWorld("Max Facing Angle Difference: " + getMaxAngleDifference());
+		printToWorld("Velocity Angle: " + velAngle);
+		printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
+		printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
+		printToWorld("Velocity Angle Difference: " + velAngleDiff);
 		/*
 		double velAngle = getVelAngle();
 		double decelAngle = velAngle + 180;
@@ -84,7 +95,6 @@ public class Spaceship_Enemy extends Spaceship {
 			+ vel_y * y_decel_time
 			+ (vel_y > 0 ? -1 : 1) * (1/2) * y_decel * Math.pow(y_decel_time, 2);
 		*/
-		
 	}
 	public double getMaxAngleDifference()
 	{
