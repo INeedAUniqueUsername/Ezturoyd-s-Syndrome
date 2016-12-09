@@ -144,7 +144,7 @@ public class Weapon {
 		
 	}
 
-	public void setOwner(Spaceship owner_new) {
+	public void setOwner(Starship owner_new) {
 		owner = owner_new;
 	}
 

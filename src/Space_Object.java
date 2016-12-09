@@ -284,6 +284,11 @@ public class Space_Object {
 		return arctanDegrees(getPosY() - y, getPosX() - x);
 	}
 	
+	public double getDistanceBetween(Space_Object target)
+	{
+		return Math.sqrt(Math.pow((target.getPosX() - getPosX()), 2) + Math.pow((target.getPosY() - getPosY()), 2));
+	}
+	
 	public void updatePosition()
 	{
 		pos_r = (int) (pos_r + vel_r);
@@ -339,9 +344,16 @@ public class Space_Object {
 	
 	public double getVelAngle()
 	{
-		return arctanDegrees(-vel_y, vel_x);
+		if(vel_x > 0)
+		{
+			return arctanDegrees(-vel_y, vel_x);
+		}
+		else
+		{
+			return pos_r;
+		}
 	}
-	public double getVelAngled(double angle)
+	public double getVelRadial(double angle)
 	{
 		return getVelSpeed()*cosDegrees(getVelAngle() - angle);
 	}

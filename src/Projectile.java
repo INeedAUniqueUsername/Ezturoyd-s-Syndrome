@@ -58,6 +58,10 @@ public class Projectile extends Space_Object {
 	public void setOwner(Space_Object object) {
 		owner = object;
 	}
+	public Space_Object getOwner()
+	{
+		return owner;
+	}
 
 	public int getDamage() {
 		return damage;

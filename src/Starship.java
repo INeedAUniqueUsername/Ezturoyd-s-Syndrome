@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class Spaceship extends Space_Object {
+public class Starship extends Space_Object {
 
 	final int HEAD_SIZE = 20;
 	final int BODY_SIZE = 30;
@@ -21,6 +21,7 @@ public class Spaceship extends Space_Object {
 	final int ROTATION_ACCEL = 4;
 	final double ROTATION_DECEL = .4;
 	boolean thrusting;
+	boolean strafing;
 	Polygon head;
 	double structure = 100;
 	ArrayList<String> print = new ArrayList<String>();
@@ -29,7 +30,7 @@ public class Spaceship extends Space_Object {
 	ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
 	ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
 
-	public Spaceship() {
+	public Starship() {
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
@@ -170,6 +171,14 @@ public class Spaceship extends Space_Object {
 	{
 		rotateRight(ROTATION_ACCEL);
 	}
+	public void strafeLeft()
+	{
+		accelerate(pos_r, THRUST);
+	}
+	public void strafeRight()
+	{
+		accelerate(pos_r, THRUST);
+	}
 	public void brake()
 	{
 		decelerate(DECEL);
@@ -189,9 +198,21 @@ public class Spaceship extends Space_Object {
 			w.setFiring(firing);
 		}
 	}
+	public void setStrafing(boolean enabled)
+	{
+		strafing = enabled;
+	}
+	public boolean getStrafing()
+	{
+		return strafing;
+	}
 
 	public void damage(double damage) {
 		structure = structure - damage;
+		if(structure < 0)
+		{
+			destroy();
+		}
 	}
 
 	public Polygon getHead() {
@@ -233,6 +254,10 @@ public class Spaceship extends Space_Object {
 	
 	public void destroy()
 	{
-		world.removeSpaceship(this);
+		for(Weapon w: weapons)
+		{
+			world.removeWeapon(w);
+		}
+		world.removeStarship(this);
 	}
 }
