@@ -27,14 +27,66 @@ public class Starship_Enemy extends Starship {
 	}
 	public void faceTarget()
 	{
-		String action_thrusting = "";
-		String action_rotation = "";
-		String action_strafing = "";
+		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
+		double target_x_center = target.getPosX();
+		double target_y_center = target.getPosY();
+		double target_distance_center = getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
+		
+		double target_x_up = target_x_center;
+		double target_y_up = target_y_center - GameWindow.HEIGHT;
+		double target_distance_up = getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
+		
+		double target_x_down = target_x_center;
+		double target_y_down = target_y_center + GameWindow.HEIGHT;
+		double target_distance_down = getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
+		
+		double target_x_right = target_x_center + GameWindow.WIDTH;
+		double target_y_right = target_y_center;
+		double target_distance_right = getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
+		
+		double target_x_left = target_x_center - GameWindow.WIDTH;
+		double target_y_left = target_y_center;
+		double target_distance_left = getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
+		
+		double target_x_focus = target_x_center;
+		double target_y_focus = target_y_center;
+		double target_distance_focus = target_distance_center;
+		
+		if(target_distance_focus > target_distance_up)
+		{
+			target_x_focus = target_x_up;
+			target_y_focus = target_y_up;
+			target_distance_focus = target_distance_up;
+		}
+		if(target_distance_focus > target_distance_down)
+		{
+			target_x_focus = target_x_down;
+			target_y_focus = target_y_down;
+			target_distance_focus = target_distance_down;
+		}
+		if(target_distance_focus > target_distance_right)
+		{
+			target_x_focus = target_x_right;
+			target_y_focus = target_y_right;
+			target_distance_focus = target_distance_right;
+		}
+		if(target_distance_focus > target_distance_left)
+		{
+			target_x_focus = target_x_left;
+			target_y_focus = target_y_left;
+			target_distance_focus = target_distance_left;
+		}
+		
+		String action_thrusting = "Nothing";
+		String action_rotation = "Nothing";
+		String action_strafing = "Nothing";
+		String action_weapon = "Nothing";
 		final String act_thrust = "Thrust";
 		final String act_brake = "Brake";
 		final String act_turn_ccw = "CCW";
 		final String act_turn_cw = "CW";
-		double angle_to_target = getAngleTowards(target);
+		final String act_fire = "Fire";
+		double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
 		//Let's relearn AP Physics I!
@@ -91,7 +143,7 @@ public class Starship_Enemy extends Starship {
 			printToWorld("Status: Thrust");
 		}
 		
-		double distance_to_target = getDistanceBetween(target);
+		double distance_to_target = target_distance_focus;
 		double velDiff = getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
 		if(distance_to_target > getMinSeparation())
 		{
@@ -103,6 +155,15 @@ public class Starship_Enemy extends Starship {
 			action_thrusting = act_brake;
 			printToWorld("Status (Distance): Close");
 		}
+		
+		
+		
+		if(faceAngleDiff + velAngleDiff < 10)
+		{
+			action_weapon = act_fire;
+		}
+		
+		
 		printToWorld("Angle to Target: " + angle_to_target);
 		printToWorld("Facing Angle Difference CCW: " + faceAngleDiffCCW);
 		printToWorld("Facing Angle Difference CW: " + faceAngleDiffCW);
@@ -112,6 +173,7 @@ public class Starship_Enemy extends Starship {
 		printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
 		printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
 		printToWorld("Velocity Angle Difference: " + velAngleDiff);
+		printToWorld("Weapons: " + action_weapon);
 		/*
 		double velAngle = getVelAngle();
 		double decelAngle = velAngle + 180;
@@ -142,6 +204,11 @@ public class Starship_Enemy extends Starship {
 		case act_turn_ccw: turnCCW();
 			break;
 		case act_turn_cw: turnCW();
+			break;
+		}
+		switch(action_weapon)
+		{
+		case act_fire: setFiring(true);
 			break;
 		}
 		

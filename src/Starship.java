@@ -79,7 +79,9 @@ public class Starship extends Space_Object {
 
 		g.drawPolygon(body);
 		g.drawPolygon(head);
-		drawVel(g, headFrontX, headFrontY);
+		//drawVel(g, headFrontX, headFrontY);
+		
+		printToWorld("Velocity Angle: " + getVelAngle());
 	}
 	public void drawVel(Graphics g, double x1, double y1)
 	{
@@ -99,7 +101,7 @@ public class Starship extends Space_Object {
 	}
 	public Point polarOffset(double x, double y, double angle, double distance)
 	{
-		return new Point((int) (x + distance * cosDegrees(angle)), (int) (y + distance * sinDegrees(angle)));
+		return new Point((int) (x + distance * cosDegrees(angle)), (int) (y - distance * sinDegrees(angle)));
 	}
 
 	public void update() {

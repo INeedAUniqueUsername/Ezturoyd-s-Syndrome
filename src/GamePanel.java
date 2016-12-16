@@ -46,12 +46,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		Space_Object.world = this;
 
-		universe = new ArrayList();
-		starships = new ArrayList();
-		projectiles = new ArrayList();
-		asteroids = new ArrayList();
+		universe = new ArrayList<Space_Object>();
+		starships = new ArrayList<Starship>();
+		projectiles = new ArrayList<Projectile>();
+		asteroids = new ArrayList<Asteroid>();
 
-		weapons = new ArrayList();
+		weapons = new ArrayList<Weapon>();
 
 		player = new Starship();
 		player.setPosRectangular(800, 450);
@@ -66,6 +66,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy.setPosRectangular(400, 225);
 		enemy.setTarget(player);
 		enemy.setName("Enemy");
+		addWeapon(enemy, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 
 		/*
 		player.setVelRectangular(5, 0);
@@ -179,6 +180,21 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 			player.setFiringMouse(false);
+			
+			Iterator<Weapon> w_i = weapons.iterator();
+			while (w_i.hasNext()) {
+				Weapon w = w_i.next();
+				//print("--> Human Shot First");
+				w.update();
+				w.draw(g);
+				if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+					Projectile shot = w.getShot();
+					addProjectile(shot);
+					w.setFireCooldownLeft(0);
+				}
+				//print("<-- Human Shot First");
+			}
+			
 			Iterator<Space_Object> o_i = universe.iterator();
 			while (o_i.hasNext()) {
 				Space_Object o = o_i.next();
@@ -203,20 +219,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 				*/
 			}
-			Iterator<Weapon> w_i = weapons.iterator();
-			while (w_i.hasNext()) {
-				Weapon w = w_i.next();
-				//print("--> Human Shot First");
-				w.update();
-				w.draw(g);
-				if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-					Projectile shot = w.getShot();
-					addProjectile(shot);
-					w.setFireCooldownLeft(0);
-				}
-				//print("<-- Human Shot First");
-			}
-			
 			/*
 			 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
 			 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
@@ -375,12 +377,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return !areaA.isEmpty();
 	}
 
-	public void addWeapon(Starship ship, Weapon_Mouse item) {
-		ship.installWeapon(item);
-		weapons.add(item);
-	}
-	public void addWeapon(Starship ship, Weapon_Key item)
-	{
+	public void addWeapon(Starship ship, Weapon item) {
 		ship.installWeapon(item);
 		weapons.add(item);
 	}
@@ -401,23 +398,23 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void removeStarship(Starship ship) {
-		starships.remove(ship);
 		universe.remove(ship);
+		starships.remove(ship);
 	}
 
 	public void removeProjectile(Projectile projectile) {
-		projectiles.remove(projectile);
 		universe.remove(projectile);
+		projectiles.remove(projectile);
 	}
 
 	public void removeAsteroid(Asteroid asteroid) {
-		asteroids.remove(asteroid);
 		universe.remove(asteroid);
+		asteroids.remove(asteroid);
 	}
 	public void removeWeapon(Weapon weapon)
 	{
-		weapons.remove(weapon);
 		universe.remove(weapon);
+		weapons.remove(weapon);
 	}
 	
 	public double angleBetween(Space_Object from, Space_Object to) {

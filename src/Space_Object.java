@@ -136,6 +136,7 @@ public class Space_Object {
 	
 	public static double arctanDegrees(double y, double x)
 	{
+		/*
 		double result;
 		if(x < 0)
 		{
@@ -164,11 +165,12 @@ public class Space_Object {
 		{
 			result = 0;
 		}
-		/*
+		///*
 		System.out.println("X: " + y);
 		System.out.println("Y: " + x);
 		System.out.println("arctan(y/x) = " + result);
-		*/
+		//*/
+		double result = Math.toDegrees(Math.atan2(y, x));
 		return result;
 	}
 	
@@ -288,6 +290,14 @@ public class Space_Object {
 	{
 		return Math.sqrt(Math.pow((target.getPosX() - getPosX()), 2) + Math.pow((target.getPosY() - getPosY()), 2));
 	}
+	public double getDistanceBetweenPos(double x, double y)
+	{
+		return Math.sqrt(Math.pow((x - getPosX()), 2) + Math.pow((y - getPosY()), 2));		
+	}
+	public double getDistanceBetweenPos(double x1, double y1, double x2, double y2)
+	{
+		return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));		
+	}
 	
 	public void updatePosition()
 	{
@@ -344,9 +354,9 @@ public class Space_Object {
 	
 	public double getVelAngle()
 	{
-		if(vel_x > 0)
+		if(!(vel_x == 0 && vel_y == 0))
 		{
-			return arctanDegrees(-vel_y, vel_x);
+			return arctanDegrees(vel_y, vel_x);
 		}
 		else
 		{

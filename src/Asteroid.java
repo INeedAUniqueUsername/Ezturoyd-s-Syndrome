@@ -180,6 +180,8 @@ public class Asteroid extends Space_Object {
 					damage -= applied;
 					applied_total += applied;
 				}
+				
+				//Recalculate the center
 			}
 			indexCW -= 1;
 			indexCCW += 1;
