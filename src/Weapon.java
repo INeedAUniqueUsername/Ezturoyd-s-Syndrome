@@ -25,7 +25,7 @@ public class Weapon {
 	int projectile_damage = 5;
 	int projectile_lifetime = 60;
 
-	Color color;
+	Color color = Color.RED;
 	public Weapon()
 	{
 		

@@ -68,6 +68,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy.setName("Enemy");
 		addWeapon(enemy, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 
+		Asteroid rock = new Asteroid();
+		addAsteroid(rock);
+		rock.setPosRectangular(600, 375);
+		rock.setName("Asteroid");
+	
 		/*
 		player.setVelRectangular(5, 0);
 		for(int i = 0; i < 360; i++)
@@ -179,22 +184,21 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					}
 				}
 			}
-			player.setFiringMouse(false);
 			
 			Iterator<Weapon> w_i = weapons.iterator();
 			while (w_i.hasNext()) {
 				Weapon w = w_i.next();
-				//print("--> Human Shot First");
 				w.update();
 				w.draw(g);
 				if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+					print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 					Projectile shot = w.getShot();
 					addProjectile(shot);
 					w.setFireCooldownLeft(0);
+					print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 				}
-				//print("<-- Human Shot First");
 			}
-			
+			player.setFiringMouse(false);
 			Iterator<Space_Object> o_i = universe.iterator();
 			while (o_i.hasNext()) {
 				Space_Object o = o_i.next();
@@ -455,8 +459,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double halfMomentum = a1.getKineticEnergyAngled(angle_a1_to_a2) + a2.getKineticEnergyAngled(angle_a2_to_a1);
 		a1.impulse(angle_a2_to_a1, halfMomentum);
 		a2.impulse(angle_a1_to_a2, halfMomentum);
-		a1.damage((int) halfMomentum/1000, a1.getCollisionIndex(a2));
-		a2.damage((int) halfMomentum/1000, a2.getCollisionIndex(a1));
+		a1.damage((int) halfMomentum/1000, (int) a1.getAngleTowards(a2));
+		a2.damage((int) halfMomentum/1000, (int) a2.getAngleTowards(a1));
 	}
 	public void collisionStarshipProjectile(Starship s1, Projectile p1)
 	{

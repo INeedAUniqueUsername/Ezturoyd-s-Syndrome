@@ -1,6 +1,7 @@
 import java.awt.Color;
 
 public class Weapon_Key extends Weapon {
+	/*
 	public Weapon_Key(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color) {
 		posAngle = angle;
 		posRadius = radius;
@@ -11,5 +12,10 @@ public class Weapon_Key extends Weapon {
 		projectile_damage = damage;
 		projectile_lifetime = lifetime;
 		this.color = color;
+	}
+	*/
+	public Weapon_Key(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color)
+	{
+		super(angle, radius, fire_angle, cooldown, speed, damage, lifetime, color);
 	}
 }

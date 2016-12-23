@@ -3,12 +3,11 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.util.HashMap;
 
 public class Asteroid extends Space_Object {
 
-	int points_count;
-	int[] points_distances;
-	int points_interval;
+	HashMap<Integer, Integer> points;
 
 	final int MIN_SIZE = 25;
 	final int MAX_SIZE = 100;
@@ -31,89 +30,44 @@ public class Asteroid extends Space_Object {
 	}
 
 	public void initializeBody() {
-		points_count = (int) (random(MAX_POINTS) + 1);
-		points_distances = new int[points_count];
-		points_interval = 360 / points_count;
-		for (int i = 0; i < points_count; i++) {
-			points_distances[i] = (int) (randomMin(MIN_SIZE, MAX_SIZE));
-			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
+		points = new HashMap<Integer, Integer>();
+		for(int degree = 0; degree < 360; degree += Math.random()*60)
+		{
+			int distance = (int) (Math.random()*10);
+			points.put(degree, distance);
 		}
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
-
-	public void initializeBody(int count) {
-		points_count = (int) (random(count));
-		points_distances = new int[points_count];
-		points_interval = 360 / points_count;
-		for (int i = 0; i < points_count; i++) {
-			points_distances[i] = (int) (randomMin(MIN_SIZE, MAX_SIZE));
-			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
-		}
-		updateBody();
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
-	}
-
 	public void initializeBody(int count, int minSize, int maxSize) {
-		points_count = (int) (random(count));
-		points_distances = new int[points_count];
-		points_interval = 360 / points_count;
-		for (int i = 0; i < points_count; i++) {
-			points_distances[i] = (int) (randomMin(minSize, maxSize));
-			//print("Distance at angle " + points_interval * i + ": " + points_distances[i]);
+		points = new HashMap<Integer, Integer>();
+		int degreesLeft = 360;
+		int previousAngle = 0;
+		for(int i = 0; i < count; i++)
+		{
+			int angle = (int) (previousAngle + Math.random()*degreesLeft);
+			int distance = (int) (randomMin(minSize, maxSize));
+			points.put(angle, distance);
+			degreesLeft = 360 - angle;
 		}
 		updateBody();
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
-
-	public void initializeBody(int[] points) {
-		points_count = points.length;
-		points_distances = points;
-		points_interval = 360 / points_count;
-		updateBody();
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
-	}
-
-	/*
-	 * public void getCollisionDistance(int angle) { int leftPoint; int
-	 * rightPoint;
-	 * 
-	 * for(int i = 0; i < points_count; i++) { double rightAngle =
-	 * (i*points_interval - rPos); if(angle < rightAngle) { rightPoint = i;
-	 * leftPoint = i - 1; if(leftPoint < 0) { leftPoint = points_count - 1; }
-	 * break; } }
-	 * 
-	 * }
-	 */
 	public void collisionProjectile(Projectile p) {
 		//print("--> Ateroid-Projectile Collision");
 		double collisionAngle = getCollisionAngle(p);
-		int index = getAngleIndex(collisionAngle);
 		//print("Collision Angle: " + collisionAngle);
-		//print("Point Index: " + index);
-
+		
 		int damage = p.getDamage();
 
+		damage(damage, (int) collisionAngle);
 		impulse(getAngleFrom(p), damage * 10);
-		/*
-		 * if(points_distances[index] >= damage) { points_distances[index] -=
-		 * damage; } else { points_distances[index] = 0; }
-		 */
-		int applied_total = damage(index, damage);
-		createFragment(applied_total, getAngleTowards(p), p.getPosX(), p.getPosY());
+		createFragment(damage, getAngleTowards(p), p.getPosX(), p.getPosY());
 		//print("<-- Asteroid-Projectile Collision");
-	}
-	public int getCollisionIndex(Space_Object o)
-	{
-		return getAngleIndex(getCollisionAngle(o));
 	}
 	public double getCollisionAngle(Space_Object o)
 	{
 		return modRange(pos_r + getAngleTowards(o), 360);
-	}
-	public int getAngleIndex(double angle)
-	{
-		return (int) (angle / points_interval);
 	}
 
 	public void draw(Graphics g) {
@@ -130,13 +84,16 @@ public class Asteroid extends Space_Object {
 	}
 
 	public void updateBody() {
+		int points_count = points.size();
 		int[] bodyX = new int[points_count + 1];
 		int[] bodyY = new int[points_count + 1];
+		Integer[] degree_list = points.keySet().toArray(new Integer[points_count]);
 		for (int i = 0; i < points_count; i++) {
-			double point_angle = (points_interval * i) + pos_r;
-			int point_distance = points_distances[i];
-			bodyX[i] = (int) (pos_x + point_distance * cosDegrees(point_angle));
-			bodyY[i] = (int) (GameWindow.HEIGHT - (pos_y + point_distance * sinDegrees(point_angle)));
+			int degree = degree_list[i];
+			int distance = points.get(degree);
+			double angle = (degree + pos_r);
+			bodyX[i] = (int) (pos_x + distance * cosDegrees(angle));
+			bodyY[i] = (int) (GameWindow.HEIGHT - (pos_y + distance * sinDegrees(angle)));
 		}
 		bodyX[points_count] = bodyX[0];
 		bodyY[points_count] = bodyY[0];
@@ -144,54 +101,18 @@ public class Asteroid extends Space_Object {
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
 	}
 
-	public int damage(int damage, int index) {
-		int maxIndex = points_distances.length - 1;
-		int indexCW = (int) modRange(index - 1, maxIndex);
-		int indexCCW = (int) modRange(index + 1, maxIndex);
-		boolean clockwise = true;
-		int applied_total = 0;
-		while (damage > 0) {
-			print("Count: " + points_distances.length);
-			print("Index: " + index);
-			print("Health: " + points_distances[index]);
-			print("Size: " + size);
-			print("Damage: " + damage);
-
-			int applied;
-			if (damage > size / 50) {
-				destroy();
-				damage = 0;
-			} else {
-				if (points_distances[index] > 0) {
-					applied = (int) range(damage, 0, points_distances[index]);
-					points_distances[index] -= applied;
-					damage -= applied;
-					applied_total += applied;
-				}
-				if (points_distances[indexCW] > 0) {
-					applied = (int) range(damage, 0, points_distances[indexCW]);
-					points_distances[indexCW] -= applied;
-					damage -= applied;
-					applied_total += applied;
-				}
-				if (points_distances[indexCCW] > 0) {
-					applied = (int) range(damage, 0, points_distances[indexCCW]);
-					points_distances[indexCCW] -= applied;
-					damage -= applied;
-					applied_total += applied;
-				}
-				
-				//Recalculate the center
-			}
-			indexCW -= 1;
-			indexCCW += 1;
-			
-			indexCW = (int) modRange(indexCW, maxIndex);
-			indexCCW = (int) modRange(indexCCW, maxIndex);
+	public void damage(int damage, int angle) {
+		int angle_total = (int) (angle - pos_r);
+		if(points.containsKey(angle_total))
+		{
+			int distance = points.get(angle_total);
+			int distance_new = distance - damage;
+			points.put(angle, distance_new);
 		}
-
-		return applied_total;
-		// world.addAsteroid(new Asteroid());
+		else
+		{
+			
+		}
 	}
 
 	public void createFragment(int damage, double angle, double x, double y)

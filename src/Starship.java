@@ -242,16 +242,15 @@ public class Starship extends Space_Object {
 	public void installWeapon(Weapon item) {
 		item.setOwner(this);
 		weapons.add(item);
-	}
-	public void installWeapon(Weapon_Key item) {
-		item.setOwner(this);
-		weapons.add(item);
-		weapons_key.add(item);
-	}
-	public void installWeapon(Weapon_Mouse item) {
-		item.setOwner(this);
-		weapons.add(item);
-		weapons_mouse.add(item);
+		if(item instanceof Weapon_Key)
+		{
+			weapons_key.add((Weapon_Key) item);
+		}
+		else if(item instanceof Weapon_Mouse)
+		{
+			weapons_mouse.add((Weapon_Mouse) item);
+		}
+		print("Installed Weapon");
 	}
 	
 	public void destroy()
