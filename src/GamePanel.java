@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		addStarship(player);
 		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
-		addWeapon(player, new Weapon_Mouse());
+		addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
 		Starship_Enemy enemy = new Starship_Enemy();
@@ -69,6 +69,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addWeapon(enemy, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 
 		Asteroid rock = new Asteroid();
+		rock.initializeBody(10, 50, 70);
 		addAsteroid(rock);
 		rock.setPosRectangular(600, 375);
 		rock.setName("Asteroid");
@@ -437,14 +438,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//print("--> Collision (Starship)");
 		double angle_asteroid_to_ship = a.getAngleTowards(s);
 		double angle_ship_to_asteroid = a.getAngleFrom(s);
-		double asteroidMomentum = a.getKineticEnergyAngled(angle_asteroid_to_ship);
-		double shipMomentum = s.getKineticEnergyAngled(angle_ship_to_asteroid);
-		double totalMomentum = asteroidMomentum + shipMomentum;
-		double halfMomentum = totalMomentum / 2;
-		s.impulse(angle_ship_to_asteroid, totalMomentum);
-		a.impulse(angle_asteroid_to_ship, totalMomentum);
+		double asteroidKineticEnergy = a.getKineticEnergyAngled(angle_asteroid_to_ship);
+		double shipKineticEnergy = s.getKineticEnergyAngled(angle_ship_to_asteroid);
+		double totalKineticEnergy = asteroidKineticEnergy + shipKineticEnergy;
+		double halfKineticEnergy = totalKineticEnergy / 2;
+		s.impulse(angle_ship_to_asteroid, halfKineticEnergy);
+		a.impulse(angle_asteroid_to_ship, halfKineticEnergy);
 
-		s.damage(halfMomentum / 100);
+		s.damage(halfKineticEnergy / 100);
 
 		//print("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship);
 		//print("Angle (Asteroid <-- Ship): " + angle_ship_to_asteroid);
@@ -456,11 +457,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		double angle_a1_to_a2 = a1.getAngleTowards(a2);
 		double angle_a2_to_a1 = a2.getAngleTowards(a1);
-		double halfMomentum = a1.getKineticEnergyAngled(angle_a1_to_a2) + a2.getKineticEnergyAngled(angle_a2_to_a1);
-		a1.impulse(angle_a2_to_a1, halfMomentum);
-		a2.impulse(angle_a1_to_a2, halfMomentum);
-		a1.damage((int) halfMomentum/1000, (int) a1.getAngleTowards(a2));
-		a2.damage((int) halfMomentum/1000, (int) a2.getAngleTowards(a1));
+		double halfKineticEnergy = a1.getKineticEnergyAngled(angle_a1_to_a2) + a2.getKineticEnergyAngled(angle_a2_to_a1);
+		a1.impulse(angle_a2_to_a1, halfKineticEnergy);
+		a2.impulse(angle_a1_to_a2, halfKineticEnergy);
+		a1.damage((int) halfKineticEnergy/1000, a2.getPosX(), a2.getPosY());
+		a2.damage((int) halfKineticEnergy/1000, a1.getPosX(), a1.getPosY());
 	}
 	public void collisionStarshipProjectile(Starship s1, Projectile p1)
 	{
@@ -472,10 +473,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//print("--> GamePanel: Starship-Starship Collision");
 		double angle_s1_s2 = angleBetween(s1, s2);
 		double angle_s2_s1 = angleBetween(s2, s1);
-		double momentum_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
-		double momentum_half = momentum_total / 2;
-		s1.impulse(angle_s2_s1, momentum_half);
-		s2.impulse(angle_s1_s2, momentum_half);
+		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
+		double kinetic_energy_half = kinetic_energy_total / 2;
+		s1.impulse(angle_s2_s1, kinetic_energy_half);
+		s2.impulse(angle_s1_s2, kinetic_energy_half);
 		//print("<-- GamePanel: Starship-Starship Collision");
 	}
 

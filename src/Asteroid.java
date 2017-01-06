@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Asteroid extends Space_Object {
@@ -33,7 +34,7 @@ public class Asteroid extends Space_Object {
 		points = new HashMap<Integer, Integer>();
 		for(int degree = 0; degree < 360; degree += Math.random()*60)
 		{
-			int distance = (int) (Math.random()*10);
+			int distance = (int) (Math.random()*100);
 			points.put(degree, distance);
 		}
 		updateBody();
@@ -60,9 +61,9 @@ public class Asteroid extends Space_Object {
 		
 		int damage = p.getDamage();
 
-		damage(damage, (int) collisionAngle);
+		damage(damage, p.getPosX(), p.getPosY());
 		impulse(getAngleFrom(p), damage * 10);
-		createFragment(damage, getAngleTowards(p), p.getPosX(), p.getPosY());
+		//createFragment(damage, getAngleTowards(p), p.getPosX(), p.getPosY());
 		//print("<-- Asteroid-Projectile Collision");
 	}
 	public double getCollisionAngle(Space_Object o)
@@ -88,8 +89,15 @@ public class Asteroid extends Space_Object {
 		int[] bodyX = new int[points_count + 1];
 		int[] bodyY = new int[points_count + 1];
 		Integer[] degree_list = points.keySet().toArray(new Integer[points_count]);
+		int[] degree_list_int = new int[degree_list.length];
+		for(int i = 0; i < degree_list.length; i++)
+		{
+			degree_list_int[i] = degree_list[i].intValue();
+		}
+		Arrays.sort(degree_list_int);
+		
 		for (int i = 0; i < points_count; i++) {
-			int degree = degree_list[i];
+			int degree = degree_list_int[i];
 			int distance = points.get(degree);
 			double angle = (degree + pos_r);
 			bodyX[i] = (int) (pos_x + distance * cosDegrees(angle));
@@ -99,19 +107,27 @@ public class Asteroid extends Space_Object {
 		bodyY[points_count] = bodyY[0];
 		body = new Polygon(bodyX, bodyY, points_count);
 		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
+		/*
+		System.out.println();
+		System.out.print("Angles: ");
+		for(int i = 0; i < degree_list_int.length; i++)
+		{
+			int angle = degree_list_int[i];
+			System.out.print(angle + ":" + points.get(angle) + ", ");
+		}
+		*/
 	}
 
-	public void damage(int damage, int angle) {
-		int angle_total = (int) (angle - pos_r);
-		if(points.containsKey(angle_total))
+	public void damage(int damage, double x, double y) {
+		int angle = (int) getAngleTowardsPos(x, y);
+		int angle_total = (int) modRangeDegrees(angle - pos_r);
+		for(int i = -damage*3; i < damage*3; i++)
 		{
-			int distance = points.get(angle_total);
-			int distance_new = distance - damage;
-			points.put(angle, distance_new);
-		}
-		else
-		{
-			
+			int angle_i = angle_total + i;
+			int distance = points.containsKey(angle_i) ? points.get(angle_i) : (int) getDistanceBetweenPos(x, y);
+			int distance_new = distance - (damage /* - Math.abs(i) */ );
+			points.put(angle_i, distance_new > 0 ? distance_new : 0);
+			System.out.println(angle_i + " (NEW) : " + distance + " -> " + distance_new);
 		}
 	}
 

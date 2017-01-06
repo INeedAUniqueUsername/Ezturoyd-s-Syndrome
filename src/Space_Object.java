@@ -57,9 +57,9 @@ public class Space_Object {
 		return result;
 	}
 	
-	public void impulse(double angle, double momentum)
+	public void impulse(double angle, double kinetic_energy)
 	{
-		incVelPolar(angle, momentum/size);
+		incVelPolar(angle, Math.sqrt((2*kinetic_energy)/size));
 	}
 	
 	public void setPosRectangular(double x, double y)
@@ -96,21 +96,21 @@ public class Space_Object {
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
 	
-	public void accelerate(double angle, double thrust)
+	public void accelerate(double angle, double speed)
 	{
-		vel_x = (vel_x + thrust*cosDegrees(angle));
-		vel_y = (vel_y + thrust*sinDegrees(angle));
+		vel_x = (vel_x + speed*cosDegrees(angle));
+		vel_y = (vel_y + speed*sinDegrees(angle));
 	}
 	
-	public void decelerate(double magnitude)
+	public void decelerate(double speed)
 	{
 		int velAngle = (int) arctanDegrees(vel_y, vel_x);
 		int decelAngle = velAngle + 180;
 		double xSpeedOriginal = vel_x;
 		double ySpeedOriginal = vel_y;
 		
-		vel_x = (vel_x + magnitude*cosDegrees(decelAngle));
-		vel_y = (vel_y + magnitude*sinDegrees(decelAngle));
+		vel_x = (vel_x + speed*cosDegrees(decelAngle));
+		vel_y = (vel_y + speed*sinDegrees(decelAngle));
 		
 		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal))
 		{
@@ -395,7 +395,7 @@ public class Space_Object {
 		//System.out.println("Speed: " + getVelSpeed());
 		//System.out.println("Size: " + size);
 		//System.out.println("Momentum: " + getVelSpeed()*size);
-		return getVelSpeed()*getMass();
+		return (1/2)*getMass()*Math.pow(getVelSpeed(), 2);
 	}
 	
 	public double getKineticEnergyAngled(double angle)
