@@ -22,7 +22,6 @@ public class Starship extends Space_Object {
 	final double ROTATION_DECEL = .4;
 	boolean thrusting;
 	boolean strafing;
-	Polygon head;
 	double structure = 100;
 	ArrayList<String> print = new ArrayList<String>();
 
@@ -32,42 +31,12 @@ public class Starship extends Space_Object {
 
 	public Starship() {
 		updateBody();
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
+		updateSize();
 	}
 
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
 		updateBody();
-		
-		int[] headX = new int[4];
-		int[] headY = new int[4];
-		/*
-		 * int topCornerX = (int) (xPos+SIZE*cosDegrees(angle)); int topCornerY
-		 * = (int) (yPos+SIZE*sinDegrees(angle));
-		 * 
-		 * int bottomRightCornerX = (int) (xPos+SIZE*cosDegrees(angle-120)); int
-		 * bottomRightCornerY = (int) (yPos+SIZE*sinDegrees(angle-120));
-		 * 
-		 * int bottomLeftCornerX = (int) (xPos+SIZE*cosDegrees(angle+120)); int
-		 * bottomLeftCornerY = (int) (xPos+SIZE*sinDegrees(angle+120));
-		 */
-		int bodyFrontX = body.xpoints[0];
-		int bodyFrontY = body.ypoints[0];
-
-		int headFrontX = (int) (bodyFrontX + HEAD_SIZE * cosDegrees(pos_r));
-		int headFrontY = (int) (bodyFrontY - HEAD_SIZE * sinDegrees(pos_r));
-
-		headX[0] = headFrontX;
-		headY[0] = headFrontY;
-
-		headX[1] = (int) (bodyFrontX + HEAD_SIZE * cosDegrees(pos_r - 120));
-		headY[1] = (int) (bodyFrontY - HEAD_SIZE * sinDegrees(pos_r - 120));
-
-		headX[2] = (int) (bodyFrontX + HEAD_SIZE * cosDegrees(pos_r + 120));
-		headY[2] = (int) (bodyFrontY - HEAD_SIZE * sinDegrees(pos_r + 120));
-
-		headX[3] = headFrontX;
-		headY[3] = headFrontY;
 
 		/*
 		 * double thrustCos = cosDegrees(angle + 180); double thrustSin =
@@ -75,10 +44,8 @@ public class Starship extends Space_Object {
 		 * 
 		 * int thrustLineStartX = thrustCos
 		 */
-		head = new Polygon(headX, headY, 4);
 
-		g.drawPolygon(body);
-		g.drawPolygon(head);
+		drawBody(g);
 		//drawVel(g, headFrontX, headFrontY);
 		
 		printToWorld("Velocity Angle: " + getVelAngle());
@@ -142,24 +109,59 @@ public class Starship extends Space_Object {
 	}
 
 	public void updateBody() {
-		int[] bodyX = new int[4];
-		int[] bodyY = new int[4];
+		int[] middleX = new int[4];
+		int[] middleY = new int[4];
 
-		int bodyFrontX = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r)));
+		int middleFrontX = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r));
+		int middleFrontY = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r)));
 
-		bodyX[0] = bodyFrontX;
-		bodyY[0] = bodyFrontY;
+		middleX[0] = middleFrontX;
+		middleY[0] = middleFrontY;
 
-		bodyX[1] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r - 120));
-		bodyY[1] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r - 120)));
+		middleX[1] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r - 120));
+		middleY[1] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r - 120)));
 
-		bodyX[2] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r + 120));
-		bodyY[2] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r + 120)));
+		middleX[2] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r + 120));
+		middleY[2] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r + 120)));
 
-		bodyX[3] = bodyFrontX;
-		bodyY[3] = bodyFrontY;
-		body = new Polygon(bodyX, bodyY, 4);
+		middleX[3] = middleFrontX;
+		middleY[3] = middleFrontY;
+		Polygon middle = new Polygon(middleX, middleY, 4);
+		
+		int[] headX = new int[4];
+		int[] headY = new int[4];
+		
+		/*
+		 * int topCornerX = (int) (xPos+SIZE*cosDegrees(angle)); int topCornerY
+		 * = (int) (yPos+SIZE*sinDegrees(angle));
+		 * 
+		 * int bottomRightCornerX = (int) (xPos+SIZE*cosDegrees(angle-120)); int
+		 * bottomRightCornerY = (int) (yPos+SIZE*sinDegrees(angle-120));
+		 * 
+		 * int bottomLeftCornerX = (int) (xPos+SIZE*cosDegrees(angle+120)); int
+		 * bottomLeftCornerY = (int) (xPos+SIZE*sinDegrees(angle+120));
+		 */
+
+		int headFrontX = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r));
+		int headFrontY = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r));
+
+		headX[0] = headFrontX;
+		headY[0] = headFrontY;
+
+		headX[1] = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r - 120));
+		headY[1] = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r - 120));
+
+		headX[2] = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r + 120));
+		headY[2] = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r + 120));
+
+		headX[3] = headFrontX;
+		headY[3] = headFrontY;
+		
+		Polygon head = new Polygon(headX, headY, 4);
+		
+		body = new ArrayList<Polygon>();
+		body.add(middle);
+		body.add(head);
 	}
 
 	public void thrust() {
@@ -215,14 +217,6 @@ public class Starship extends Space_Object {
 		{
 			destroy();
 		}
-	}
-
-	public Polygon getHead() {
-		return head;
-	}
-
-	public Polygon getBody() {
-		return body;
 	}
 
 	public void setFiring(boolean state) {

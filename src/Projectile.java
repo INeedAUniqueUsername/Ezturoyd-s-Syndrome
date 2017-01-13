@@ -2,12 +2,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.util.ArrayList;
 
 public class Projectile extends Space_Object {
 
 	int lifetime;
 	int width = 3;
-	int height = 5;
+	int height = 24;
 	int damage;
 	Space_Object owner;
 	Color color = Color.RED;
@@ -25,7 +26,7 @@ public class Projectile extends Space_Object {
 		this.damage = damage;
 
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		updateSize();
 	}
 	
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
@@ -38,13 +39,13 @@ public class Projectile extends Space_Object {
 		this.damage = damage;
 
 		updateBody();
-		size = polygonArea(body.xpoints, body.ypoints, body.npoints);
+		updateSize();
 	}
 
 	public void draw(Graphics g) {
 		g.setColor(color);
 		updateBody();
-		g.drawPolygon(body);
+		drawBody(g);
 	}
 
 	public void update() {
@@ -72,6 +73,7 @@ public class Projectile extends Space_Object {
 	}
 
 	public void updateBody() {
+		/*
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 
@@ -89,7 +91,32 @@ public class Projectile extends Space_Object {
 
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
-		body = new Polygon(bodyX, bodyY, 4);
+		*/
+		
+		//Rectangle
+		int[] bodyX = new int[5];
+		int[] bodyY = new int[5];
+		
+		//Bottom Left
+		bodyX[0] = (int) (pos_x - (width/2) * cosDegrees(pos_r+90));
+		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (width/2) * sinDegrees(pos_r+90)));
+		
+		//Top left
+		bodyX[1] = (int) (bodyX[0] + height * cosDegrees(pos_r));
+		bodyY[1] = (int) (bodyY[0] - height * sinDegrees(pos_r));
+		//Top right
+		bodyX[2] = (int) (bodyX[1] + width * cosDegrees(pos_r+90));
+		bodyY[2] = (int) (bodyY[1] - width * sinDegrees(pos_r+90));
+		
+		//Bottom right
+		bodyX[3] = (int) (bodyX[0] + width * cosDegrees(pos_r+90));
+		bodyY[3] = (int) (bodyY[0] - width * sinDegrees(pos_r+90));
+		
+		bodyX[4] = bodyX[0];
+		bodyY[4] = bodyY[0];
+		
+		body = new ArrayList<Polygon>();
+		body.add(new Polygon(bodyX, bodyY, 5));
 	}
 	public void destroy()
 	{

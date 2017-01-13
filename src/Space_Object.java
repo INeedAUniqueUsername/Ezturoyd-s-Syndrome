@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.util.ArrayList;
 
 public class Space_Object {
 
@@ -17,7 +18,7 @@ public class Space_Object {
 	double vel_x = 0;
 	double vel_y = 0;
 	double vel_r = 0;
-	Polygon body;
+	ArrayList<Polygon> body;
 	double size;
 	
 	int lastCollisionTick = 0;
@@ -183,7 +184,7 @@ public class Space_Object {
 		vel_r = vel_r - accel;
 	}
 	
-	public Polygon getBody() {
+	public ArrayList<Polygon> getBody() {
 		return body;
 	}
 	
@@ -251,6 +252,14 @@ public class Space_Object {
 	    }
 	  return area/2;
 	}
+	public void updateSize()
+	{
+		size = 0;
+		for(Polygon part : body)
+		{
+			size += Math.abs(polygonArea(part.xpoints, part.ypoints, part.npoints));
+		}
+	}
 	
 	public void update()
 	{
@@ -260,6 +269,13 @@ public class Space_Object {
 	public void draw(Graphics g)
 	{
 		
+	}
+	public void drawBody(Graphics g)
+	{
+		for(Polygon part : body)
+		{
+			g.drawPolygon(part);
+		}
 	}
 	
 	public void destroy()

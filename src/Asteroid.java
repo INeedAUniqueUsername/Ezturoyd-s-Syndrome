@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -38,7 +39,7 @@ public class Asteroid extends Space_Object {
 			points.put(degree, distance);
 		}
 		updateBody();
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
+		updateSize();
 	}
 	public void initializeBody(int count, int minSize, int maxSize) {
 		points = new HashMap<Integer, Integer>();
@@ -52,7 +53,7 @@ public class Asteroid extends Space_Object {
 			degreesLeft = 360 - angle;
 		}
 		updateBody();
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
+		updateSize();
 	}
 	public void collisionProjectile(Projectile p) {
 		//print("--> Ateroid-Projectile Collision");
@@ -75,7 +76,7 @@ public class Asteroid extends Space_Object {
 		g.setColor(Color.WHITE);
 
 		updateBody();
-		g.drawPolygon(body);
+		drawBody(g);
 	}
 
 	public void update() {
@@ -105,8 +106,9 @@ public class Asteroid extends Space_Object {
 		}
 		bodyX[points_count] = bodyX[0];
 		bodyY[points_count] = bodyY[0];
-		body = new Polygon(bodyX, bodyY, points_count);
-		size = Math.abs(polygonArea(body.xpoints, body.ypoints, body.npoints));
+		body = new ArrayList<Polygon>();
+		body.add(new Polygon(bodyX, bodyY, points_count));
+		updateSize();
 		/*
 		System.out.println();
 		System.out.print("Angles: ");

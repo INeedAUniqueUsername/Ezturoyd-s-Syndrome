@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public class Starship_Enemy extends Starship {
 	
-	Space_Object target;
+	Space_Object target_object;
 	
 	public void update()
 	{
 		updateSpaceship();
-		if(exists(target))
+		if(exists(target_object))
 		{
 			faceTarget();
 		}
@@ -18,7 +18,7 @@ public class Starship_Enemy extends Starship {
 	}
 	public void setTarget(Space_Object target_new)
 	{
-		target = target_new;
+		target_object = target_new;
 	}
 	public double getVelTowards(Space_Object object)
 	{
@@ -28,8 +28,8 @@ public class Starship_Enemy extends Starship {
 	public void faceTarget()
 	{
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
-		double target_x_center = target.getPosX();
-		double target_y_center = target.getPosY();
+		double target_x_center = target_object.getPosX();
+		double target_y_center = target_object.getPosY();
 		double target_distance_center = getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
 		
 		double target_x_up = target_x_center;
@@ -144,7 +144,7 @@ public class Starship_Enemy extends Starship {
 		}
 		
 		double distance_to_target = target_distance_focus;
-		double velDiff = getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
+		double velDiff = getVelRadial(angle_to_target) - target_object.getVelRadial(angle_to_target);
 		if(distance_to_target > getMinSeparation())
 		{
 			action_thrusting = act_thrust;

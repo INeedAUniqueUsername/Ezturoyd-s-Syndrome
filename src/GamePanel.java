@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,19 +62,34 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
-		Starship_Enemy enemy = new Starship_Enemy();
-		addStarship(enemy);
-		enemy.setPosRectangular(400, 225);
-		enemy.setTarget(player);
-		enemy.setName("Enemy");
-		addWeapon(enemy, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
+		Starship_Enemy enemy1 = new Starship_Enemy();
+		addStarship(enemy1);
+		enemy1.setPosRectangular(400, 225);
+		enemy1.setTarget(player);
+		enemy1.setName("Enemy");
+		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
+		
+		Starship_Enemy enemy2 = new Starship_Enemy();
+		addStarship(enemy2);
+		enemy2.setPosRectangular(800, 525);
+		enemy2.setTarget(enemy1);
+		enemy2.setName("Enemy");
+		addWeapon(enemy2, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
+		
+		Starship_Enemy enemy3 = new Starship_Enemy();
+		addStarship(enemy3);
+		enemy3.setPosRectangular(0, 0);
+		enemy3.setTarget(player);
+		enemy3.setName("Enemy");
+		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 
+		/*
 		Asteroid rock = new Asteroid();
 		rock.initializeBody(10, 50, 70);
 		addAsteroid(rock);
 		rock.setPosRectangular(600, 375);
 		rock.setName("Asteroid");
-	
+		*/
 		/*
 		player.setVelRectangular(5, 0);
 		for(int i = 0; i < 360; i++)
@@ -377,8 +393,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public static boolean objectsIntersect(Space_Object a, Space_Object b) {
-		Area areaA = new Area(a.getBody());
-		areaA.intersect(new Area(b.getBody()));
+		Area areaA = new Area();
+		for(Polygon part : a.getBody())
+		{
+			areaA.add(new Area(part));
+		}
+		
+		Area areaB = new Area();
+		for(Polygon part : b.getBody())
+		{
+			areaB.add(new Area(part));
+		}
+		
+		areaA.intersect(areaB);
 		return !areaA.isEmpty();
 	}
 
