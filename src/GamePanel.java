@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player.setPosRectangular(800, 450);
 
 		addStarship(player);
-		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 90, Color.RED));
 		addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
@@ -447,6 +447,23 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		universe.remove(weapon);
 		weapons.remove(weapon);
+	}
+	
+	public ArrayList<Space_Object> getUniverse()
+	{
+		return universe;
+	}
+	public ArrayList<Starship> getStarships()
+	{
+		return starships;
+	}
+	public ArrayList<Projectile> getProjectiles()
+	{
+		return projectiles;
+	}
+	public ArrayList<Asteroid> getAsteroids()
+	{
+		return asteroids;
 	}
 	
 	public double angleBetween(Space_Object from, Space_Object to) {

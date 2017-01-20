@@ -7,10 +7,43 @@ public class Starship_Enemy extends Starship {
 	
 	Space_Object target_object;
 	
+	final String ACT_THRUST = "Thrust";
+	final String ACT_BRAKE = "Brake";
+	final String ACT_TURN_CCW = "CCW";
+	final String ACT_TURN_CW = "CW";
+	final String ACT_FIRE = "Fire";
+	
 	public void update()
 	{
 		updateSpaceship();
-		if(exists(target_object))
+		
+		ArrayList<Space_Object> objectsTooClose = new ArrayList<Space_Object>();
+		for(Space_Object o : world.getStarships())
+		{
+			if(!o.equals(this))
+			{
+				if(getDistanceBetween(o) < getMinSeparationFromOthers())
+				{
+					objectsTooClose.add(o);
+				}
+				
+			}
+		}
+		
+		int objectsTooCloseCount = objectsTooClose.size();
+		if(objectsTooCloseCount > 0)
+		{
+			double angle_destination = 0;
+			for(Space_Object o : objectsTooClose)
+			{
+				angle_destination += getAngleFrom(o);
+			}
+			angle_destination /= objectsTooCloseCount;
+			turnDirection(calcTurnDirection(angle_destination));
+			thrust();
+			System.out.println("Too close to " + objectsTooClose);
+			System.out.println("Destination Angle: " + angle_destination);
+		} else if(exists(target_object))
 		{
 			faceTarget();
 		}
@@ -81,12 +114,8 @@ public class Starship_Enemy extends Starship {
 		String action_rotation = "Nothing";
 		String action_strafing = "Nothing";
 		String action_weapon = "Nothing";
-		final String act_thrust = "Thrust";
-		final String act_brake = "Brake";
-		final String act_turn_ccw = "CCW";
-		final String act_turn_cw = "CW";
-		final String act_fire = "Fire";
 		double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
+		
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
 		//Let's relearn AP Physics I!
@@ -102,20 +131,20 @@ public class Starship_Enemy extends Starship {
 		{
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
-				action_rotation = act_turn_cw;
+				action_rotation = ACT_TURN_CW;
 				printToWorld("Status (Facing): CW");
 			}
 			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
-				action_rotation = act_turn_ccw;
+				action_rotation = ACT_TURN_CCW;
 				printToWorld("Status (Facing): CCW");
 			}
 			else
 			{
 				if(Math.random() > .5) {
-					action_rotation = act_turn_ccw;
+					action_rotation = ACT_TURN_CCW;
 				} else {
-					action_rotation = act_turn_ccw;
+					action_rotation = ACT_TURN_CCW;
 				}
 				printToWorld("Status (Facing): Random");
 			}
@@ -124,13 +153,14 @@ public class Starship_Enemy extends Starship {
 		{
 			printToWorld("Status (Facing): Aligned");
 		}
+		
 		double velAngle = getVelAngle();
 		double velAngleDiffCCW = modRangeDegrees(angle_to_target - velAngle);
 		double velAngleDiffCW = modRangeDegrees(velAngle - angle_to_target);
 		double velAngleDiff = min(velAngleDiffCCW, velAngleDiffCW);
 		if(velAngleDiff > 120)
 		{
-			action_thrusting = act_brake;
+			action_thrusting = ACT_BRAKE;
 			printToWorld("Status: Brake");
 		}
 		else if(velAngleDiff > 60)
@@ -139,20 +169,20 @@ public class Starship_Enemy extends Starship {
 		}
 		else
 		{
-			action_thrusting = act_thrust;
+			action_thrusting = ACT_THRUST;
 			printToWorld("Status: Thrust");
 		}
 		
 		double distance_to_target = target_distance_focus;
 		double velDiff = getVelRadial(angle_to_target) - target_object.getVelRadial(angle_to_target);
-		if(distance_to_target > getMinSeparation())
+		if(distance_to_target > getMinSeparationFromTarget())
 		{
-			action_thrusting = act_thrust;
+			action_thrusting = ACT_THRUST;
 			printToWorld("Status (Distance): Far");
 		}
 		else
 		{
-			action_thrusting = act_brake;
+			action_thrusting = ACT_BRAKE;
 			printToWorld("Status (Distance): Close");
 		}
 		
@@ -160,7 +190,7 @@ public class Starship_Enemy extends Starship {
 		
 		if(faceAngleDiff + velAngleDiff < 10)
 		{
-			action_weapon = act_fire;
+			action_weapon = ACT_FIRE;
 		}
 		
 		
@@ -194,31 +224,87 @@ public class Starship_Enemy extends Starship {
 		*/
 		switch(action_thrusting)
 		{
-		case act_thrust: thrust();
-			break;
-		case act_brake: brake();
-			break;
+		case	ACT_THRUST:		thrust();			break;
+		case	ACT_BRAKE:		brake();			break;
 		}
 		switch(action_rotation)
 		{
-		case act_turn_ccw: turnCCW();
-			break;
-		case act_turn_cw: turnCW();
-			break;
+		case	ACT_TURN_CCW:	turnCCW();			break;
+		case	ACT_TURN_CW:	turnCW();			break;
 		}
 		switch(action_weapon)
 		{
-		case act_fire: setFiring(true);
-			break;
+		case	ACT_FIRE:		setFiring(true);	break;
 		}
 		
 	}
+	public String calcTurnDirection(double target_angle)
+	{
+		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
+		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
+		//Let's relearn AP Physics I!
+		double pos_r_future =
+				pos_r
+				+ vel_r * r_decel_time
+				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
+				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
+		double faceAngleDiffCCW = modRangeDegrees(target_angle - pos_r_future);
+		double faceAngleDiffCW = modRangeDegrees(pos_r_future - target_angle);
+		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
+		if(faceAngleDiff > getMaxAngleDifference())
+		{
+			if(faceAngleDiffCW < faceAngleDiffCCW)
+			{
+				printToWorld("Status (Facing): CW");
+				return "CW";
+			}
+			else if(faceAngleDiffCCW < faceAngleDiffCW)
+			{
+				printToWorld("Status (Facing): CCW");
+				return "CCW";
+			}
+			else
+			{
+				printToWorld("Status (Facing): Random");
+				if(Math.random() > .5) {
+					return "CW";
+				} else {
+					return "CCW";
+				}
+			}
+		}
+		else
+		{
+			printToWorld("Status (Facing): Aligned");
+			return "";
+		}
+	}
+	public void turnDirection(String direction)
+	{
+		switch(direction)
+		{
+		case	ACT_TURN_CCW:	turnCCW();			break;
+		case	ACT_TURN_CW:	turnCW();			break;
+		}
+	}
+	public Space_Object getTarget()
+	{
+		return target_object;
+	}
 	public double getMaxAngleDifference()
 	{
-		return 10;
+		return 5;
 	}
-	public double getMinSeparation()
+	public double getMinSeparationFromAttackers()
 	{
 		return 300;
+	}
+	public double getMinSeparationFromTarget()
+	{
+		return 200;
+	}
+	public double getMinSeparationFromOthers()
+	{
+		return 100;
 	}
 }

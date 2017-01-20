@@ -24,9 +24,8 @@ public class Projectile extends Space_Object {
 		
 		lifetime = life;
 		this.damage = damage;
-
-		updateBody();
-		updateSize();
+		
+		initialize();
 	}
 	
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
@@ -38,10 +37,18 @@ public class Projectile extends Space_Object {
 		lifetime = life;
 		this.damage = damage;
 
+		initialize();
+	}
+
+	public void initialize()
+	{
+		System.out.println("Projectile X: " + pos_x);
+		System.out.println("Projectile Y: " + pos_y);
+		System.out.println("Projectile R: " + pos_r);
+		
 		updateBody();
 		updateSize();
 	}
-
 	public void draw(Graphics g) {
 		g.setColor(color);
 		updateBody();
@@ -98,8 +105,8 @@ public class Projectile extends Space_Object {
 		int[] bodyY = new int[5];
 		
 		//Bottom Left
-		bodyX[0] = (int) (pos_x - (width/2) * cosDegrees(pos_r+90));
-		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (width/2) * sinDegrees(pos_r+90)));
+		bodyX[0] = (int) (pos_x - (width/2) * cosDegrees(pos_r));
+		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (height/2) * sinDegrees(pos_r)));
 		
 		//Top left
 		bodyX[1] = (int) (bodyX[0] + height * cosDegrees(pos_r));
@@ -114,7 +121,6 @@ public class Projectile extends Space_Object {
 		
 		bodyX[4] = bodyX[0];
 		bodyY[4] = bodyY[0];
-		
 		body = new ArrayList<Polygon>();
 		body.add(new Polygon(bodyX, bodyY, 5));
 	}
