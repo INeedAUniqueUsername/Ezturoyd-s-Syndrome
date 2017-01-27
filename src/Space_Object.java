@@ -2,6 +2,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public class Space_Object {
@@ -61,6 +63,11 @@ public class Space_Object {
 	public void impulse(double angle, double kinetic_energy)
 	{
 		incVelPolar(angle, Math.sqrt((2*kinetic_energy)/size));
+	}
+	
+	public Point2D.Double calcFuturePos(double time)
+	{
+		return new Point2D.Double(pos_x + time * vel_x, pos_y + time * vel_y);
 	}
 	
 	public void setPosRectangular(double x, double y)
@@ -296,15 +303,27 @@ public class Space_Object {
 	{
 		return arctanDegrees(y - getPosY(), x - getPosX());
 	}
-	
 	public double getAngleFromPos(double x, double y)
 	{
 		return arctanDegrees(getPosY() - y, getPosX() - x);
 	}
 	
+	public double getAngleTowardsPos (Point2D.Double pos)
+	{
+		return arctanDegrees(pos.getY() - getPosY(), pos.getX() - getPosX());
+	}
+	public double getAngleFromPos(Point2D.Double pos)
+	{
+		return arctanDegrees(getPosY() - pos.getY(), getPosX() - pos.getX());
+	}
+	
 	public double getDistanceBetween(Space_Object target)
 	{
 		return Math.sqrt(Math.pow((target.getPosX() - getPosX()), 2) + Math.pow((target.getPosY() - getPosY()), 2));
+	}
+	public double getDistanceBetweenPos(Point2D.Double pos)
+	{
+		return Math.sqrt(Math.pow(pos.getX() - getPosX(), 2) + Math.pow(pos.getY() - getPosY(), 2));		
 	}
 	public double getDistanceBetweenPos(double x, double y)
 	{
@@ -341,11 +360,9 @@ public class Space_Object {
 		
 	}
 	
-	public Point getPos()
+	public Point2D.Double getPos()
 	{
-		Point result = new Point();
-		result.setLocation(pos_x, pos_y);
-		return result;
+		return new Point2D.Double(pos_x, pos_y);
 	}
 	
 	public double getPosX()
@@ -366,6 +383,11 @@ public class Space_Object {
 	public boolean getActive()
 	{
 		return active;
+	}
+	
+	public Point2D.Double calcPolarOffset(double angle, double distance)
+	{
+		return new Point2D.Double(pos_x + distance * cosDegrees(angle), pos_y + distance * sinDegrees(angle));
 	}
 	
 	public double getVelAngle()

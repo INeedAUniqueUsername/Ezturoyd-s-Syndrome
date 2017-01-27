@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Asteroid extends Space_Object {
+public class Asteroid_Deprecated_2 extends Space_Object {
 
 	HashMap<Integer, Integer> points;
 
@@ -17,7 +17,7 @@ public class Asteroid extends Space_Object {
 	final int MAX_POINTS = 10;
 	final int MAX_ROTATION = 3;
 
-	public Asteroid() {
+	public Asteroid_Deprecated_2() {
 		initializeBody();
 
 		//print("Count: " + points_count);
@@ -136,11 +136,11 @@ public class Asteroid extends Space_Object {
 	public void createFragment(int damage, double angle, double x, double y)
 	{
 		if (damage > 5) {
-			Asteroid fragment = new Asteroid();
+			Asteroid_Deprecated_2 fragment = new Asteroid_Deprecated_2();
 			fragment.initializeBody(5, damage, damage * 2);
 			fragment.setPosRectangular(x, y);
 			fragment.setVelPolar(angle, damage / 2);
-			world.addAsteroid(fragment);
+			//world.addAsteroid(fragment);
 		} else {
 			Projectile fragment = new Projectile(x, y, angle, damage, 30, damage, damage, Color.WHITE);
 			fragment.setVelPolar(angle, damage / 2);
@@ -151,6 +151,6 @@ public class Asteroid extends Space_Object {
 	
 	public void destroy()
 	{
-		world.removeAsteroid(this);
+		//world.removeAsteroid(this);
 	}
 }

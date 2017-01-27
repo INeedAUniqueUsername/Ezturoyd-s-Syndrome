@@ -163,6 +163,11 @@ public class Starship extends Space_Object {
 		body.add(middle);
 		body.add(head);
 	}
+	
+	public void onAttacked(Space_Object attacker)
+	{
+		
+	}
 
 	public void thrust() {
 		accelerate(pos_r, THRUST);
@@ -217,6 +222,15 @@ public class Starship extends Space_Object {
 		{
 			destroy();
 		}
+	}
+	
+	public ArrayList<Weapon> getWeapon()
+	{
+		return weapons;
+	}
+	public Weapon getWeaponPrimary()
+	{
+		return weapons.size() > 0 ? weapons.get(0) : null;
 	}
 
 	public void setFiring(boolean state) {
