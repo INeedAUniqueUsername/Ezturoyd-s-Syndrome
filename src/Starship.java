@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Starship extends Space_Object {
 
 	final int HEAD_SIZE = 20;
 	final int BODY_SIZE = 30;
-	final int THRUST = 1;
+	final int THRUST = 1; //1
 	final int MAX_SPEED = 8;
 	final double DECEL = .5;
 	final int ROTATION_MAX = 15;
@@ -35,6 +36,10 @@ public class Starship extends Space_Object {
 	}
 
 	public void draw(Graphics g) {
+		drawStarship(g);
+	}
+	public void drawStarship(Graphics g)
+	{
 		g.setColor(Color.RED);
 		updateBody();
 
@@ -48,27 +53,58 @@ public class Starship extends Space_Object {
 		drawBody(g);
 		//drawVel(g, headFrontX, headFrontY);
 		
-		printToWorld("Velocity Angle: " + getVelAngle());
+		//drawArrow(g, getPos(), polarOffset(getPos(), pos_r, 50));
+		
+		//printToWorld("Velocity Angle: " + getVelAngle());
 	}
+	/*
 	public void drawVel(Graphics g, double x1, double y1)
 	{
 		g.setColor(Color.GREEN);
 		double velAngle = getVelAngle();
 		
-		Point arrow_head = polarOffset(x1, y1, velAngle, 20);
+		Point2D.Double arrow_head = polarOffset(x1, y1, velAngle, 20);
 		double x2 = arrow_head.getX();
 		double y2 = arrow_head.getY();
 		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
 		
-		Point arrow_left = polarOffset(x2, y2, velAngle + 120, 10);
+		Point2D.Double arrow_left = polarOffset(x2, y2, velAngle + 120, 10);
 		g.drawLine((int) x2, (int) y2, (int) arrow_left.getX(), (int) arrow_left.getY());
 		
-		Point arrow_right = polarOffset(x2, y2, velAngle - 120, 10);
+		Point2D.Double arrow_right = polarOffset(x2, y2, velAngle - 120, 10);
 		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
 	}
-	public Point polarOffset(double x, double y, double angle, double distance)
+	*/
+	public void drawArrow(Graphics g, Point2D.Double origin, Point2D.Double dest)
 	{
-		return new Point((int) (x + distance * cosDegrees(angle)), (int) (y - distance * sinDegrees(angle)));
+		g.setColor(Color.GREEN);
+		
+		double x1 = origin.getX();
+		double y1 = origin.getY();
+		
+		double x2 = dest.getX();
+		double y2 = dest.getY();
+		
+		double angle = arctanDegrees(y2 - y1, x2 - x1);
+		
+		g.drawLine((int) x1, GameWindow.HEIGHT - (int) y1, (int) x2, GameWindow.HEIGHT - (int) y2);
+		
+		Point2D.Double arrow_left = polarOffset(dest, angle + 120, 10);
+		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_left.getX(), GameWindow.HEIGHT - (int) arrow_left.getY());
+		
+		Point2D.Double arrow_right = polarOffset(dest, angle - 120, 10);
+		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_right.getX(), GameWindow.HEIGHT - (int) arrow_right.getY());
+	}
+	
+	/*
+	public Point2D.Double polarOffset(double x, double y, double angle, double distance)
+	{
+		return new Point2D.Double(x + distance * cosDegrees(angle), y - distance * sinDegrees(angle));
+	}
+	*/
+	public Point2D.Double polarOffset(Point2D.Double origin, double angle, double distance)
+	{
+		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), origin.getY() + distance * sinDegrees(angle));
 	}
 
 	public void update() {

@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy1.setTargetPrimary(player);
 		enemy1.setName("Enemy");
 		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
-		
+		/*
 		Starship_Enemy enemy2 = new Starship_Enemy();
 		addStarship(enemy2);
 		enemy2.setPosRectangular(800, 525);
@@ -82,6 +82,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy3.setTargetPrimary(player);
 		enemy3.setName("Enemy");
 		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
+		 */
+
 
 		/*
 		Asteroid rock = new Asteroid();
