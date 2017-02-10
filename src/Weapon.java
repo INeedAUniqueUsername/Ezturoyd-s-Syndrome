@@ -16,6 +16,8 @@ public class Weapon {
 
 	double fire_angle = 0;
 
+	double aim_x, aim_y;
+	
 	double posX;
 	double posY;
 
@@ -139,9 +141,9 @@ public class Weapon {
 		return owner;
 	}
 	
-	public void setTargetPos(double x, double y)
-	{
-		
+	public void setAimPos(double x, double y) {
+		aim_x = x;
+		aim_y = y;
 	}
 
 	public void setOwner(Starship owner_new) {

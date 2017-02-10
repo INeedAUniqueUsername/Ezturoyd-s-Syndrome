@@ -15,14 +15,14 @@ public class Starship_Enemy extends Starship {
 	final String ACT_TURN_CCW = "CCW";
 	final String ACT_TURN_CW = "CW";
 	final String ACT_FIRE = "Fire";
-	
-	double aim = 0;
+	final String ACT_NOTHING = "Nothing";
 	
 	public void draw(Graphics g)
 	{
 		drawStarship(g);
 		
 		Space_Object target = getTargetPrimary();
+		/*
 		if(exists(target))
 		{
 			Point2D.Double pos = getPos();
@@ -32,6 +32,7 @@ public class Starship_Enemy extends Starship {
 			drawArrow(g, pos, pos_target);
 			drawArrow(g, pos_target, pos_solution);
 		}
+		*/
 			
 	}
 	
@@ -151,12 +152,12 @@ public class Starship_Enemy extends Starship {
 			target_distance_focus = target_distance_left;
 		}
 		
-		String action_thrusting = "Nothing";
-		String action_rotation = "Nothing";
-		String action_strafing = "Nothing";
-		String action_weapon = "Nothing";
+		String action_thrusting = ACT_NOTHING;
+		String action_rotation = ACT_NOTHING;
+		String action_strafing = ACT_NOTHING;
+		String action_weapon = ACT_NOTHING;
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
-		double angle_to_target = calcFireSolution(getPos(), new Point2D.Double(target_x_focus, target_y_focus), new Point2D.Double(target.getVelX() - getVelX(), target.getVelY() - getVelY()));
+		double angle_to_target = calcFireSolution(new Point2D.Double(target_x_focus - getPosX(), target_y_focus - getPosY()), new Point2D.Double(target.getVelX() - getVelX(), target.getVelY() - getVelY()), getWeaponPrimary().getProjectileSpeed());
 		double aim = angle_to_target;
 		double faceAngleDiff = calcFutureAngleDifference(angle_to_target);
 		if(faceAngleDiff > getMaxAngleDifference())
@@ -166,6 +167,7 @@ public class Starship_Enemy extends Starship {
 		else
 		{
 			printToWorld("Status (Facing): Aligned");
+			action_weapon = ACT_FIRE;
 		}
 		
 		double velAngle = getVelAngle();
@@ -203,10 +205,6 @@ public class Starship_Enemy extends Starship {
 			action_thrusting = ACT_BRAKE;
 			printToWorld("Status (Distance): Close");
 		}
-		if(faceAngleDiff < 0.5)
-		{
-			action_weapon = ACT_FIRE;
-		}
 		printToWorld("Angle to Target: " + angle_to_target);
 		printToWorld("Max Facing Angle Difference: " + getMaxAngleDifference());
 		printToWorld("Velocity Angle: " + velAngle);
@@ -242,6 +240,7 @@ public class Starship_Enemy extends Starship {
 		}
 		switch(action_weapon) {
 		case	ACT_FIRE:		setFiring(true);	break;
+		default:				setFiring(false);	break;
 		}
 		
 	}
@@ -293,54 +292,6 @@ public class Starship_Enemy extends Starship {
 		return angle_to_hit;
 	}
 */
-	
-	public double calcFireSolution(Point2D.Double pos_source, Point2D.Double pos_target, Point2D.Double vel_diff)
-	{
-		Weapon weapon_primary = getWeaponPrimary();
-		double weapon_speed = weapon_primary.getProjectileSpeed();
-		
-		//Here is our initial estimate. If the target is moving, then by the time the shot reaches the target's original position, the target will be somnewhere else
-		double time_to_hit_estimate = getDistanceBetweenPos(pos_target) / weapon_speed;
-		Point2D.Double pos_target_future = calcFuturePos(pos_target, vel_diff, time_to_hit_estimate);
-		double angle_to_hit_estimate = getAngleTowardsPos(pos_target_future);
-		
-		//System.out.println("Try 0");
-		//System.out.println("Time to Hit: " + time_to_hit_estimate);
-		
-		//Calculate the time to hit the target at its new position, and then calculate where the target will be relative to its original position after the new estimated time.
-		boolean active = true;
-		double time_to_hit_old = 0;
-		for(int i = 1; i < 10; i++)
-		{
-			double time_to_hit = getDistanceBetweenPos(pos_target_future) / weapon_speed;
-			pos_target_future = calcFuturePos(pos_target, vel_diff, time_to_hit);
-			
-			//System.out.println("Try " + i);
-			//System.out.println("Time to Hit: " + time_to_hit);
-			
-			if(Math.abs(time_to_hit - time_to_hit_old) < 1)
-			{
-				active = false;
-				break;
-			}
-			time_to_hit_old = time_to_hit;
-		}
-		
-		double angle_to_hit = getAngleTowardsPos(pos_target_future);
-		if(angle_to_hit_estimate != angle_to_hit)
-		{
-			System.out.println("Angle (Original): " + angle_to_hit_estimate);
-			System.out.println("Angle (Actual): " + angle_to_hit);
-			
-		}
-		return angle_to_hit;
-	}
-	public Point2D.Double calcFuturePos(Point2D.Double origin, Point2D.Double vel, double time)
-	{
-		double angle = arctanDegrees(vel.getY(), vel.getX());
-		double speed = Math.sqrt(Math.pow(vel.getX(), 2) + Math.pow(vel.getY(), 2));
-		return polarOffset(origin, angle, speed * time);
-	}
 	public double calcFutureAngle()
 	{
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
@@ -413,7 +364,7 @@ public class Starship_Enemy extends Starship {
 	}
 	public double getMaxAngleDifference()
 	{
-		return 3;
+		return 1;
 	}
 	public double getMinSeparationFromAttackers()
 	{
@@ -421,11 +372,13 @@ public class Starship_Enemy extends Starship {
 	}
 	public double getMaxSeparationFromTarget()
 	{
-		return 300;
+		//return 300;
+		return 700;
 	}
 	public double getMinSeparationFromTarget()
 	{
-		return 200;
+		//return 200;
+		return 400;
 	}
 	public double getMinSeparationFromOthers()
 	{

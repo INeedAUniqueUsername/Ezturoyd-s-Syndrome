@@ -15,15 +15,18 @@ public class Starship extends Space_Object {
 
 	final int HEAD_SIZE = 20;
 	final int BODY_SIZE = 30;
-	final int THRUST = 1; //1
+	final double THRUST = .5; //1
 	final int MAX_SPEED = 8;
-	final double DECEL = .5;
-	final int ROTATION_MAX = 15;
-	final int ROTATION_ACCEL = 4;
+	final double DECEL = .2;
+	final double ROTATION_MAX = 15;
+	final double ROTATION_ACCEL = .6;
 	final double ROTATION_DECEL = .4;
 	boolean thrusting;
+	boolean turningCCW;
+	boolean turningCW;
 	boolean strafing;
-	double structure = 100;
+	boolean braking;
+	double structure = 1000;
 	ArrayList<String> print = new ArrayList<String>();
 
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
@@ -75,37 +78,6 @@ public class Starship extends Space_Object {
 		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
 	}
 	*/
-	public void drawArrow(Graphics g, Point2D.Double origin, Point2D.Double dest)
-	{
-		g.setColor(Color.GREEN);
-		
-		double x1 = origin.getX();
-		double y1 = origin.getY();
-		
-		double x2 = dest.getX();
-		double y2 = dest.getY();
-		
-		double angle = arctanDegrees(y2 - y1, x2 - x1);
-		
-		g.drawLine((int) x1, GameWindow.HEIGHT - (int) y1, (int) x2, GameWindow.HEIGHT - (int) y2);
-		
-		Point2D.Double arrow_left = polarOffset(dest, angle + 120, 10);
-		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_left.getX(), GameWindow.HEIGHT - (int) arrow_left.getY());
-		
-		Point2D.Double arrow_right = polarOffset(dest, angle - 120, 10);
-		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_right.getX(), GameWindow.HEIGHT - (int) arrow_right.getY());
-	}
-	
-	/*
-	public Point2D.Double polarOffset(double x, double y, double angle, double distance)
-	{
-		return new Point2D.Double(x + distance * cosDegrees(angle), y - distance * sinDegrees(angle));
-	}
-	*/
-	public Point2D.Double polarOffset(Point2D.Double origin, double angle, double distance)
-	{
-		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), origin.getY() + distance * sinDegrees(angle));
-	}
 
 	public void update() {
 		updateSpaceship();
@@ -113,34 +85,33 @@ public class Starship extends Space_Object {
 	
 	public void updateSpaceship()
 	{
-		double rSpeedAbs = Math.abs(vel_r);
-		if (rSpeedAbs > 0) {
-			if (vel_r < 0) {
-				if (vel_r < -ROTATION_MAX) {
-					vel_r = -ROTATION_MAX;
-				} else {
-					vel_r = vel_r + ROTATION_DECEL;
-					if (vel_r > 0) {
-						vel_r = 0;
-					}
-				}
-			} else if (vel_r > 0) {
-				if (vel_r > ROTATION_MAX) {
-					vel_r = ROTATION_MAX;
-				} else {
-					vel_r = vel_r - ROTATION_DECEL;
-					if (vel_r < 0) {
-						vel_r = 0;
-					}
+		double speed_r = Math.abs(vel_r);
+		if (speed_r > 0)
+			if(speed_r > ROTATION_MAX) {
+				vel_r = (vel_r > 0 ? 1 : -1) * ROTATION_MAX;
+			}
+			else {
+				double vel_r_original = vel_r;
+				vel_r -= (vel_r > 0 ? 1 : -1)*ROTATION_DECEL;
+				//Check if vel_r changed positive to negative or vice versa. If it did, then set it to zero
+				if(vel_r / vel_r_original < 0) {
+					vel_r = 0;
 				}
 			}
-		}
-		updatePosition();
+		if(thrusting)
+			thrust();
+		if(braking)
+			brake();
+		if(turningCCW)
+			turnCCW();
+		if(turningCW)
+			turnCW();
 		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > MAX_SPEED) {
 			int velAngle = (int) arctanDegrees(vel_y, vel_x);
 			vel_x = MAX_SPEED * cosDegrees(velAngle);
 			vel_y = MAX_SPEED * sinDegrees(velAngle);
 		}
+		updatePosition();
 		
 	}
 
@@ -208,25 +179,36 @@ public class Starship extends Space_Object {
 	public void thrust() {
 		accelerate(pos_r, THRUST);
 	}
-	public void turnCCW()
-	{
+	public void turnCCW() {
 		rotateLeft(ROTATION_ACCEL);
 	}
-	public void turnCW()
-	{
+	public void turnCW() {
 		rotateRight(ROTATION_ACCEL);
 	}
-	public void strafeLeft()
-	{
+	public void strafeLeft() {
 		accelerate(pos_r, THRUST);
 	}
-	public void strafeRight()
-	{
+	public void strafeRight() {
 		accelerate(pos_r, THRUST);
 	}
-	public void brake()
-	{
+	public void brake() {
 		decelerate(DECEL);
+	}
+	
+	public void setThrusting(boolean b) {
+		thrusting = b;
+	}
+	public void setTurningCCW(boolean b)
+	{
+		turningCCW = b;
+	}
+	public void setTurningCW(boolean b)
+	{
+		turningCW = b;
+	}
+	public void setBraking(boolean b)
+	{
+		braking = b;
 	}
 
 	public void setFiringKey(boolean firing)
@@ -274,11 +256,11 @@ public class Starship extends Space_Object {
 			weapon.setFiring(state);
 		}
 	}
-	public void setTargetPos(double x, double y)
+	public void setAimPos(double x, double y)
 	{
 		for(Weapon weapon: weapons)
 		{
-			weapon.setTargetPos(x, y);
+			weapon.setAimPos(x, y);
 		}
 			
 	}

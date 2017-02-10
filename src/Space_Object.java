@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -68,6 +69,79 @@ public class Space_Object {
 	public Point2D.Double calcFuturePos(double time)
 	{
 		return new Point2D.Double(pos_x + time * vel_x, pos_y + time * vel_y);
+	}
+	public static final Point2D.Double calcFuturePos(Point2D.Double origin, Point2D.Double vel, double time)
+	{
+		double angle = arctanDegrees(vel.getY(), vel.getX());
+		double speed = Math.sqrt(Math.pow(vel.getX(), 2) + Math.pow(vel.getY(), 2));
+		return polarOffset(origin, angle, speed * time);
+	}
+	public static final void drawArrow(Graphics g, Point2D.Double origin, Point2D.Double dest)
+	{
+		g.setColor(Color.GREEN);
+		
+		double x1 = origin.getX();
+		double y1 = origin.getY();
+		
+		double x2 = dest.getX();
+		double y2 = dest.getY();
+		
+		double angle = arctanDegrees(y2 - y1, x2 - x1);
+		
+		g.drawLine((int) x1, GameWindow.HEIGHT - (int) y1, (int) x2, GameWindow.HEIGHT - (int) y2);
+		
+		Point2D.Double arrow_left = polarOffset(dest, angle + 120, 10);
+		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_left.getX(), GameWindow.HEIGHT - (int) arrow_left.getY());
+		
+		Point2D.Double arrow_right = polarOffset(dest, angle - 120, 10);
+		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_right.getX(), GameWindow.HEIGHT - (int) arrow_right.getY());
+	}
+	
+	public static final double calcFireSolution(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
+	{
+		Point2D.Double origin = new Point2D.Double(0, 0);
+		//Here is our initial estimate. If the target is moving, then by the time the shot reaches the target's original position, the target will be somnewhere else
+		double time_to_hit_estimate = getDistanceBetweenPos(origin, pos_diff) / weapon_speed;
+		Point2D.Double pos_diff_future = calcFuturePos(pos_diff, vel_diff, time_to_hit_estimate);
+		double angle_to_hit_estimate = getAngleTowardsPos(origin, pos_diff_future);
+		
+		//System.out.println("Try 0");
+		//System.out.println("Time to Hit: " + time_to_hit_estimate);
+		
+		//Calculate the time to hit the target at its new position, and then calculate where the target will be relative to its original position after the new estimated time.
+		boolean active = true;
+		double time_to_hit_old = 0;
+		for(int i = 1; i < 10; i++)
+		{
+			double time_to_hit = getDistanceBetweenPos(origin, pos_diff_future) / weapon_speed;
+			pos_diff_future = calcFuturePos(pos_diff, vel_diff, time_to_hit);
+			
+			//System.out.println("Try " + i);
+			//System.out.println("Time to Hit: " + time_to_hit);
+			
+			if(Math.abs(time_to_hit - time_to_hit_old) < 1)
+			{
+				active = false;
+				break;
+			}
+			time_to_hit_old = time_to_hit;
+		}
+		
+		double angle_to_hit = getAngleTowardsPos(origin, pos_diff_future);
+		System.out.println("Angle (Original): " + angle_to_hit_estimate);
+		System.out.println("Angle (Actual): " + angle_to_hit);
+		return angle_to_hit;
+	}
+	
+	/*
+	public Point2D.Double polarOffset(double x, double y, double angle, double distance)
+	{
+		return new Point2D.Double(x + distance * cosDegrees(angle), y - distance * sinDegrees(angle));
+	}
+	*/
+	public static final Point2D.Double polarOffset(Point2D.Double origin, double angle, double distance)
+	{
+		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), origin.getY() + distance * sinDegrees(angle));
 	}
 	
 	public void setPosRectangular(double x, double y)
@@ -182,11 +256,11 @@ public class Space_Object {
 		return result;
 	}
 	
-	public void rotateLeft(int accel)
+	public void rotateLeft(double accel)
 	{
 		vel_r = vel_r + accel;
 	}
-	public void rotateRight(int accel)
+	public void rotateRight(double accel)
 	{
 		vel_r = vel_r - accel;
 	}
@@ -303,9 +377,16 @@ public class Space_Object {
 	{
 		return arctanDegrees(y - getPosY(), x - getPosX());
 	}
+	public static double getAngleTowardsPos(Point2D.Double origin, Point2D.Double dest) {
+		return arctanDegrees(dest.getY() - origin.getY(), dest.getX() - origin.getX());
+	}
+	
 	public double getAngleFromPos(double x, double y)
 	{
 		return arctanDegrees(getPosY() - y, getPosX() - x);
+	}
+	public double getAngleFromPos(Point2D.Double origin, Point2D.Double dest) {
+		return arctanDegrees(origin.getY() - dest.getY(), origin.getX() - dest.getX());
 	}
 	
 	public double getAngleTowardsPos (Point2D.Double pos)
@@ -324,6 +405,10 @@ public class Space_Object {
 	public double getDistanceBetweenPos(Point2D.Double pos)
 	{
 		return Math.sqrt(Math.pow(pos.getX() - getPosX(), 2) + Math.pow(pos.getY() - getPosY(), 2));		
+	}
+	public static double getDistanceBetweenPos(Point2D.Double origin, Point2D.Double dest)
+	{
+		return Math.sqrt(Math.pow(dest.getX() - origin.getX(), 2) + Math.pow(dest.getY() - origin.getY(), 2));		
 	}
 	public double getDistanceBetweenPos(double x, double y)
 	{

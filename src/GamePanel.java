@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy1.setPosRectangular(400, 225);
 		enemy1.setTargetPrimary(player);
 		enemy1.setName("Enemy");
-		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
+		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
 		/*
 		Starship_Enemy enemy2 = new Starship_Enemy();
 		addStarship(enemy2);
@@ -293,7 +293,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void mousePressed(MouseEvent e) {
 		double x = e.getX();
 		double y = GameWindow.HEIGHT - e.getY();
-		player.setTargetPos(x, y);
+		player.setAimPos(x, y);
 		player.setFiringMouse(true);
 	}
 
@@ -324,45 +324,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		print("Key Pressed");
-		
-		if(e.getKeyCode() == KeyEvent.VK_Z)
-			active = !active;
-		
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			// Accelerate forward
-			player.thrust();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			player.brake();
-		}
-		
-		//Regular turning
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.turnCCW();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.turnCW();
-		}
-
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			player.setFiringKey(true);
-		}
-		if(e.getKeyCode() == KeyEvent.VK_SHIFT)
-		{
-			player.setStrafing(true);
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_Z:		active = !active;			break;
+		case KeyEvent.VK_UP:	player.setThrusting(true);	break;
+		case KeyEvent.VK_DOWN:	player.setBraking(true);	break;
+		case KeyEvent.VK_LEFT:	player.setTurningCCW(true);	break;
+		case KeyEvent.VK_RIGHT:	player.setTurningCW(true);	break;
+		case KeyEvent.VK_SHIFT:	player.setStrafing(true);	break;
+		case KeyEvent.VK_X:		player.setFiringKey(true);	break;
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == e.VK_X)
-		{
-			player.setFiringKey(false);
-		}
-		if(e.getKeyCode() == KeyEvent.VK_SHIFT)
-		{
-			player.setStrafing(false);
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_UP:	player.setThrusting(false);		break;
+		case KeyEvent.VK_DOWN:	player.setBraking(false);		break;
+		case KeyEvent.VK_LEFT:	player.setTurningCCW(false);	break;
+		case KeyEvent.VK_RIGHT:	player.setTurningCW(false);		break;
+		case KeyEvent.VK_SHIFT:	player.setStrafing(false);		break;
+		case KeyEvent.VK_X:		player.setFiringKey(false);		break;
 		}
 	}
 
