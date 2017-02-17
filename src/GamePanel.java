@@ -137,74 +137,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		{
 			debug.clear();
 			tick++;
-			/*
-			Iterator<Asteroid_Deprecated_2> a1_i = asteroids.iterator();
-			while (a1_i.hasNext()) {
-				Asteroid_Deprecated_2 a1 = a1_i.next();
-				Iterator<Projectile> p_i = projectiles.iterator();
-				while (p_i.hasNext()) {
-					Projectile p = p_i.next();
-					if (objectsIntersect(a1, p)) {
-						//print("--> GamePanel: Asteroid-Projectile Collision");
-						a1.collisionProjectile(p);
-	
-						p.destroy();
-						removeProjectile(p);
-						//print("<-- GamePanel: Asteroid-Projectile Collision");
-					}
-				}
-				Iterator<Starship> s_i = starships.iterator();
-				while (s_i.hasNext()) {
-					Starship s = s_i.next();
-					if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
-						a1.lastCollisionTick = tick;
-						s.lastCollisionTick = tick;
-						//print("--> GamePanel: Asteroid-Starship Collision");
-						collisionAsteroidStarship(a1, s);
-						//print("<-- GamePanel: Asteroid-Starship Collision");
-					}
-				}
-				Iterator<Asteroid_Deprecated_2> a2_i = asteroids.iterator();
-				while(a2_i.hasNext())
-				{
-					Asteroid_Deprecated_2 a2 = a2_i.next();
-					if(a1 != a2)
-					{
-						if (objectsIntersect(a1, a2) && tick - a1.lastCollisionTick > 10 && tick - a2.lastCollisionTick > 10) {
-							a1.lastCollisionTick = tick;
-							a2.lastCollisionTick = tick;
-							//print("--> GamePanel: Asteroid-Starship Collision");
-							collisionAsteroidAsteroid(a1, a2);
-							//print("<-- GamePanel: Asteroid-Starship Collision");
-						}
-					}
-				}
-			}
-			*/
-	
-			Iterator<Starship> s1_i = starships.iterator();
-			while (s1_i.hasNext()) {
-				Starship s1 = s1_i.next();
-				
-				Iterator<Starship> s2_i = starships.iterator();
-				while (s2_i.hasNext()) {
-					Starship s2 = s2_i.next();
-					if (s1 != s2) {
-						if (objectsIntersect(s1, s2)) {
-							collisionStarshipStarship(s1, s2);
-						}
-					}
-				}
-				Iterator<Projectile> p_i = projectiles.iterator();
-				while(p_i.hasNext())
-				{
-					Projectile p1 = p_i.next();
-					if(objectsIntersect(s1, p1) && !p1.getOwner().equals(s1))
-					{
-						collisionStarshipProjectile(s1, p1);
-					}
-				}
-			}
 			
 			Iterator<Weapon> w_i = weapons.iterator();
 			while (w_i.hasNext()) {
@@ -220,11 +152,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 			player.setFiringMouse(false);
-			Iterator<Space_Object> o_i = universe.iterator();
-			while (o_i.hasNext()) {
-				Space_Object o = o_i.next();
-				o.update();
-				o.draw(g);
+			Iterator<Space_Object> o_i_1 = universe.iterator();
+			while (o_i_1.hasNext()) {
+				Space_Object o1 = o_i_1.next();
+				o1.update();
+				o1.draw(g);
+				
+				Iterator<Space_Object> o_i_2 = universe.subList(universe.indexOf(o1)+1, universe.size()).iterator();
+				while(o_i_2.hasNext()) {
+					Space_Object o2 = o_i_2.next();
+					if(objectsIntersect(o1, o2)) {
+						if(o1 instanceof Starship && o2 instanceof Starship) {
+							collisionStarshipStarship((Starship) o1, (Starship) o2);
+						} else if(o1 instanceof Starship && o2 instanceof Projectile) {
+							collisionStarshipProjectile((Starship) o1, (Projectile) o2);
+						} else if(o1 instanceof Projectile && o2 instanceof Starship) {
+							collisionStarshipProjectile((Starship) o2, (Projectile) o1);
+						} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
+							collisionProjectileProjectile((Projectile) o1, (Projectile) o2);
+						}
+					}
+				}
 				/*
 				if (object.getActive()) {
 				}
@@ -534,6 +482,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		s1.impulse(angle_s2_s1, kinetic_energy_half);
 		s2.impulse(angle_s1_s2, kinetic_energy_half);
 		//print("<-- GamePanel: Starship-Starship Collision");
+	}
+	public void collisionProjectileProjectile(Projectile p1, Projectile p2)
+	{
+		p1.damage(p2.getDamage());
+		p2.damage(p1.getDamage());
 	}
 
 }
