@@ -285,6 +285,6 @@ public class Starship extends Space_Object {
 		{
 			world.removeWeapon(w);
 		}
-		world.removeStarship(this);
+		super.destroy();
 	}
 }

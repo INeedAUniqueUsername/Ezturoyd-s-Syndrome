@@ -127,8 +127,4 @@ public class Projectile extends Space_Object {
 	public void damage(int amount) {
 		damage -= amount;
 	}
-	public void destroy()
-	{
-		world.removeProjectile(this);
-	}
 }

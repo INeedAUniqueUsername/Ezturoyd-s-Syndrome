@@ -10,6 +10,6 @@ public class Weapon_Mouse extends Weapon{
 	
 	public double getFireAngle()
 	{
-		return owner.calcFireSolution(new Point2D.Double(aim_x - owner.getPosX(), aim_y - getPosY()), new Point2D.Double(owner.getVelX(), owner.getVelY()), getProjectileSpeed());
+		return owner.calcFireSolution(new Point2D.Double(aim_x - owner.getPosX(), aim_y - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 	}
 }
