@@ -26,7 +26,7 @@ public class Starship extends Space_Object {
 	boolean turningCW;
 	boolean strafing;
 	boolean braking;
-	double structure = 1000;
+	double structure = 10;
 	ArrayList<String> print = new ArrayList<String>();
 
 	ArrayList<Weapon> weapons = new ArrayList<Weapon>();

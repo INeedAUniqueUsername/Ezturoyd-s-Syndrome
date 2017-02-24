@@ -6,16 +6,16 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Starship_Enemy extends Starship {
+public class Starship_NPC extends Starship {
 	
 	ArrayList<Space_Object> targets = new ArrayList<Space_Object>();
+	ArrayList<Behavior> behaviors;
 	
-	final String ACT_THRUST = "Thrust";
-	final String ACT_BRAKE = "Brake";
-	final String ACT_TURN_CCW = "CCW";
-	final String ACT_TURN_CW = "CW";
-	final String ACT_FIRE = "Fire";
-	final String ACT_NOTHING = "Nothing";
+	public Starship_NPC() {
+		behaviors = new ArrayList<Behavior>();
+		behaviors.add(new Behavior(this));
+		behaviors.add(0, new Behavior_Attack(this));
+	}
 	
 	public void draw(Graphics g)
 	{
@@ -52,7 +52,6 @@ public class Starship_Enemy extends Starship {
 				{
 					objectsTooClose.add(o);
 				}
-				
 			}
 		}
 		
@@ -69,11 +68,24 @@ public class Starship_Enemy extends Starship {
 			thrust();
 			System.out.println("Too close to " + objectsTooClose);
 			System.out.println("Destination Angle: " + angle_destination);
-		} else if(exists(target_primary))
-		{
-			attackObject(target_primary);
+		} else {
+			behaviors.get(0).update();
+			if(behaviors.get(0).getActive()) {
+				behaviors.get(0).updateActions();
+			} else {
+				removeBehavior(behaviors.get(0));
+			}
 		}
 		//thrust();
+	}
+	public void addBehavior(Behavior b) {
+		behaviors.add(b);
+	}
+	public void addBehavior(int index, Behavior b) {
+		behaviors.add(index, b);
+	}
+	public void removeBehavior(Behavior b) {
+		behaviors.remove(b);
 	}
 	public void removeDeadTargets()
 	{
@@ -81,7 +93,7 @@ public class Starship_Enemy extends Starship {
 		while(o_i.hasNext())
 		{
 			Space_Object o = o_i.next();
-			if(!world.isAlive(o))
+			if(!o.getActive())
 			{
 				targets.remove(o);
 			}
@@ -99,150 +111,6 @@ public class Starship_Enemy extends Starship {
 	{
 		double angle_towards_object = getAngleTowards(object);
 		return object.getVelRadial(angle_towards_object) - getVelRadial(angle_towards_object);
-	}
-	public void attackObject(Space_Object target)
-	{;
-		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
-		double target_x_center = target.getPosX();
-		double target_y_center = target.getPosY();
-		double target_distance_center = getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
-		
-		double target_x_up = target_x_center;
-		double target_y_up = target_y_center - GameWindow.HEIGHT;
-		double target_distance_up = getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
-		
-		double target_x_down = target_x_center;
-		double target_y_down = target_y_center + GameWindow.HEIGHT;
-		double target_distance_down = getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
-		
-		double target_x_right = target_x_center + GameWindow.WIDTH;
-		double target_y_right = target_y_center;
-		double target_distance_right = getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
-		
-		double target_x_left = target_x_center - GameWindow.WIDTH;
-		double target_y_left = target_y_center;
-		double target_distance_left = getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
-		
-		double target_x_focus = target_x_center;
-		double target_y_focus = target_y_center;
-		double target_distance_focus = target_distance_center;
-		
-		if(target_distance_focus > target_distance_up)
-		{
-			target_x_focus = target_x_up;
-			target_y_focus = target_y_up;
-			target_distance_focus = target_distance_up;
-		}
-		if(target_distance_focus > target_distance_down)
-		{
-			target_x_focus = target_x_down;
-			target_y_focus = target_y_down;
-			target_distance_focus = target_distance_down;
-		}
-		if(target_distance_focus > target_distance_right)
-		{
-			target_x_focus = target_x_right;
-			target_y_focus = target_y_right;
-			target_distance_focus = target_distance_right;
-		}
-		if(target_distance_focus > target_distance_left)
-		{
-			target_x_focus = target_x_left;
-			target_y_focus = target_y_left;
-			target_distance_focus = target_distance_left;
-		}
-		
-		String action_thrusting = ACT_NOTHING;
-		String action_rotation = ACT_NOTHING;
-		String action_strafing = ACT_NOTHING;
-		String action_weapon = ACT_NOTHING;
-		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
-		double angle_to_target = calcFireSolution(new Point2D.Double(target_x_focus - getPosX(), target_y_focus - getPosY()), new Point2D.Double(target.getVelX() - getVelX(), target.getVelY() - getVelY()), getWeaponPrimary().getProjectileSpeed());
-		double aim = angle_to_target;
-		double faceAngleDiff = calcFutureAngleDifference(angle_to_target);
-		if(faceAngleDiff > getMaxAngleDifference())
-		{
-			action_rotation = calcTurnDirection(angle_to_target);
-		}
-		else
-		{
-			printToWorld("Status (Facing): Aligned");
-			action_weapon = ACT_FIRE;
-		}
-		
-		double velAngle = getVelAngle();
-		double velAngleDiffCCW = modRangeDegrees(angle_to_target - velAngle);
-		double velAngleDiffCW = modRangeDegrees(velAngle - angle_to_target);
-		double velAngleDiff = min(velAngleDiffCCW, velAngleDiffCW);
-		if(velAngleDiff > 120)
-		{
-			action_thrusting = ACT_BRAKE;
-			printToWorld("Status: Brake");
-		}
-		else if(velAngleDiff > 60)
-		{
-			printToWorld("Status: Nothing");
-		}
-		else
-		{
-			action_thrusting = ACT_THRUST;
-			printToWorld("Status: Thrust");
-		}
-		
-		double distance_to_target = target_distance_focus;
-		double velDiff = getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
-		if(distance_to_target > getMaxSeparationFromTarget())
-		{
-			action_thrusting = ACT_THRUST;
-			printToWorld("Status (Distance): Far");
-		} else if(distance_to_target < getMinSeparationFromTarget()) {
-			action_rotation = calcTurnDirection(getAngleFrom(target));
-			if(faceAngleDiff > 90)
-			{
-				action_thrusting = ACT_THRUST;
-			}
-		} else {
-			action_thrusting = ACT_BRAKE;
-			printToWorld("Status (Distance): Close");
-		}
-		printToWorld("Angle to Target: " + angle_to_target);
-		printToWorld("Max Facing Angle Difference: " + getMaxAngleDifference());
-		printToWorld("Velocity Angle: " + velAngle);
-		printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
-		printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
-		printToWorld("Velocity Angle Difference: " + velAngleDiff);
-		printToWorld("Weapons: " + action_weapon);
-		/*
-		double velAngle = getVelAngle();
-		double decelAngle = velAngle + 180;
-		double x_decel = DECEL * cosDegrees(decelAngle);
-		double x_decel_time = Math.abs(vel_x/x_decel);
-		double pos_x_future =
-			pos_x
-			+ vel_x * x_decel_time
-			+ (vel_x > 0 ? -1 : 1) * (1/2) * x_decel * Math.pow(x_decel_time, 2)
-			;	//Make sure that the deceleration value has the opposite sign of the velocity
-		
-		double y_decel = DECEL * sinDegrees(decelAngle);
-		double y_decel_time = Math.abs(vel_y/y_decel);
-		double pos_y_future =
-			pos_y
-			+ vel_y * y_decel_time
-			+ (vel_y > 0 ? -1 : 1) * (1/2) * y_decel * Math.pow(y_decel_time, 2);
-		*/
-		switch(action_thrusting) {
-		case	ACT_THRUST:		thrust();			break;
-		case	ACT_BRAKE:		brake();			break;
-		}
-		switch(action_rotation) {
-		case	ACT_TURN_CCW:	turnCCW();			break;
-		case	ACT_TURN_CW:	turnCW();			break;
-		}
-		switch(action_weapon) {
-		case	ACT_FIRE:		setFiring(true);	break;
-		default:				setFiring(false);	break;
-		}
-		
 	}
 	/*
 	public double calcFireSolution(Space_Object target)
@@ -313,27 +181,27 @@ public class Starship_Enemy extends Starship {
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
 				printToWorld("Status (Facing): CW");
-				return ACT_TURN_CW;
+				return Behavior.ACT_TURN_CW;
 			}
 			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
 				printToWorld("Status (Facing): CCW");
-				return ACT_TURN_CCW;
+				return Behavior.ACT_TURN_CCW;
 			}
 			else
 			{
 				printToWorld("Status (Facing): Random");
 				if(Math.random() > .5) {
-					return ACT_TURN_CW;
+					return Behavior.ACT_TURN_CW;
 				} else {
-					return ACT_TURN_CCW;
+					return Behavior.ACT_TURN_CCW;
 				}
 			}
 		}
 		else
 		{
 			printToWorld("Status (Facing): Aligned");
-			return "";
+			return Behavior.ACT_NOTHING;
 		}
 	}
 	public double calcFutureAngleDifference(double angle_target)
@@ -354,8 +222,8 @@ public class Starship_Enemy extends Starship {
 	{
 		switch(direction)
 		{
-		case	ACT_TURN_CCW:	turnCCW();			break;
-		case	ACT_TURN_CW:	turnCW();			break;
+		case	Behavior.ACT_TURN_CCW:	turnCCW();			break;
+		case	Behavior.ACT_TURN_CW:	turnCW();			break;
 		}
 	}
 	public Space_Object getTargetPrimary()
