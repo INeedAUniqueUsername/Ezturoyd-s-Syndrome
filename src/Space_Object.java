@@ -11,8 +11,6 @@ public class Space_Object {
 	String name = "";
 	final double c = 9131.35261864;
 	
-	static GamePanel world;
-	
 	double pos_x = 0;
 	double pos_y = 0;
 	double pos_r = 0;
@@ -40,11 +38,11 @@ public class Space_Object {
 	{
 		if(name.equals(""))
 		{
-			world.printToScreen(text);
+			GamePanel.world.printToScreen(text);
 		}
 		else
 		{
-			world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
+			GamePanel.world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
 		}
 		
 	}
@@ -543,7 +541,7 @@ public class Space_Object {
 	
 	public void print(String message)
 	{
-		System.out.println(world.tick + ". " + message);
+		System.out.println(GamePanel.world.tick + ". " + message);
 	}
 	public boolean exists(Object o)
 	{

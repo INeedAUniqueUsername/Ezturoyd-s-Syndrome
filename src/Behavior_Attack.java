@@ -1,13 +1,21 @@
 import java.awt.geom.Point2D;
 
 public class Behavior_Attack extends Behavior {
-	public Behavior_Attack(Starship_NPC o) {
+	Space_Object target;
+	public Behavior_Attack(Starship_NPC o, Space_Object t) {
 		super(o);
+		setTarget(t);
+	}
+	
+	public Space_Object getTarget() {
+		return target;
+	}
+	public void setTarget(Space_Object t) {
+		target = t;
 	}
 	public void update() {
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
-		Space_Object target = owner.getTargetPrimary();
-		if(target == null) {
+		if(!target.getActive()) {
 			System.out.println("Attack order done");
 			setActive(false);
 			return;
@@ -70,7 +78,17 @@ public class Behavior_Attack extends Behavior {
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
 		double distance_to_target = target_distance_focus;
 		
-		double angle_to_target = Space_Object.calcFireSolution(new Point2D.Double(target_x_focus - owner.getPosX(), target_y_focus - owner.getPosY()), new Point2D.Double(target.getVelX() - owner.getVelX(), target.getVelY() - owner.getVelY()), owner.getWeaponPrimary().getProjectileSpeed());
+		double angle_to_target = Space_Object.calcFireSolution(
+				new Point2D.Double(
+						target_x_focus - owner.getPosX(),
+						target_y_focus - owner.getPosY()
+						),
+				new Point2D.Double(
+						target.getVelX() - owner.getVelX(),
+						target.getVelY() - owner.getVelY()
+						),
+				owner.getWeaponPrimary().getProjectileSpeed()
+				);
 		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_target);
 		
 		double velAngle = owner.getVelAngle();

@@ -37,17 +37,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Weapon> weapons;
 
 	int tick;
+	public static GamePanel world;
 
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
+		world = this;
 	}
 
 	public void newGame() {
 		tick = 0;
 		print("*" + tick + "*");
-
-		Space_Object.world = this;
 
 		universe = new ArrayList<Space_Object>();
 		//starships = new ArrayList<Starship>();
@@ -67,21 +67,21 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		Starship_NPC enemy1 = new Starship_NPC();
 		addStarship(enemy1);
 		enemy1.setPosRectangular(400, 225);
-		enemy1.setTargetPrimary(player);
+		enemy1.addBehavior(new Behavior_Attack(enemy1, player));
 		enemy1.setName("Enemy");
 		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
 		
 		Starship_NPC enemy2 = new Starship_NPC();
 		addStarship(enemy2);
 		enemy2.setPosRectangular(800, 525);
-		enemy2.setTargetPrimary(enemy1);
+		enemy2.addBehavior(new Behavior_Attack(enemy2, player));
 		enemy2.setName("Enemy");
 		addWeapon(enemy2, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 		
 		Starship_NPC enemy3 = new Starship_NPC();
 		addStarship(enemy3);
 		enemy3.setPosRectangular(0, 0);
-		enemy3.setTargetPrimary(player);
+		enemy3.addBehavior(new Behavior_Attack(enemy3, player));
 		enemy3.setName("Enemy");
 		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 

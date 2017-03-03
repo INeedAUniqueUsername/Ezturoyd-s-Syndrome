@@ -7,105 +7,50 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Starship_NPC extends Starship {
-	
-	ArrayList<Space_Object> targets = new ArrayList<Space_Object>();
+	Controller brain;
 	ArrayList<Behavior> behaviors;
 	
 	public Starship_NPC() {
-		behaviors = new ArrayList<Behavior>();
-		behaviors.add(new Behavior(this));
-		behaviors.add(0, new Behavior_Attack(this));
+		initializeAI();
 	}
 	
 	public void draw(Graphics g)
 	{
+		g.setColor(Color.RED);
 		drawStarship(g);
-		
-		Space_Object target = getTargetPrimary();
-		/*
-		if(exists(target))
-		{
-			Point2D.Double pos = getPos();
-			Point2D.Double pos_target = target.getPos();
-			Point2D.Double pos_solution = polarOffset(getPos(), aim, getDistanceBetween(target));
-			drawArrow(g, pos, pos_solution);
-			drawArrow(g, pos, pos_target);
-			drawArrow(g, pos_target, pos_solution);
-		}
-		*/
-			
 	}
 	
 	public void update()
 	{
 		updateSpaceship();
-		
-		
-		removeDeadTargets();
-		ArrayList<Space_Object> objectsTooClose = new ArrayList<Space_Object>();
-		Space_Object target_primary = targets.size() > 0 ? targets.get(0) : null;
-		for(Space_Object o : world.getStarships())
-		{
-			if(!o.equals(this))
-			{
-				if(getDistanceBetween(o) < getMinSeparationFromOthers())
-				{
-					objectsTooClose.add(o);
-				}
-			}
-		}
-		
-		int objectsTooCloseCount = objectsTooClose.size();
-		if(objectsTooCloseCount > 0)
-		{
-			double angle_destination = 0;
-			for(Space_Object o : objectsTooClose)
-			{
-				angle_destination += getAngleFrom(o);
-			}
-			angle_destination /= objectsTooCloseCount;
-			turnDirection(calcTurnDirection(angle_destination));
-			thrust();
-			System.out.println("Too close to " + objectsTooClose);
-			System.out.println("Destination Angle: " + angle_destination);
-		} else {
-			behaviors.get(0).update();
-			if(behaviors.get(0).getActive()) {
-				behaviors.get(0).updateActions();
-			} else {
-				removeBehavior(behaviors.get(0));
-			}
-		}
+		brain.update();
+		brain.updateActions();
 		//thrust();
+	}
+	public Behavior getBehavior(int b) {
+		return behaviors.get(b);
+	}
+	public void setBehavior(int i, Behavior b) {
+		behaviors.set(i, b);
 	}
 	public void addBehavior(Behavior b) {
 		behaviors.add(b);
 	}
-	public void addBehavior(int index, Behavior b) {
-		behaviors.add(index, b);
-	}
 	public void removeBehavior(Behavior b) {
 		behaviors.remove(b);
 	}
-	public void removeDeadTargets()
-	{
-		Iterator<Space_Object> o_i = targets.iterator();
-		while(o_i.hasNext())
-		{
-			Space_Object o = o_i.next();
-			if(!o.getActive())
-			{
-				targets.remove(o);
-			}
-		}
+	public ArrayList<Behavior> getBehaviors() {
+		return behaviors;
 	}
-	public void setTargetPrimary(Space_Object target_new)
-	{
-		targets.add(0, target_new);
+	public void setBrain(Controller c) {
+		brain = c;
 	}
-	public void onAttacked(Space_Object attacker)
-	{
-		setTargetPrimary(attacker);
+	public Behavior getBrain() {
+		return brain;
+	}
+	private void initializeAI() {
+		brain = new Controller(this);
+		behaviors = new ArrayList<Behavior>();
 	}
 	public double getVelTowards(Space_Object object)
 	{
@@ -225,10 +170,6 @@ public class Starship_NPC extends Starship {
 		case	Behavior.ACT_TURN_CCW:	turnCCW();			break;
 		case	Behavior.ACT_TURN_CW:	turnCW();			break;
 		}
-	}
-	public Space_Object getTargetPrimary()
-	{
-		return targets.size() > 0 ? targets.get(0) : null;
 	}
 	public double getMaxAngleDifference()
 	{
