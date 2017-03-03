@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Asteroid_Deprecated_2 extends Space_Object {
+public class Asteroid_Deprecated_2 extends SpaceObject {
 
 	HashMap<Integer, Integer> points;
 
@@ -67,7 +67,7 @@ public class Asteroid_Deprecated_2 extends Space_Object {
 		//createFragment(damage, getAngleTowards(p), p.getPosX(), p.getPosY());
 		//print("<-- Asteroid-Projectile Collision");
 	}
-	public double getCollisionAngle(Space_Object o)
+	public double getCollisionAngle(SpaceObject o)
 	{
 		return modRange(pos_r + getAngleTowards(o), 360);
 	}
@@ -145,7 +145,7 @@ public class Asteroid_Deprecated_2 extends Space_Object {
 			Projectile fragment = new Projectile(x, y, angle, damage, 30, damage, damage, Color.WHITE);
 			fragment.setVelPolar(angle, damage / 2);
 			fragment.setOwner(this);
-			world.addProjectile(fragment);
+			GamePanel.world.addProjectile(fragment);
 		}
 	}
 	

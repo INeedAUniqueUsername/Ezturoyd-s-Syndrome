@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class Starship extends Space_Object {
+public class Starship extends SpaceObject {
 
 	final int HEAD_SIZE = 20;
 	final int BODY_SIZE = 30;
@@ -171,7 +171,7 @@ public class Starship extends Space_Object {
 		body.add(head);
 	}
 	
-	public void onAttacked(Space_Object attacker)
+	public void onAttacked(SpaceObject attacker)
 	{
 		
 	}

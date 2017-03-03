@@ -5,21 +5,21 @@ import java.awt.Polygon;
 
 public class Weapon {
 
-	Space_Object owner;
+	SpaceObject owner;
 
 	final int SIZE = 10;
 
 	boolean firing = false;
 
-	double posAngle = 0;
-	double posRadius = 0;
+	double pos_angle = 0;
+	double pos_radius = 0;
 
 	double fire_angle = 0;
 
 	double aim_x, aim_y;
 	
-	double posX;
-	double posY;
+	double pos_x;
+	double pos_y;
 
 	int fire_cooldown_max = 10;
 	int fire_cooldown_time = fire_cooldown_max;
@@ -33,8 +33,8 @@ public class Weapon {
 		
 	}
 	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color) {
-		posAngle = angle;
-		posRadius = radius;
+		pos_angle = angle;
+		pos_radius = radius;
 		this.fire_angle = fire_angle;
 		fire_cooldown_max = cooldown;
 		fire_cooldown_time = fire_cooldown_max;
@@ -47,9 +47,9 @@ public class Weapon {
 	public void update() {
 		//System.out.println("---> Weapon Update");
 		fire_cooldown_time++;
-		double angle = posAngle + owner.getPosR();
-		posX = owner.getPosX() + posRadius * cosDegrees(angle);
-		posY = owner.getPosY() + posRadius * sinDegrees(angle);
+		double angle = pos_angle + owner.getPosR();
+		pos_x = owner.getPosX() + pos_radius * cosDegrees(angle);
+		pos_y = owner.getPosY() + pos_radius * sinDegrees(angle);
 
 		fire_angle = angle;
 		//System.out.println("<--- Weapon Update");
@@ -60,17 +60,17 @@ public class Weapon {
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 
-		int bodyFrontX = (int) (posX + SIZE * cosDegrees(fire_angle));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (posY + SIZE * sinDegrees(fire_angle)));
+		int bodyFrontX = (int) (pos_x + SIZE * cosDegrees(fire_angle));
+		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle)));
 
 		bodyX[0] = bodyFrontX;
 		bodyY[0] = bodyFrontY;
 
-		bodyX[1] = (int) (posX + SIZE * cosDegrees(fire_angle - 120));
-		bodyY[1] = (int) (GameWindow.HEIGHT - (posY + SIZE * sinDegrees(fire_angle - 120)));
+		bodyX[1] = (int) (pos_x + SIZE * cosDegrees(fire_angle - 120));
+		bodyY[1] = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle - 120)));
 
-		bodyX[2] = (int) (posX + SIZE * cosDegrees(fire_angle + 120));
-		bodyY[2] = (int) (GameWindow.HEIGHT - (posY + SIZE * sinDegrees(fire_angle + 120)));
+		bodyX[2] = (int) (pos_x + SIZE * cosDegrees(fire_angle + 120));
+		bodyY[2] = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle + 120)));
 
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;
@@ -136,8 +136,12 @@ public class Weapon {
 	public void setProjectileLifetime(int lifetime) {
 		projectile_lifetime = lifetime;
 	}
+	
+	public int getProjectileRange() {
+		return projectile_speed * projectile_lifetime;
+	}
 
-	public Space_Object getOwner() {
+	public SpaceObject getOwner() {
 		return owner;
 	}
 	
@@ -151,11 +155,11 @@ public class Weapon {
 	}
 
 	public void setPosAngle(double angle) {
-		posAngle = angle;
+		pos_angle = angle;
 	}
 
 	public void setPosRadius(double radius) {
-		posRadius = radius;
+		pos_radius = radius;
 	}
 
 	public void setFireCooldownTime(int time) {
@@ -167,11 +171,11 @@ public class Weapon {
 	}
 
 	public double getPosX() {
-		return posX;
+		return pos_x;
 	}
 
 	public double getPosY() {
-		return posY;
+		return pos_y;
 	}
 
 	public double cosDegrees(double angle) {

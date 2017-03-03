@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 
-public class Controller extends Behavior {
+public class BehaviorController extends Behavior {
 
-	public Controller(Starship_NPC o) {
+	public BehaviorController(Starship_NPC o) {
 		super(o);
 		// TODO Auto-generated constructor stub
 	}
 	public void update() {
-		System.out.println("Updating Brain");
-		ArrayList<Space_Object> objectsTooClose = new ArrayList<Space_Object>();
-		for(Space_Object o : GamePanel.world.getStarships())
+		System.out.println("Updating Controller");
+		ArrayList<SpaceObject> objectsTooClose = new ArrayList<SpaceObject>();
+		for(SpaceObject o : GamePanel.world.getStarships())
 		{
 			if(!o.equals(owner))
 			{
@@ -27,7 +27,7 @@ public class Controller extends Behavior {
 		if(objectsTooCloseCount > 0)
 		{
 			double angle_destination = 0;
-			for(Space_Object o : objectsTooClose)
+			for(SpaceObject o : objectsTooClose)
 			{
 				angle_destination += owner.getAngleFrom(o);
 			}
@@ -45,7 +45,7 @@ public class Controller extends Behavior {
 			}
 		} else {
 			ArrayList<Starship> ships = GamePanel.world.getStarships();
-			Space_Object target = ships.get((int) (ships.size()*Math.random()));
+			SpaceObject target = ships.get((int) (ships.size()*Math.random()));
 			owner.addBehavior(new Behavior_Attack(owner, target));
 		}
 	}

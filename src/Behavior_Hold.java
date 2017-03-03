@@ -1,23 +1,25 @@
 import java.awt.geom.Point2D;
 
-public class Behavior_Attack extends Behavior {
-	SpaceObject target;
-	public Behavior_Attack(Starship_NPC o, SpaceObject t) {
+public class Behavior_Hold extends Behavior {
+	public Behavior_Hold(Starship_NPC o) {
 		super(o);
-		setTarget(t);
 	}
-	
-	public SpaceObject getTarget() {
-		return target;
-	}
-	public void setTarget(SpaceObject t) {
-		target = t;
+	public SpaceObject getClosestEnemy() {
+		double distance = Integer.MAX_VALUE;
+		SpaceObject result = null;
+		for(SpaceObject o : GamePanel.world.getStarships()) {
+			double d = owner.getDistanceBetween(o);
+			if(d < distance) {
+				result = o;
+				distance = d;
+			}
+		}
+		return result;
 	}
 	public void update() {
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
-		if(!target.getActive()) {
-			System.out.println("Attack order done");
-			setActive(false);
+		SpaceObject target = getClosestEnemy();
+		if(target == null) {
 			return;
 		}
 		double pos_x = owner.getPosX();
@@ -71,12 +73,11 @@ public class Behavior_Attack extends Behavior {
 			target_distance_focus = target_distance_left;
 		}
 		
-		String action_thrusting = ACT_NOTHING;
+		String action_thrusting = ACT_BRAKE;
 		String action_rotation = ACT_NOTHING;
 		String action_strafing = ACT_NOTHING;
 		String action_weapon = ACT_NOTHING;
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
-		double distance_to_target = target_distance_focus;
 		
 		double angle_to_target = owner.calcFireAngle(
 				target_x_focus,
@@ -87,62 +88,17 @@ public class Behavior_Attack extends Behavior {
 				);
 		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_target);
 		
-		double velAngle = owner.getVelAngle();
-		double velAngleDiffCCW = SpaceObject.modRangeDegrees(angle_to_target - velAngle);
-		double velAngleDiffCW = SpaceObject.modRangeDegrees(velAngle - angle_to_target);
-		
-		double velAngleDiff = SpaceObject.min(velAngleDiffCCW, velAngleDiffCW);
-		
-		//double velDiff = owner.getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
-		
 		if(faceAngleDiff > owner.getMaxAngleDifference())
 		{
 			action_rotation = owner.calcTurnDirection(angle_to_target);
 		}
 		else
 		{
-			owner.printToWorld("Status (Facing): Aligned");
-			action_weapon = ACT_FIRE;
-		}
-		
-		if(velAngleDiff > 120)
-		{
-			action_thrusting = ACT_BRAKE;
-			owner.printToWorld("Status: Brake");
-		}
-		else if(velAngleDiff > 60)
-		{
-			owner.printToWorld("Status: Nothing");
-		}
-		else
-		{
-			action_thrusting = ACT_THRUST;
-			owner.printToWorld("Status: Thrust");
-		}
-		if(distance_to_target > owner.getMaxSeparationFromTarget())
-		{
-			//Move towards target
-			action_thrusting = ACT_THRUST;
-			
-			owner.printToWorld("Status (Distance): Far");
-		} else if(distance_to_target < owner.getMinSeparationFromTarget()) {
-			//Move away from target
-			action_rotation = owner.calcTurnDirection(owner.getAngleFrom(target));
-			if(faceAngleDiff > 90)
-			{
-				action_thrusting = ACT_THRUST;
+			double distance_to_target = target_distance_focus;
+			if(distance_to_target < owner.getWeaponPrimary().getProjectileRange()) {
+				action_weapon = ACT_FIRE;
 			}
-		} else {
-			action_thrusting = ACT_BRAKE;
-			owner.printToWorld("Status (Distance): Close");
 		}
-		owner.printToWorld("Angle to Target: " + angle_to_target);
-		owner.printToWorld("Max Facing Angle Difference: " + owner.getMaxAngleDifference());
-		owner.printToWorld("Velocity Angle: " + velAngle);
-		owner.printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
-		owner.printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
-		owner.printToWorld("Velocity Angle Difference: " + velAngleDiff);
-		owner.printToWorld("Weapons: " + action_weapon);
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
 	}
 }

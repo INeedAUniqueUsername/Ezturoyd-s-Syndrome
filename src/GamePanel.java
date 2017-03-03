@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	boolean active = true;
 	final int INTERVAL = 10;
 	Starship player;
-	ArrayList<Space_Object> universe;
+	ArrayList<SpaceObject> universe;
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
@@ -49,7 +49,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		tick = 0;
 		print("*" + tick + "*");
 
-		universe = new ArrayList<Space_Object>();
+		universe = new ArrayList<SpaceObject>();
 		//starships = new ArrayList<Starship>();
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
@@ -153,18 +153,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 			player.setFiringMouse(false);
-			for(Space_Object o : universe) {
+			for(SpaceObject o : universe) {
 				o.update();
 				o.draw(g);
 			}
 			
-			ArrayList<Space_Object> dead = new ArrayList<Space_Object>();
-			Iterator<Space_Object> o_i_1 = universe.iterator();
+			ArrayList<SpaceObject> dead = new ArrayList<SpaceObject>();
+			Iterator<SpaceObject> o_i_1 = universe.iterator();
 			while (o_i_1.hasNext()) {
-				Space_Object o1 = o_i_1.next();
-				Iterator<Space_Object> o_i_2 = universe.subList(universe.indexOf(o1)+1, universe.size()).iterator();
+				SpaceObject o1 = o_i_1.next();
+				Iterator<SpaceObject> o_i_2 = universe.subList(universe.indexOf(o1)+1, universe.size()).iterator();
 				while(o_i_2.hasNext()) {
-					Space_Object o2 = o_i_2.next();
+					SpaceObject o2 = o_i_2.next();
 					if(objectsIntersect(o1, o2)) {
 						if(o1 instanceof Starship && o2 instanceof Starship) {
 							collisionStarshipStarship((Starship) o1, (Starship) o2);
@@ -195,13 +195,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					dead.add(o1);
 				}
 			}
-			for(Space_Object d : dead) {
+			for(SpaceObject d : dead) {
 				universe.remove(d);
 			}
 		}
 		else
 		{
-			for(Space_Object o: universe)
+			for(SpaceObject o: universe)
 			{
 				o.draw(g);
 			}
@@ -327,7 +327,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return !areaA.isEmpty();
 	}
 
-	public static boolean objectsIntersect(Space_Object a, Space_Object b) {
+	public static boolean objectsIntersect(SpaceObject a, SpaceObject b) {
 		Area areaA = new Area();
 		for(Polygon part : a.getBody())
 		{
@@ -389,7 +389,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		weapons.remove(weapon);
 	}
 	
-	public ArrayList<Space_Object> getUniverse()
+	public ArrayList<SpaceObject> getUniverse()
 	{
 		return universe;
 	}
@@ -397,7 +397,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return starships;
 		ArrayList<Starship> result = new ArrayList<Starship>();
-		for(Space_Object o : universe) {
+		for(SpaceObject o : universe) {
 			if(o instanceof Starship) {
 				result.add((Starship) o);
 			}
@@ -408,7 +408,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return projectiles;
 		ArrayList<Projectile> result = new ArrayList<Projectile>();
-		for(Space_Object o : universe) {
+		for(SpaceObject o : universe) {
 			if(o instanceof Projectile) {
 				result.add((Projectile) o);
 			}
@@ -422,14 +422,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	*/
 	
-	public double angleBetween(Space_Object from, Space_Object to) {
+	public double angleBetween(SpaceObject from, SpaceObject to) {
 		return to.getAngleFrom(from);
 	}
 
 	public boolean exists(Object what) {
 		return what != null;
 	}
-	public boolean isAlive(Space_Object what)
+	public boolean isAlive(SpaceObject what)
 	{
 		boolean result = false;
 		if(what instanceof Starship)

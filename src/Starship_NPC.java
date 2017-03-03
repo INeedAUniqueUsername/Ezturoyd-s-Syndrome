@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Starship_NPC extends Starship {
-	Controller brain;
+	BehaviorController controller;
 	ArrayList<Behavior> behaviors;
 	
 	public Starship_NPC() {
@@ -23,8 +23,8 @@ public class Starship_NPC extends Starship {
 	public void update()
 	{
 		updateSpaceship();
-		brain.update();
-		brain.updateActions();
+		controller.update();
+		controller.updateActions();
 		//thrust();
 	}
 	public Behavior getBehavior(int b) {
@@ -42,20 +42,20 @@ public class Starship_NPC extends Starship {
 	public ArrayList<Behavior> getBehaviors() {
 		return behaviors;
 	}
-	public void setBrain(Controller c) {
-		brain = c;
+	public void setController(BehaviorController c) {
+		controller = c;
 	}
-	public Behavior getBrain() {
-		return brain;
+	public Behavior getController() {
+		return controller;
 	}
 	private void initializeAI() {
-		brain = new Controller(this);
+		controller = new BehaviorController(this);
 		behaviors = new ArrayList<Behavior>();
 	}
-	public double getVelTowards(Space_Object object)
+	public double getVelTowards(SpaceObject object)
 	{
 		double angle_towards_object = getAngleTowards(object);
-		return object.getVelRadial(angle_towards_object) - getVelRadial(angle_towards_object);
+		return object.getVelAtAngle(angle_towards_object) - getVelAtAngle(angle_towards_object);
 	}
 	/*
 	public double calcFireSolution(Space_Object target)

@@ -72,7 +72,7 @@ public class Behavior_GoToPos extends Behavior {
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
-		double angle_to_destination = Space_Object.calcFireSolution(
+		double angle_to_destination = SpaceObject.calcFireAngle(
 				new Point2D.Double(
 						destination_x_focus - owner.getPosX(),
 						destination_y_focus - owner.getPosY()
@@ -84,12 +84,13 @@ public class Behavior_GoToPos extends Behavior {
 				owner.MAX_SPEED
 				);
 		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_destination);
-		
+		/*
 		double velAngle = owner.getVelAngle();
 		double velAngleDiffCCW = Space_Object.modRangeDegrees(angle_to_destination - velAngle);
 		double velAngleDiffCW = Space_Object.modRangeDegrees(velAngle - angle_to_destination);
 		
 		double velAngleDiff = Space_Object.min(velAngleDiffCCW, velAngleDiffCW);
+		*/
 		
 		//double velDiff = owner.getVelRadial(angle_to_destination) - destination.getVelRadial(angle_to_destination);
 		

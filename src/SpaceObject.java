@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
-public class Space_Object {
+public class SpaceObject {
 	String name = "";
 	final double c = 9131.35261864;
 	
@@ -21,7 +21,7 @@ public class Space_Object {
 	ArrayList<Polygon> body;
 	double size;
 	
-	int lastCollisionTick = 0;
+	int last_collision_tick = 0;
 	
 	boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
@@ -93,20 +93,45 @@ public class Space_Object {
 		Point2D.Double arrow_right = polarOffset(dest, angle - 120, 10);
 		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_right.getX(), GameWindow.HEIGHT - (int) arrow_right.getY());
 	}
-	
-	public static final double calcFireSolution(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
-	{
+	public final Point2D.Double calcFireTargetPos(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
+		Point2D.Double posDiff = calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed);
+		return new Point2D.Double(getPosX() + posDiff.getX(), getPosY() + posDiff.getY());
+	}
+	public final double calcFireAngle(double target_pos_x, double target_pos_y, double target_vel_x, double target_vel_y, double projectile_speed) {
+		return calcFireAngle(
+				new Point2D.Double(
+						target_pos_x - getPosX(),
+						target_pos_y - getPosY()
+						),
+				new Point2D.Double(
+						target_vel_x - getVelX(),
+						target_vel_y - getVelY()
+						),
+				projectile_speed
+				);
+	}
+	public final double calcFireDistance(double target_pos_x, double target_pos_y, double target_vel_x, double target_vel_y, double projectile_speed) {
+		return calcFireDistance(
+				new Point2D.Double(
+						target_pos_x - getPosX(),
+						target_pos_y - getPosY()
+						),
+				new Point2D.Double(
+						target_vel_x - getVelX(),
+						target_vel_y - getVelY()
+						),
+				projectile_speed
+				);
+	}
+	public static final Point2D.Double calcFireTargetPosDiff(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
 		Point2D.Double origin = new Point2D.Double(0, 0);
 		//Here is our initial estimate. If the target is moving, then by the time the shot reaches the target's original position, the target will be somnewhere else
 		double time_to_hit_estimate = getDistanceBetweenPos(origin, pos_diff) / weapon_speed;
 		Point2D.Double pos_diff_future = calcFuturePos(pos_diff, vel_diff, time_to_hit_estimate);
-		double angle_to_hit_estimate = getAngleTowardsPos(origin, pos_diff_future);
 		
 		//System.out.println("Try 0");
 		//System.out.println("Time to Hit: " + time_to_hit_estimate);
 		
-		//Calculate the time to hit the target at its new position, and then calculate where the target will be relative to its original position after the new estimated time.
-		boolean active = true;
 		double time_to_hit_old = 0;
 		for(int i = 1; i < 10; i++)
 		{
@@ -118,16 +143,20 @@ public class Space_Object {
 			
 			if(Math.abs(time_to_hit - time_to_hit_old) < 1)
 			{
-				active = false;
 				break;
 			}
 			time_to_hit_old = time_to_hit;
 		}
-		
-		double angle_to_hit = getAngleTowardsPos(origin, pos_diff_future);
-		System.out.println("Angle (Original): " + angle_to_hit_estimate);
-		System.out.println("Angle (Actual): " + angle_to_hit);
-		return angle_to_hit;
+		return pos_diff_future;
+	}
+	public static final double calcFireAngle(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
+	{
+		return getAngleTowardsPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
+	}
+	
+	public static final double calcFireDistance(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
+	{
+		return getDistanceBetweenPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
 	}
 	
 	/*
@@ -253,11 +282,11 @@ public class Space_Object {
 		return result;
 	}
 	
-	public void rotateLeft(double accel)
+	public final void rotateLeft(double accel)
 	{
 		vel_r = vel_r + accel;
 	}
-	public void rotateRight(double accel)
+	public final void rotateRight(double accel)
 	{
 		vel_r = vel_r - accel;
 	}
@@ -266,7 +295,7 @@ public class Space_Object {
 		return body;
 	}
 	
-	public static double modRange(double input, double range)
+	public final static double modRange(double input, double range)
 	{
 		double result = input % range;
 		while(result < 0)
@@ -360,35 +389,26 @@ public class Space_Object {
 	{
 		setActive(false);
 	}
-	public boolean getActive() {
+	public final boolean getActive() {
 		return active;
 	}
-	public void setActive(boolean b) {
+	public final void setActive(boolean b) {
 		active = b;
 	}
+	public final double getAngleTowards(SpaceObject other)
+	{
+		return getAngleTowardsPos(getPos(), other.getPos());
+	}
+	public final double getAngleFrom(SpaceObject other)
+	{
+		return getAngleFromPos(getPos(), other.getPos());
+	}
 	
-	public double getAngleTowards(Space_Object other)
-	{
-		return arctanDegrees(other.getPosY() - getPosY(), other.getPosX() - getPosX());
-	}
-	public double getAngleFrom(Space_Object other)
-	{
-		return arctanDegrees(getPosY() - other.getPosY(), getPosX() - other.getPosX());
-	}
-	
-	public double getAngleTowardsPos (double x, double y)
-	{
-		return arctanDegrees(y - getPosY(), x - getPosX());
-	}
-	public static double getAngleTowardsPos(Point2D.Double origin, Point2D.Double dest) {
+	public final static double getAngleTowardsPos(Point2D.Double origin, Point2D.Double dest) {
 		return arctanDegrees(dest.getY() - origin.getY(), dest.getX() - origin.getX());
 	}
 	
-	public double getAngleFromPos(double x, double y)
-	{
-		return arctanDegrees(getPosY() - y, getPosX() - x);
-	}
-	public double getAngleFromPos(Point2D.Double origin, Point2D.Double dest) {
+	public final static double getAngleFromPos(Point2D.Double origin, Point2D.Double dest) {
 		return arctanDegrees(origin.getY() - dest.getY(), origin.getX() - dest.getX());
 	}
 	
@@ -401,23 +421,19 @@ public class Space_Object {
 		return arctanDegrees(getPosY() - pos.getY(), getPosX() - pos.getX());
 	}
 	
-	public double getDistanceBetween(Space_Object target)
+	public double getDistanceBetween(SpaceObject target)
 	{
-		return Math.sqrt(Math.pow((target.getPosX() - getPosX()), 2) + Math.pow((target.getPosY() - getPosY()), 2));
+		return getDistanceBetweenPos(getPos(), target.getPos());
 	}
 	public double getDistanceBetweenPos(Point2D.Double pos)
 	{
-		return Math.sqrt(Math.pow(pos.getX() - getPosX(), 2) + Math.pow(pos.getY() - getPosY(), 2));		
+		return getDistanceBetweenPos(getPos(), pos);		
 	}
 	public static double getDistanceBetweenPos(Point2D.Double origin, Point2D.Double dest)
 	{
-		return Math.sqrt(Math.pow(dest.getX() - origin.getX(), 2) + Math.pow(dest.getY() - origin.getY(), 2));		
+		return getDistanceBetweenPos(origin.getX(), origin.getY(), dest.getX(), dest.getY());
 	}
-	public double getDistanceBetweenPos(double x, double y)
-	{
-		return Math.sqrt(Math.pow((x - getPosX()), 2) + Math.pow((y - getPosY()), 2));		
-	}
-	public double getDistanceBetweenPos(double x1, double y1, double x2, double y2)
+	public static double getDistanceBetweenPos(double x1, double y1, double x2, double y2)
 	{
 		return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));		
 	}
@@ -448,32 +464,32 @@ public class Space_Object {
 		
 	}
 	
-	public Point2D.Double getPos()
+	public final Point2D.Double getPos()
 	{
 		return new Point2D.Double(pos_x, pos_y);
 	}
 	
-	public double getPosX()
+	public final double getPosX()
 	{
 		return pos_x;
 	}
 	
-	public double getPosY()
+	public final double getPosY()
 	{
 		return pos_y;
 	}
 	
-	public double getPosR()
+	public final double getPosR()
 	{
 		return pos_r;
 	}
 	
-	public Point2D.Double calcPolarOffset(double angle, double distance)
+	public final Point2D.Double calcPolarOffset(double angle, double distance)
 	{
 		return new Point2D.Double(pos_x + distance * cosDegrees(angle), pos_y + distance * sinDegrees(angle));
 	}
 	
-	public double getVelAngle()
+	public final double getVelAngle()
 	{
 		if(!(vel_x == 0 && vel_y == 0))
 		{
@@ -484,34 +500,34 @@ public class Space_Object {
 			return pos_r;
 		}
 	}
-	public double getVelRadial(double angle)
+	public final double getVelAtAngle(double angle)
 	{
 		return getVelSpeed()*cosDegrees(getVelAngle() - angle);
 	}
-	public double getVelX()
+	public final double getVelX()
 	{
 		return vel_x;
 	}
 	
-	public double getVelY()
+	public final double getVelY()
 	{
 		return vel_y;
 	}
 	
-	public double getVelR()
+	public final double getVelR()
 	{
 		return vel_r;
 	}
 	
-	public double getVelSpeed()
+	public final double getVelSpeed()
 	{
 		return Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2));
 	}
-	public double getMass()
+	public final double getMass()
 	{
 		return size;
 	}
-	public double getKineticEnergy()
+	public final double getKineticEnergy()
 	{
 		//System.out.println("Speed: " + getVelSpeed());
 		//System.out.println("Size: " + size);
@@ -519,7 +535,7 @@ public class Space_Object {
 		return (1/2)*getMass()*Math.pow(getVelSpeed(), 2);
 	}
 	
-	public double getKineticEnergyAngled(double angle)
+	public final double getKineticEnergyAngled(double angle)
 	{
 		/*
 		double angleCW = Math.abs(pos_r - angle);
@@ -539,11 +555,11 @@ public class Space_Object {
 		return getKineticEnergy()*cosDegrees(getVelAngle()-angle);
 	}
 	
-	public void print(String message)
+	public final void print(String message)
 	{
 		System.out.println(GamePanel.world.tick + ". " + message);
 	}
-	public boolean exists(Object o)
+	public final boolean exists(Object o)
 	{
 		return o != null;
 	}

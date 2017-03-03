@@ -21,7 +21,7 @@ public class Behavior {
 		owner = o;
 		active = true;
 	}
-	public Space_Object getOwner() {
+	public SpaceObject getOwner() {
 		return owner;
 	}
 	public void update() {

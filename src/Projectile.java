@@ -4,13 +4,13 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
-public class Projectile extends Space_Object {
+public class Projectile extends SpaceObject {
 
 	private int lifetime;
 	private int width = 3;
 	private int height = 24;
 	private int damage;
-	private Space_Object owner;
+	private SpaceObject owner;
 	private Color color = Color.RED;
 
 	public Projectile(double posX, double posY, double posR, int damage, int life, int width, int height, Color color) {
@@ -63,10 +63,10 @@ public class Projectile extends Space_Object {
 		}
 	}
 
-	public void setOwner(Space_Object object) {
+	public void setOwner(SpaceObject object) {
 		owner = object;
 	}
-	public Space_Object getOwner()
+	public SpaceObject getOwner()
 	{
 		return owner;
 	}
