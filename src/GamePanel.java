@@ -25,9 +25,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	final int INTERVAL = 10;
 	Starship player;
 	ArrayList<Space_Object> universe;
+	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
-	//ArrayList<Asteroid> asteroids;
+	ArrayList<Asteroid> asteroids;
+	*/
 	ArrayList<String> debug = new ArrayList<String>();
 
 	// counter for hits
@@ -35,21 +37,21 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Weapon> weapons;
 
 	int tick;
+	public static GamePanel world;
 
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
+		world = this;
 	}
 
 	public void newGame() {
 		tick = 0;
 		print("*" + tick + "*");
 
-		Space_Object.world = this;
-
 		universe = new ArrayList<Space_Object>();
-		starships = new ArrayList<Starship>();
-		projectiles = new ArrayList<Projectile>();
+		//starships = new ArrayList<Starship>();
+		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
 
 		weapons = new ArrayList<Weapon>();
@@ -62,27 +64,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
-		Starship_Enemy enemy1 = new Starship_Enemy();
+		Starship_NPC enemy1 = new Starship_NPC();
 		addStarship(enemy1);
 		enemy1.setPosRectangular(400, 225);
-		enemy1.setTargetPrimary(player);
+		enemy1.addBehavior(new Behavior_Attack(enemy1, player));
 		enemy1.setName("Enemy");
 		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
-		/*
-		Starship_Enemy enemy2 = new Starship_Enemy();
+		
+		Starship_NPC enemy2 = new Starship_NPC();
 		addStarship(enemy2);
 		enemy2.setPosRectangular(800, 525);
-		enemy2.setTargetPrimary(enemy1);
+		enemy2.addBehavior(new Behavior_Attack(enemy2, player));
 		enemy2.setName("Enemy");
 		addWeapon(enemy2, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 		
-		Starship_Enemy enemy3 = new Starship_Enemy();
+		Starship_NPC enemy3 = new Starship_NPC();
 		addStarship(enemy3);
 		enemy3.setPosRectangular(0, 0);
-		enemy3.setTargetPrimary(player);
+		enemy3.addBehavior(new Behavior_Attack(enemy3, player));
 		enemy3.setName("Enemy");
 		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
-		 */
 
 
 		/*
@@ -137,74 +138,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		{
 			debug.clear();
 			tick++;
-			/*
-			Iterator<Asteroid_Deprecated_2> a1_i = asteroids.iterator();
-			while (a1_i.hasNext()) {
-				Asteroid_Deprecated_2 a1 = a1_i.next();
-				Iterator<Projectile> p_i = projectiles.iterator();
-				while (p_i.hasNext()) {
-					Projectile p = p_i.next();
-					if (objectsIntersect(a1, p)) {
-						//print("--> GamePanel: Asteroid-Projectile Collision");
-						a1.collisionProjectile(p);
-	
-						p.destroy();
-						removeProjectile(p);
-						//print("<-- GamePanel: Asteroid-Projectile Collision");
-					}
-				}
-				Iterator<Starship> s_i = starships.iterator();
-				while (s_i.hasNext()) {
-					Starship s = s_i.next();
-					if (objectsIntersect(a1, s) && tick - a1.lastCollisionTick > 10 && tick - s.lastCollisionTick > 10) {
-						a1.lastCollisionTick = tick;
-						s.lastCollisionTick = tick;
-						//print("--> GamePanel: Asteroid-Starship Collision");
-						collisionAsteroidStarship(a1, s);
-						//print("<-- GamePanel: Asteroid-Starship Collision");
-					}
-				}
-				Iterator<Asteroid_Deprecated_2> a2_i = asteroids.iterator();
-				while(a2_i.hasNext())
-				{
-					Asteroid_Deprecated_2 a2 = a2_i.next();
-					if(a1 != a2)
-					{
-						if (objectsIntersect(a1, a2) && tick - a1.lastCollisionTick > 10 && tick - a2.lastCollisionTick > 10) {
-							a1.lastCollisionTick = tick;
-							a2.lastCollisionTick = tick;
-							//print("--> GamePanel: Asteroid-Starship Collision");
-							collisionAsteroidAsteroid(a1, a2);
-							//print("<-- GamePanel: Asteroid-Starship Collision");
-						}
-					}
-				}
-			}
-			*/
-	
-			Iterator<Starship> s1_i = starships.iterator();
-			while (s1_i.hasNext()) {
-				Starship s1 = s1_i.next();
-				
-				Iterator<Starship> s2_i = starships.iterator();
-				while (s2_i.hasNext()) {
-					Starship s2 = s2_i.next();
-					if (s1 != s2) {
-						if (objectsIntersect(s1, s2)) {
-							collisionStarshipStarship(s1, s2);
-						}
-					}
-				}
-				Iterator<Projectile> p_i = projectiles.iterator();
-				while(p_i.hasNext())
-				{
-					Projectile p1 = p_i.next();
-					if(objectsIntersect(s1, p1) && !p1.getOwner().equals(s1))
-					{
-						collisionStarshipProjectile(s1, p1);
-					}
-				}
-			}
 			
 			Iterator<Weapon> w_i = weapons.iterator();
 			while (w_i.hasNext()) {
@@ -220,35 +153,51 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 			player.setFiringMouse(false);
-			Iterator<Space_Object> o_i = universe.iterator();
-			while (o_i.hasNext()) {
-				Space_Object o = o_i.next();
+			for(Space_Object o : universe) {
 				o.update();
 				o.draw(g);
-				/*
-				if (object.getActive()) {
-				}
-				*/
-				/*
-				else
-				{
-					object.destroy();
-					world.remove(object);
-					if (Starships.contains(object)) {
-						Starships.remove(object);
-					} else if (projectiles.contains(object)) {
-						projectiles.remove(object);
-					} else if (asteroids.contains(object)) {
-						asteroids.remove(object);
+			}
+			
+			ArrayList<Space_Object> dead = new ArrayList<Space_Object>();
+			Iterator<Space_Object> o_i_1 = universe.iterator();
+			while (o_i_1.hasNext()) {
+				Space_Object o1 = o_i_1.next();
+				Iterator<Space_Object> o_i_2 = universe.subList(universe.indexOf(o1)+1, universe.size()).iterator();
+				while(o_i_2.hasNext()) {
+					Space_Object o2 = o_i_2.next();
+					if(objectsIntersect(o1, o2)) {
+						if(o1 instanceof Starship && o2 instanceof Starship) {
+							collisionStarshipStarship((Starship) o1, (Starship) o2);
+						} else if(o1 instanceof Starship && o2 instanceof Projectile) {
+							Starship s = (Starship) o1;
+							Projectile p = (Projectile) o2;
+							if(!p.getOwner().equals(s)) {
+								collisionStarshipProjectile(s, p);
+							}
+						} else if(o1 instanceof Projectile && o2 instanceof Starship) {
+							Starship s = (Starship) o2;
+							Projectile p = (Projectile) o1;
+							if(!p.getOwner().equals(s)) {
+								collisionStarshipProjectile(s, p);
+							}
+						} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
+							collisionProjectileProjectile((Projectile) o1, (Projectile) o2);
+						}
+						if(!o1.getActive()) {
+							dead.add(o1);
+						}
+						if(!o2.getActive()) {
+							dead.add(o2);
+						}
 					}
 				}
-				*/
+				if(!o1.getActive()) {
+					dead.add(o1);
+				}
 			}
-			/*
-			 * if(objectsIntersect(player, rock)) { int forceAngle = (int)
-			 * arctanDegrees(player.getVelY()-rock.getVelY(), player.getVelX() -
-			 * rock.getVelX()); double rockVelAngle = rock.getVelAngle(); }
-			 */
+			for(Space_Object d : dead) {
+				universe.remove(d);
+			}
 		}
 		else
 		{
@@ -401,22 +350,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void addStarship(Starship ship) {
-		starships.add(ship);
+		//starships.add(ship);
 		universe.add(ship);
 	}
 
 	public void addProjectile(Projectile projectile) {
-		projectiles.add(projectile);
+		//projectiles.add(projectile);
 		universe.add(projectile);
 	}
-
-	/*
+/*
 	public void addAsteroid(Asteroid asteroid) {
-		asteroids.add(asteroid);
+		//asteroids.add(asteroid);
 		universe.add(asteroid);
 	}
-	*/
-
+*/
+	
+	/*
 	public void removeStarship(Starship ship) {
 		universe.remove(ship);
 		starships.remove(ship);
@@ -426,6 +375,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		universe.remove(projectile);
 		projectiles.remove(projectile);
 	}
+	*/
 
 	/*
 	public void removeAsteroid(Asteroid asteroid) {
@@ -445,11 +395,25 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	public ArrayList<Starship> getStarships()
 	{
-		return starships;
+		//return starships;
+		ArrayList<Starship> result = new ArrayList<Starship>();
+		for(Space_Object o : universe) {
+			if(o instanceof Starship) {
+				result.add((Starship) o);
+			}
+		}
+		return result;
 	}
 	public ArrayList<Projectile> getProjectiles()
 	{
-		return projectiles;
+		//return projectiles;
+		ArrayList<Projectile> result = new ArrayList<Projectile>();
+		for(Space_Object o : universe) {
+			if(o instanceof Projectile) {
+				result.add((Projectile) o);
+			}
+		}
+		return result;
 	}
 	/*
 	public ArrayList<Asteroid> getAsteroids()
@@ -470,7 +434,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		boolean result = false;
 		if(what instanceof Starship)
 		{
-			result = starships.contains(what);
+			result = getStarships().contains(what);
 		}
 		/*
 		else if(what instanceof Asteroid)
@@ -480,7 +444,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		*/
 		else if(what instanceof Projectile)
 		{
-			result = projectiles.contains(what);
+			result = getProjectiles().contains(what);
 		}
 		return result;
 	}
@@ -534,6 +498,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		s1.impulse(angle_s2_s1, kinetic_energy_half);
 		s2.impulse(angle_s1_s2, kinetic_energy_half);
 		//print("<-- GamePanel: Starship-Starship Collision");
+	}
+	public void collisionProjectileProjectile(Projectile p1, Projectile p2)
+	{
+		p1.damage(p2.getDamage());
+		p2.damage(p1.getDamage());
 	}
 
 }

@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 public class Projectile extends Space_Object {
 
-	int lifetime;
-	int width = 3;
-	int height = 24;
-	int damage;
-	Space_Object owner;
-	Color color = Color.RED;
+	private int lifetime;
+	private int width = 3;
+	private int height = 24;
+	private int damage;
+	private Space_Object owner;
+	private Color color = Color.RED;
 
 	public Projectile(double posX, double posY, double posR, int damage, int life, int width, int height, Color color) {
 		pos_x = posX;
@@ -124,8 +124,7 @@ public class Projectile extends Space_Object {
 		body = new ArrayList<Polygon>();
 		body.add(new Polygon(bodyX, bodyY, 5));
 	}
-	public void destroy()
-	{
-		world.removeProjectile(this);
+	public void damage(int amount) {
+		damage -= amount;
 	}
 }

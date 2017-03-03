@@ -8,11 +8,8 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public class Space_Object {
-
 	String name = "";
 	final double c = 9131.35261864;
-	
-	static GamePanel world;
 	
 	double pos_x = 0;
 	double pos_y = 0;
@@ -41,11 +38,11 @@ public class Space_Object {
 	{
 		if(name.equals(""))
 		{
-			world.printToScreen(text);
+			GamePanel.world.printToScreen(text);
 		}
 		else
 		{
-			world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
+			GamePanel.world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
 		}
 		
 	}
@@ -361,7 +358,13 @@ public class Space_Object {
 	
 	public void destroy()
 	{
-		
+		setActive(false);
+	}
+	public boolean getActive() {
+		return active;
+	}
+	public void setActive(boolean b) {
+		active = b;
 	}
 	
 	public double getAngleTowards(Space_Object other)
@@ -465,11 +468,6 @@ public class Space_Object {
 		return pos_r;
 	}
 	
-	public boolean getActive()
-	{
-		return active;
-	}
-	
 	public Point2D.Double calcPolarOffset(double angle, double distance)
 	{
 		return new Point2D.Double(pos_x + distance * cosDegrees(angle), pos_y + distance * sinDegrees(angle));
@@ -540,11 +538,11 @@ public class Space_Object {
 		*/
 		return getKineticEnergy()*cosDegrees(getVelAngle()-angle);
 	}
+	
 	public void print(String message)
 	{
-		System.out.println(world.tick + ". " + message);
+		System.out.println(GamePanel.world.tick + ". " + message);
 	}
-	
 	public boolean exists(Object o)
 	{
 		return o != null;

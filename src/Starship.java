@@ -39,11 +39,11 @@ public class Starship extends Space_Object {
 	}
 
 	public void draw(Graphics g) {
+		g.setColor(Color.YELLOW);
 		drawStarship(g);
 	}
 	public void drawStarship(Graphics g)
 	{
-		g.setColor(Color.RED);
 		updateBody();
 
 		/*
@@ -283,8 +283,8 @@ public class Starship extends Space_Object {
 	{
 		for(Weapon w: weapons)
 		{
-			world.removeWeapon(w);
+			GamePanel.world.removeWeapon(w);
 		}
-		world.removeStarship(this);
+		super.destroy();
 	}
 }
