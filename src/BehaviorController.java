@@ -45,7 +45,15 @@ public class BehaviorController extends Behavior {
 			}
 		} else {
 			ArrayList<Starship> ships = GamePanel.world.getStarships();
-			SpaceObject target = ships.get((int) (ships.size()*Math.random()));
+			SpaceObject target = null;
+			double distance = Double.MAX_VALUE;
+			for(SpaceObject s : ships) {
+				double d = owner.getDistanceBetween(s);
+				if(!s.equals(owner) && d < distance) {
+					target = s;
+					distance = d;
+				}
+			}
 			owner.addBehavior(new Behavior_Attack(owner, target));
 		}
 	}

@@ -119,7 +119,7 @@ public class Behavior_Attack extends Behavior {
 			action_thrusting = ACT_THRUST;
 			owner.printToWorld("Status: Thrust");
 		}
-		if(distance_to_target > owner.getMaxSeparationFromTarget())
+		if(distance_to_target > owner.getWeaponPrimary().getProjectileRange()) //owner.getMaxSeparationFromTarget()
 		{
 			//Move towards target
 			action_thrusting = ACT_THRUST;
