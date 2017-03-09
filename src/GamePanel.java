@@ -21,22 +21,22 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
-	boolean active = true;
+	private boolean active = true;
 	final int INTERVAL = 10;
-	Starship player;
-	ArrayList<SpaceObject> universe;
+	private Starship player;
+	private ArrayList<SpaceObject> universe;
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
 	*/
-	ArrayList<String> debug = new ArrayList<String>();
+	private ArrayList<String> debug = new ArrayList<String>();
 
 	// counter for hits
-	int hits = 0;
-	ArrayList<Weapon> weapons;
+	private int hits = 0;
+	private ArrayList<Weapon> weapons;
 
-	int tick;
+	private int tick;
 	public static GamePanel world;
 
 	public GamePanel() {
@@ -46,8 +46,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void newGame() {
-		tick = 0;
-		print("*" + tick + "*");
+		setTick(0);
+		print("*" + getTick() + "*");
 
 		universe = new ArrayList<SpaceObject>();
 		//starships = new ArrayList<Starship>();
@@ -134,7 +134,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		if(active)
 		{
 			debug.clear();
-			tick++;
+			setTick(getTick() + 1);
 			
 			Iterator<Weapon> w_i = weapons.iterator();
 			while (w_i.hasNext()) {
@@ -447,7 +447,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void print(String message) {
-		System.out.println(tick + ". " + message);
+		System.out.println(getTick() + ". " + message);
 	}
 	
 	public void collisionAsteroidStarship(Asteroid_Deprecated_2 a, Starship s) {
@@ -500,6 +500,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		p1.damage(p2.getDamage());
 		p2.damage(p1.getDamage());
+	}
+
+	public int getTick() {
+		return tick;
+	}
+
+	public void setTick(int tick) {
+		this.tick = tick;
 	}
 
 }

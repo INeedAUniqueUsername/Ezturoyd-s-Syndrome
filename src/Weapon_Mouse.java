@@ -8,7 +8,7 @@ public class Weapon_Mouse extends Weapon{
 		super(angle, radius, fire_angle, cooldown, speed, damage, lifetime, color);
 	}
 	
-	public double getFireAngle()
+	public final double getFireAngle()
 	{
 		return SpaceObject.calcFireAngle(new Point2D.Double(aim_x - owner.getPosX(), aim_y - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 	}

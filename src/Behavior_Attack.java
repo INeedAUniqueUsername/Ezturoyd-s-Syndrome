@@ -1,7 +1,7 @@
 import java.awt.geom.Point2D;
 
 public class Behavior_Attack extends Behavior {
-	SpaceObject target;
+	private SpaceObject target;
 	public Behavior_Attack(Starship_NPC o, SpaceObject t) {
 		super(o);
 		setTarget(t);
@@ -71,10 +71,10 @@ public class Behavior_Attack extends Behavior {
 			target_distance_focus = target_distance_left;
 		}
 		
-		String action_thrusting = ACT_NOTHING;
-		String action_rotation = ACT_NOTHING;
-		String action_strafing = ACT_NOTHING;
-		String action_weapon = ACT_NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NOTHING;
+		RotatingState action_rotation = RotatingState.NOTHING;
+		StrafingState action_strafing = StrafingState.NOTHING;
+		AttackingState action_weapon = AttackingState.NOTHING;
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
 		double distance_to_target = target_distance_focus;
 		
@@ -102,12 +102,12 @@ public class Behavior_Attack extends Behavior {
 		else
 		{
 			owner.printToWorld("Status (Facing): Aligned");
-			action_weapon = ACT_FIRE;
+			action_weapon = AttackingState.FIRE;
 		}
 		
 		if(velAngleDiff > 120)
 		{
-			action_thrusting = ACT_BRAKE;
+			action_thrusting = ThrustingState.BRAKE;
 			owner.printToWorld("Status: Brake");
 		}
 		else if(velAngleDiff > 60)
@@ -116,13 +116,13 @@ public class Behavior_Attack extends Behavior {
 		}
 		else
 		{
-			action_thrusting = ACT_THRUST;
+			action_thrusting = ThrustingState.THRUST;
 			owner.printToWorld("Status: Thrust");
 		}
 		if(distance_to_target > owner.getWeaponPrimary().getProjectileRange()) //owner.getMaxSeparationFromTarget()
 		{
 			//Move towards target
-			action_thrusting = ACT_THRUST;
+			action_thrusting = ThrustingState.THRUST;
 			
 			owner.printToWorld("Status (Distance): Far");
 		} else if(distance_to_target < owner.getMinSeparationFromTarget()) {
@@ -130,10 +130,10 @@ public class Behavior_Attack extends Behavior {
 			action_rotation = owner.calcTurnDirection(owner.getAngleFrom(target));
 			if(faceAngleDiff > 90)
 			{
-				action_thrusting = ACT_THRUST;
+				action_thrusting = ThrustingState.THRUST;
 			}
 		} else {
-			action_thrusting = ACT_BRAKE;
+			action_thrusting = ThrustingState.BRAKE;
 			owner.printToWorld("Status (Distance): Close");
 		}
 		owner.printToWorld("Angle to Target: " + angle_to_target);

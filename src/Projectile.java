@@ -40,7 +40,7 @@ public class Projectile extends SpaceObject {
 		initialize();
 	}
 
-	public void initialize()
+	public final void initialize()
 	{
 		System.out.println("Projectile X: " + pos_x);
 		System.out.println("Projectile Y: " + pos_y);
@@ -49,13 +49,13 @@ public class Projectile extends SpaceObject {
 		updateBody();
 		updateSize();
 	}
-	public void draw(Graphics g) {
+	public final void draw(Graphics g) {
 		g.setColor(color);
 		updateBody();
 		drawBody(g);
 	}
 
-	public void update() {
+	public final void update() {
 		updatePosition();
 		lifetime--;
 		if (lifetime < 0) {
@@ -63,19 +63,19 @@ public class Projectile extends SpaceObject {
 		}
 	}
 
-	public void setOwner(SpaceObject object) {
+	public final void setOwner(SpaceObject object) {
 		owner = object;
 	}
-	public SpaceObject getOwner()
+	public final SpaceObject getOwner()
 	{
 		return owner;
 	}
 
-	public int getDamage() {
+	public final int getDamage() {
 		return damage;
 	}
 
-	public int getLifetime() {
+	public final int getLifetime() {
 		return lifetime;
 	}
 
@@ -124,7 +124,7 @@ public class Projectile extends SpaceObject {
 		body = new ArrayList<Polygon>();
 		body.add(new Polygon(bodyX, bodyY, 5));
 	}
-	public void damage(int amount) {
+	public final void damage(int amount) {
 		damage -= amount;
 	}
 }

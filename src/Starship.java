@@ -21,17 +21,17 @@ public class Starship extends SpaceObject {
 	final double ROTATION_MAX = 15;
 	final double ROTATION_ACCEL = .6;
 	final double ROTATION_DECEL = .4;
-	boolean thrusting;
-	boolean turningCCW;
-	boolean turningCW;
-	boolean strafing;
-	boolean braking;
-	double structure = 1000;
-	ArrayList<String> print = new ArrayList<String>();
+	private boolean thrusting;
+	private boolean turningCCW;
+	private boolean turningCW;
+	private boolean strafing;
+	private boolean braking;
+	private double structure = 1000;
+	private ArrayList<String> print = new ArrayList<String>();
 
-	ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-	ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
-	ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
+	private ArrayList<Weapon> weapons = new ArrayList<Weapon>();
+	private ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
+	private ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
 
 	public Starship() {
 		updateBody();
@@ -42,7 +42,7 @@ public class Starship extends SpaceObject {
 		g.setColor(Color.YELLOW);
 		drawStarship(g);
 	}
-	public void drawStarship(Graphics g)
+	public final void drawStarship(Graphics g)
 	{
 		updateBody();
 
@@ -171,70 +171,70 @@ public class Starship extends SpaceObject {
 		body.add(head);
 	}
 	
-	public void onAttacked(SpaceObject attacker)
+	public final void onAttacked(SpaceObject attacker)
 	{
 		
 	}
 
-	public void thrust() {
+	public final void thrust() {
 		accelerate(pos_r, THRUST);
 	}
-	public void turnCCW() {
+	public final void turnCCW() {
 		rotateLeft(ROTATION_ACCEL);
 	}
-	public void turnCW() {
+	public final void turnCW() {
 		rotateRight(ROTATION_ACCEL);
 	}
-	public void strafeLeft() {
+	public final void strafeLeft() {
 		accelerate(pos_r, THRUST);
 	}
-	public void strafeRight() {
+	public final void strafeRight() {
 		accelerate(pos_r, THRUST);
 	}
-	public void brake() {
+	public final void brake() {
 		decelerate(DECEL);
 	}
 	
-	public void setThrusting(boolean b) {
+	public final void setThrusting(boolean b) {
 		thrusting = b;
 	}
-	public void setTurningCCW(boolean b)
+	public final void setTurningCCW(boolean b)
 	{
 		turningCCW = b;
 	}
-	public void setTurningCW(boolean b)
+	public final void setTurningCW(boolean b)
 	{
 		turningCW = b;
 	}
-	public void setBraking(boolean b)
+	public final void setBraking(boolean b)
 	{
 		braking = b;
 	}
 
-	public void setFiringKey(boolean firing)
+	public final void setFiringKey(boolean firing)
 	{
 		for(Weapon_Key w: weapons_key)
 		{
 			w.setFiring(firing);
 		}
 	}
-	public void setFiringMouse(boolean firing)
+	public final void setFiringMouse(boolean firing)
 	{
 		for(Weapon_Mouse w: weapons_mouse)
 		{
 			w.setFiring(firing);
 		}
 	}
-	public void setStrafing(boolean enabled)
+	public final void setStrafing(boolean enabled)
 	{
 		strafing = enabled;
 	}
-	public boolean getStrafing()
+	public final boolean getStrafing()
 	{
 		return strafing;
 	}
 
-	public void damage(double damage) {
+	public final void damage(double damage) {
 		structure = structure - damage;
 		if(structure < 0)
 		{
@@ -242,21 +242,21 @@ public class Starship extends SpaceObject {
 		}
 	}
 	
-	public ArrayList<Weapon> getWeapon()
+	public final ArrayList<Weapon> getWeapon()
 	{
 		return weapons;
 	}
-	public Weapon getWeaponPrimary()
+	public final Weapon getWeaponPrimary()
 	{
 		return weapons.size() > 0 ? weapons.get(0) : null;
 	}
 
-	public void setFiring(boolean state) {
+	public final void setFiring(boolean state) {
 		for (Weapon weapon : weapons) {
 			weapon.setFiring(state);
 		}
 	}
-	public void setAimPos(double x, double y)
+	public final void setAimPos(double x, double y)
 	{
 		for(Weapon weapon: weapons)
 		{
@@ -265,7 +265,7 @@ public class Starship extends SpaceObject {
 			
 	}
 
-	public void installWeapon(Weapon item) {
+	public final void installWeapon(Weapon item) {
 		item.setOwner(this);
 		weapons.add(item);
 		if(item instanceof Weapon_Key)
@@ -279,7 +279,7 @@ public class Starship extends SpaceObject {
 		print("Installed Weapon");
 	}
 	
-	public void destroy()
+	public final void destroy()
 	{
 		for(Weapon w: weapons)
 		{

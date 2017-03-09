@@ -4,8 +4,8 @@ public class GameWindow {
 
 	public static final int WIDTH = 1600;
 	public static final int HEIGHT = 900;
-	GamePanel panel;
-	JFrame frame;
+	private GamePanel panel;
+	private JFrame frame;
 	
 	
 	public static void main(String[] args) {

@@ -4,7 +4,6 @@ public class BehaviorController extends Behavior {
 
 	public BehaviorController(Starship_NPC o) {
 		super(o);
-		// TODO Auto-generated constructor stub
 	}
 	public void update() {
 		System.out.println("Updating Controller");
@@ -33,13 +32,13 @@ public class BehaviorController extends Behavior {
 			}
 			angle_destination /= objectsTooCloseCount;
 			owner.turnDirection(owner.calcTurnDirection(angle_destination));
-			setThrusting(ACT_THRUST);
+			setThrusting(ThrustingState.THRUST);
 			System.out.println("Destination Angle: " + angle_destination);
 		} else if(owner.getBehaviors().size() > 0) {
 			Behavior behavior_current = owner.getBehavior(0);
 			
 			behavior_current.update();
-			setActions(behavior_current.getActions());
+			copyActions(behavior_current);
 			if(!behavior_current.getActive()) {
 				owner.removeBehavior(behavior_current);
 			}

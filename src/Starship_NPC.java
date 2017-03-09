@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Starship_NPC extends Starship {
-	BehaviorController controller;
-	ArrayList<Behavior> behaviors;
+	private BehaviorController controller;
+	private ArrayList<Behavior> behaviors;
 	
 	public Starship_NPC() {
 		initializeAI();
@@ -27,32 +27,32 @@ public class Starship_NPC extends Starship {
 		controller.updateActions();
 		//thrust();
 	}
-	public Behavior getBehavior(int b) {
+	public final Behavior getBehavior(int b) {
 		return behaviors.get(b);
 	}
-	public void setBehavior(int i, Behavior b) {
+	public final void setBehavior(int i, Behavior b) {
 		behaviors.set(i, b);
 	}
-	public void addBehavior(Behavior b) {
+	public final void addBehavior(Behavior b) {
 		behaviors.add(b);
 	}
-	public void removeBehavior(Behavior b) {
+	public final void removeBehavior(Behavior b) {
 		behaviors.remove(b);
 	}
-	public ArrayList<Behavior> getBehaviors() {
+	public final ArrayList<Behavior> getBehaviors() {
 		return behaviors;
 	}
-	public void setController(BehaviorController c) {
+	public final void setController(BehaviorController c) {
 		controller = c;
 	}
-	public Behavior getController() {
+	public final Behavior getController() {
 		return controller;
 	}
-	private void initializeAI() {
+	private final void initializeAI() {
 		controller = new BehaviorController(this);
 		behaviors = new ArrayList<Behavior>();
 	}
-	public double getVelTowards(SpaceObject object)
+	public final double getVelTowards(SpaceObject object)
 	{
 		double angle_towards_object = getAngleTowards(object);
 		return object.getVelAtAngle(angle_towards_object) - getVelAtAngle(angle_towards_object);
@@ -105,7 +105,7 @@ public class Starship_NPC extends Starship {
 		return angle_to_hit;
 	}
 */
-	public double calcFutureAngle()
+	public final double calcFutureAngle()
 	{
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
@@ -115,7 +115,7 @@ public class Starship_NPC extends Starship {
 				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
 	}
-	public String calcTurnDirection(double target_angle)
+	public final Behavior.RotatingState calcTurnDirection(double target_angle)
 	{
 		double pos_r_future = calcFutureAngle();
 		double faceAngleDiffCCW = modRangeDegrees(target_angle - pos_r_future);
@@ -126,30 +126,30 @@ public class Starship_NPC extends Starship {
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
 				printToWorld("Status (Facing): CW");
-				return Behavior.ACT_TURN_CW;
+				return Behavior.RotatingState.CW;
 			}
 			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
 				printToWorld("Status (Facing): CCW");
-				return Behavior.ACT_TURN_CCW;
+				return Behavior.RotatingState.CCW;
 			}
 			else
 			{
 				printToWorld("Status (Facing): Random");
 				if(Math.random() > .5) {
-					return Behavior.ACT_TURN_CW;
+					return Behavior.RotatingState.CW;
 				} else {
-					return Behavior.ACT_TURN_CCW;
+					return Behavior.RotatingState.CCW;
 				}
 			}
 		}
 		else
 		{
 			printToWorld("Status (Facing): Aligned");
-			return Behavior.ACT_NOTHING;
+			return Behavior.RotatingState.NOTHING;
 		}
 	}
-	public double calcFutureAngleDifference(double angle_target)
+	public final double calcFutureAngleDifference(double angle_target)
 	{
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
@@ -163,33 +163,33 @@ public class Starship_NPC extends Starship {
 		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_target);
 		return min(faceAngleDiffCCW, faceAngleDiffCW);
 	}
-	public void turnDirection(String direction)
+	public final void turnDirection(Behavior.RotatingState direction)
 	{
 		switch(direction)
 		{
-		case	Behavior.ACT_TURN_CCW:	turnCCW();			break;
-		case	Behavior.ACT_TURN_CW:	turnCW();			break;
+		case	CCW:	turnCCW();			break;
+		case	CW:	turnCW();			break;
 		}
 	}
-	public double getMaxAngleDifference()
+	public final double getMaxAngleDifference()
 	{
 		return 1;
 	}
-	public double getMinSeparationFromAttackers()
+	public final double getMinSeparationFromAttackers()
 	{
 		return 300;
 	}
-	public double getMaxSeparationFromTarget()
+	public final double getMaxSeparationFromTarget()
 	{
 		//return 300;
 		return 700;
 	}
-	public double getMinSeparationFromTarget()
+	public final double getMinSeparationFromTarget()
 	{
 		//return 200;
 		return 400;
 	}
-	public double getMinSeparationFromOthers()
+	public final double getMinSeparationFromOthers()
 	{
 		return 100;
 	}

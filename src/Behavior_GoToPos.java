@@ -1,8 +1,8 @@
 import java.awt.geom.Point2D;
 
 public class Behavior_GoToPos extends Behavior {
-	Point2D.Double destination;
-	int min_distance = 10;
+	private Point2D.Double destination;
+	private int min_distance = 10;
 	public Behavior_GoToPos(Starship_NPC o) {
 		super(o);
 		// TODO Auto-generated constructor stub
@@ -65,10 +65,10 @@ public class Behavior_GoToPos extends Behavior {
 			destination_distance_focus = destination_distance_left;
 		}
 		
-		String action_thrusting = ACT_NOTHING;
-		String action_rotation = ACT_NOTHING;
-		String action_strafing = ACT_NOTHING;
-		String action_weapon = ACT_NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NOTHING;
+		RotatingState action_rotation = RotatingState.NOTHING;
+		StrafingState action_strafing = StrafingState.NOTHING;
+		AttackingState action_weapon = AttackingState.NOTHING;
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
@@ -98,7 +98,7 @@ public class Behavior_GoToPos extends Behavior {
 		{
 			action_rotation = owner.calcTurnDirection(angle_to_destination);
 		} else {
-			action_thrusting = ACT_THRUST;
+			action_thrusting = ThrustingState.THRUST;
 		}
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
 	}

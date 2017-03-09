@@ -1,5 +1,4 @@
 import java.awt.geom.Point2D;
-
 public class Behavior_Hold extends Behavior {
 	public Behavior_Hold(Starship_NPC o) {
 		super(o);
@@ -73,10 +72,10 @@ public class Behavior_Hold extends Behavior {
 			target_distance_focus = target_distance_left;
 		}
 		
-		String action_thrusting = ACT_BRAKE;
-		String action_rotation = ACT_NOTHING;
-		String action_strafing = ACT_NOTHING;
-		String action_weapon = ACT_NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NOTHING;
+		RotatingState action_rotation = RotatingState.NOTHING;
+		StrafingState action_strafing = StrafingState.NOTHING;
+		AttackingState action_weapon = AttackingState.NOTHING;
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
 		
 		double angle_to_target = owner.calcFireAngle(
@@ -96,7 +95,7 @@ public class Behavior_Hold extends Behavior {
 		{
 			double distance_to_target = target_distance_focus;
 			if(distance_to_target < owner.getWeaponPrimary().getProjectileRange()) {
-				action_weapon = ACT_FIRE;
+				action_weapon = AttackingState.FIRE;
 			}
 		}
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);

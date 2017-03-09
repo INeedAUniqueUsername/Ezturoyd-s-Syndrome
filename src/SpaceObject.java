@@ -8,33 +8,33 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 public class SpaceObject {
-	String name = "";
-	final double c = 9131.35261864;
+	private String name = "";
+	private final double c = 9131.35261864;
 	
-	double pos_x = 0;
-	double pos_y = 0;
-	double pos_r = 0;
+	protected double pos_x = 0; //Transition to get/set
+	protected double pos_y = 0; //Transition to get/set
+	protected double pos_r = 0; //Transition to get/set
 	
-	double vel_x = 0;
-	double vel_y = 0;
-	double vel_r = 0;
-	ArrayList<Polygon> body;
-	double size;
+	protected double vel_x = 0; //Transition to get/set
+	protected double vel_y = 0; //Transition to get/set
+	protected double vel_r = 0; //Transition to get/set
+	protected ArrayList<Polygon> body; //Transition to private get/set
+	private double size;
 	
-	int last_collision_tick = 0;
+	private int last_collision_tick = 0;
 	
-	boolean active = true;
+	private boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
 	
-	public void setName(String name_new)
+	public final void setName(String name_new)
 	{
 		name = name_new;
 	}
-	public String getName()
+	public final String getName()
 	{
 		return name;
 	}
-	public void printToWorld(String text)
+	public final void printToWorld(String text)
 	{
 		if(name.equals(""))
 		{
@@ -47,7 +47,7 @@ public class SpaceObject {
 		
 	}
 	
-	public int factorialAddition(int input)
+	public final int factorialAddition(int input)
 	{
 		int result = 0;
 		while(input > 0)
@@ -58,12 +58,12 @@ public class SpaceObject {
 		return result;
 	}
 	
-	public void impulse(double angle, double kinetic_energy)
+	public final void impulse(double angle, double kinetic_energy)
 	{
 		incVelPolar(angle, Math.sqrt((2*kinetic_energy)/size));
 	}
 	
-	public Point2D.Double calcFuturePos(double time)
+	public final Point2D.Double calcFuturePos(double time)
 	{
 		return new Point2D.Double(pos_x + time * vel_x, pos_y + time * vel_y);
 	}
@@ -170,47 +170,47 @@ public class SpaceObject {
 		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), origin.getY() + distance * sinDegrees(angle));
 	}
 	
-	public void setPosRectangular(double x, double y)
+	public final void setPosRectangular(double x, double y)
 	{
 		pos_x = x;
 		pos_y = y;
 	}
 	
-	public void setVelRectangular(double x, double y)
+	public final void setVelRectangular(double x, double y)
 	{
 		vel_x = x;
 		vel_y = y;
 	}
 	
-	public void setVelPolar(double angle, double speed)
+	public final void setVelPolar(double angle, double speed)
 	{
 		setVelRectangular(speed*cosDegrees(angle), speed*sinDegrees(angle));
 	}
 	
-	public void incVelRectangular(double x, double y)
+	public final void incVelRectangular(double x, double y)
 	{
 		setVelRectangular(getVelX() + x, getVelY() + y);
 	}
 	
-	public void incVelPolar(double angle, double speed)
+	public final void incVelPolar(double angle, double speed)
 	{
 		setVelRectangular(getVelX() + speed*cosDegrees(angle), getVelY() + speed*sinDegrees(angle));
 	}
 	
-	public void setAngle(int newAngle)
+	public final void setAngle(int newAngle)
 	{
 		pos_r = newAngle;
 	}
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
 	
-	public void accelerate(double angle, double speed)
+	public final void accelerate(double angle, double speed)
 	{
 		vel_x = (vel_x + speed*cosDegrees(angle));
 		vel_y = (vel_y + speed*sinDegrees(angle));
 	}
 	
-	public void decelerate(double speed)
+	public final void decelerate(double speed)
 	{
 		int velAngle = (int) arctanDegrees(vel_y, vel_x);
 		int decelAngle = velAngle + 180;
@@ -232,17 +232,17 @@ public class SpaceObject {
 	
 	/*	=	=	=	=		Trigonometry		=	=	=	=	=*/
 	
-	public static double cosDegrees (double angle)
+	public final static double cosDegrees (double angle)
 	{
 		return Math.cos(Math.toRadians(angle));
 	}
 	
-	public static double sinDegrees (double angle)
+	public final static double sinDegrees (double angle)
 	{
 		return Math.sin(Math.toRadians(angle));
 	}
 	
-	public static double arctanDegrees(double y, double x)
+	public final static double arctanDegrees(double y, double x)
 	{
 		/*
 		double result;
@@ -291,7 +291,7 @@ public class SpaceObject {
 		vel_r = vel_r - accel;
 	}
 	
-	public ArrayList<Polygon> getBody() {
+	public final ArrayList<Polygon> getBody() {
 		return body;
 	}
 	
@@ -304,15 +304,15 @@ public class SpaceObject {
 		}
 		return result;
 	}
-	public static double modRangeDegrees(double input)
+	public final static double modRangeDegrees(double input)
 	{
 		return modRange(input, 360);
 	}
-	public static double min(double number1, double number2)
+	public final static double min(double number1, double number2)
 	{
 		return (number1 < number2 ? number1 : number2);
 	}
-	public static double range(double input, double min, double max)
+	public final static double range(double input, double min, double max)
 	{
 		if(input > max)
 		{
@@ -327,17 +327,17 @@ public class SpaceObject {
 			return input;
 		}
 	}
-	public static double random(double input)
+	public final static double random(double input)
 	{
 		return Math.random()*input;
 	}
 	
-	public static double randomMin(double minimum, double input)
+	public final static double randomMin(double minimum, double input)
 	{
 		return (minimum + Math.random()*(input - minimum));
 	}
 	
-	public static double scaleLinearUp(double input, double minFrom, double maxFrom, double minTo, double maxTo)
+	public final static double scaleLinearUp(double input, double minFrom, double maxFrom, double minTo, double maxTo)
 	{
 		double rangeFrom = maxFrom - minFrom;
 		double rangeTo = maxTo - minTo;
@@ -348,7 +348,7 @@ public class SpaceObject {
 	}
 	
 	//Source: http://www.mathopenref.com/coordpolygonarea2.html
-	public static double polygonArea(int[] X, int[] Y, int numPoints) 
+	public final static double polygonArea(int[] X, int[] Y, int numPoints) 
 	{ 
 	  double area = 0;         // Accumulates area in the loop
 	  int j = numPoints-1;  // The last vertex is the 'previous' one to the first
@@ -359,7 +359,7 @@ public class SpaceObject {
 	    }
 	  return area/2;
 	}
-	public void updateSize()
+	public final void updateSize()
 	{
 		size = 0;
 		for(Polygon part : body)
@@ -377,7 +377,7 @@ public class SpaceObject {
 	{
 		
 	}
-	public void drawBody(Graphics g)
+	public final void drawBody(Graphics g)
 	{
 		for(Polygon part : body)
 		{
@@ -412,33 +412,33 @@ public class SpaceObject {
 		return arctanDegrees(origin.getY() - dest.getY(), origin.getX() - dest.getX());
 	}
 	
-	public double getAngleTowardsPos (Point2D.Double pos)
+	public final double getAngleTowardsPos (Point2D.Double pos)
 	{
 		return arctanDegrees(pos.getY() - getPosY(), pos.getX() - getPosX());
 	}
-	public double getAngleFromPos(Point2D.Double pos)
+	public final double getAngleFromPos(Point2D.Double pos)
 	{
 		return arctanDegrees(getPosY() - pos.getY(), getPosX() - pos.getX());
 	}
 	
-	public double getDistanceBetween(SpaceObject target)
+	public final double getDistanceBetween(SpaceObject target)
 	{
 		return getDistanceBetweenPos(getPos(), target.getPos());
 	}
-	public double getDistanceBetweenPos(Point2D.Double pos)
+	public final double getDistanceBetweenPos(Point2D.Double pos)
 	{
 		return getDistanceBetweenPos(getPos(), pos);		
 	}
-	public static double getDistanceBetweenPos(Point2D.Double origin, Point2D.Double dest)
+	public final static double getDistanceBetweenPos(Point2D.Double origin, Point2D.Double dest)
 	{
 		return getDistanceBetweenPos(origin.getX(), origin.getY(), dest.getX(), dest.getY());
 	}
-	public static double getDistanceBetweenPos(double x1, double y1, double x2, double y2)
+	public final static double getDistanceBetweenPos(double x1, double y1, double x2, double y2)
 	{
 		return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));		
 	}
 	
-	public void updatePosition()
+	public final void updatePosition()
 	{
 		pos_r = (int) (pos_r + vel_r);
 		pos_x = pos_x + vel_x;
@@ -557,7 +557,7 @@ public class SpaceObject {
 	
 	public final void print(String message)
 	{
-		System.out.println(GamePanel.world.tick + ". " + message);
+		System.out.println(GamePanel.world.getTick() + ". " + message);
 	}
 	public final boolean exists(Object o)
 	{

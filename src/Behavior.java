@@ -1,77 +1,95 @@
-import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Behavior {
-	final static String ACT_THRUST = "Thrust";
-	final static String ACT_BRAKE = "Brake";
-	final static String ACT_TURN_CCW = "CCW";
-	final static String ACT_TURN_CW = "CW";
-	final static String ACT_FIRE = "Fire";
-	final static String ACT_NOTHING = "Nothing";
-	
-	protected Starship_NPC owner;
-	boolean active;
-	String action_thrusting = ACT_NOTHING;
-	String action_rotating = ACT_NOTHING;
-	String action_strafing = ACT_NOTHING;
-	String action_attacking = ACT_NOTHING;
+	Starship_NPC owner;
+	private boolean active;
+	public static enum ThrustingState {
+		NOTHING, BRAKE, THRUST
+	}
+	public static enum RotatingState {
+		NOTHING, CCW, CW
+	}
+	public static enum StrafingState {
+		NOTHING, LEFT, RIGHT
+	}
+	public static enum AttackingState {
+		NOTHING, FIRE
+	}
+	private ThrustingState action_thrusting = ThrustingState.NOTHING;
+	private RotatingState action_rotating = RotatingState.NOTHING;
+	private StrafingState action_strafing = StrafingState.NOTHING;
+	private AttackingState action_attacking = AttackingState.NOTHING;
 	public Behavior(Starship_NPC o) {
 		setOwner(o);
+		setActive(true);
 	}
-	public void setOwner(Starship_NPC o) {
+	public final void setOwner(Starship_NPC o) {
 		owner = o;
-		active = true;
 	}
-	public SpaceObject getOwner() {
+	public final SpaceObject getOwner() {
 		return owner;
 	}
 	public void update() {
 		
 	}
-	public void setActive(boolean a) {
+	public final void setActive(boolean a) {
 		active = a;
 	}
-	public boolean getActive() {
+	public final boolean getActive() {
 		return active;
 	}
-	public void setActions(String[] actions) {
-		setThrusting(actions[0]);
-		setRotating(actions[1]);
-		setStrafing(actions[2]);
-		setAttacking(actions[3]);
-	}
-	public String[] getActions() {
-		return new String[] {action_thrusting, action_rotating, action_strafing, action_attacking};
-	}
-	public void setActions(String t, String r, String s, String a) {
+	public final void setActions(ThrustingState t, RotatingState r, StrafingState s, AttackingState a) {
 		setThrusting(t);
 		setRotating(r);
 		setStrafing(s);
 		setAttacking(a);
 	}
-	public void setThrusting(String t) {
+	public final void copyActions(Behavior b) {
+		setActions(b.getThrusting(), b.getRotating(), b.getStrafing(), b.getAttacking());
+	}
+	public final void setThrusting(ThrustingState t) {
 		action_thrusting = t;
 	}
-	public void setRotating(String r) {
+	public final ThrustingState getThrusting() {
+		return action_thrusting;
+	}
+	public final void setRotating(RotatingState r) {
 		action_rotating = r;
 	}
-	public void setStrafing(String s) {
+	public final RotatingState getRotating() {
+		return action_rotating;
+	}
+	public final void setStrafing(StrafingState s) {
 		action_strafing = s;
 	}
-	public void setAttacking(String a) {
+	public final StrafingState getStrafing() {
+		return action_strafing;
+	}
+	public final void setAttacking(AttackingState a) {
 		action_attacking = a;
 	}
-	public void updateActions() {
+	public final AttackingState getAttacking() {
+		return action_attacking;
+	}
+	public final void updateActions() {
 		switch(action_thrusting) {
-		case	ACT_THRUST:		owner.thrust();			break;
-		case	ACT_BRAKE:		owner.brake();			break;
+		case	THRUST:		owner.thrust();			break;
+		case	BRAKE:		owner.brake();			break;
+		case NOTHING:
+			break;
+		default:
+			break;
 		}
 		switch(action_rotating) {
-		case	ACT_TURN_CCW:	owner.turnCCW();			break;
-		case	ACT_TURN_CW:	owner.turnCW();			break;
+		case	CCW:		owner.turnCCW();		break;
+		case	CW:			owner.turnCW();			break;
+		case NOTHING:								break;
+		default:									break;
 		}
 		switch(action_attacking) {
-		case	ACT_FIRE:		owner.setFiring(true);	break;
-		default:				owner.setFiring(false);	break;
+		case	FIRE:		owner.setFiring(true);	break;
+		case	NOTHING:	owner.setFiring(false);	break;
+		default:			owner.setFiring(false);	break;
 		}
 	}
 }

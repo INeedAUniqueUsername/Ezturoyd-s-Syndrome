@@ -9,25 +9,27 @@ public class Weapon {
 
 	final int SIZE = 10;
 
-	boolean firing = false;
+	private boolean firing = false;
 
-	double pos_angle = 0;
-	double pos_radius = 0;
+	private double pos_angle = 0;
+	private double pos_radius = 0;
 
-	double fire_angle = 0;
+	private double fire_angle = 0;
 
-	double aim_x, aim_y;
+	protected double aim_x;
+
+	protected double aim_y;
 	
-	double pos_x;
-	double pos_y;
+	private double pos_x;
+	private double pos_y;
 
-	int fire_cooldown_max = 10;
-	int fire_cooldown_time = fire_cooldown_max;
-	int projectile_speed = 10;
-	int projectile_damage = 5;
-	int projectile_lifetime = 60;
+	private int fire_cooldown_max = 10;
+	private int fire_cooldown_time = fire_cooldown_max;
+	private int projectile_speed = 10;
+	private int projectile_damage = 5;
+	private int projectile_lifetime = 60;
 
-	Color color = Color.RED;
+	private Color color = Color.RED;
 	public Weapon()
 	{
 		
@@ -45,6 +47,9 @@ public class Weapon {
 	}
 
 	public void update() {
+		updateWeapon();
+	}
+	public void updateWeapon() {
 		//System.out.println("---> Weapon Update");
 		fire_cooldown_time++;
 		double angle = pos_angle + owner.getPosR();
@@ -54,7 +59,6 @@ public class Weapon {
 		fire_angle = angle;
 		//System.out.println("<--- Weapon Update");
 	}
-
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
 		int[] bodyX = new int[4];
@@ -77,11 +81,11 @@ public class Weapon {
 		g.drawPolygon(new Polygon(bodyX, bodyY, 4));
 	}
 
-	public Projectile getShotType() {
+	public final Projectile getShotType() {
 		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime(), color);
 	}
 
-	public Projectile getShot() {
+	public final Projectile getShot() {
 		Projectile shot = getShotType();
 		shot.setVelPolar(getFireAngle(), getProjectileSpeed());
 		shot.incVelRectangular(owner.getVelX(), owner.getVelY());
@@ -89,23 +93,23 @@ public class Weapon {
 		return shot;
 	}
 
-	public void setFiring(boolean state) {
+	public final void setFiring(boolean state) {
 		firing = state;
 	}
 
-	public boolean getFiring() {
+	public final boolean getFiring() {
 		return firing;
 	}
 
-	public int getFireCooldownLeft() {
+	public final int getFireCooldownLeft() {
 		return fire_cooldown_time;
 	}
 
-	public void setFireCooldownLeft(int time) {
+	public final void setFireCooldownLeft(int time) {
 		fire_cooldown_time = time;
 	}
 
-	public int getFireCooldownMax() {
+	public final int getFireCooldownMax() {
 		return fire_cooldown_max;
 	}
 
@@ -113,80 +117,80 @@ public class Weapon {
 		return fire_angle;
 	}
 
-	public int getProjectileSpeed() {
+	public final int getProjectileSpeed() {
 		return projectile_speed;
 	}
 	
-	public void setProjectileSpeed(int speed) {
+	public final void setProjectileSpeed(int speed) {
 		projectile_speed = speed;
 	}
 
-	public int getProjectileDamage() {
+	public final int getProjectileDamage() {
 		return projectile_damage;
 	}
 
-	public void setProjectileDamage(int damage) {
+	public final void setProjectileDamage(int damage) {
 		projectile_damage = damage;
 	}
 
-	public int getProjectileLifetime() {
+	public final int getProjectileLifetime() {
 		return projectile_lifetime;
 	}
 	
-	public void setProjectileLifetime(int lifetime) {
+	public final void setProjectileLifetime(int lifetime) {
 		projectile_lifetime = lifetime;
 	}
 	
-	public int getProjectileRange() {
+	public final int getProjectileRange() {
 		return projectile_speed * projectile_lifetime;
 	}
 
-	public SpaceObject getOwner() {
+	public final SpaceObject getOwner() {
 		return owner;
 	}
 	
-	public void setAimPos(double x, double y) {
+	public final void setAimPos(double x, double y) {
 		aim_x = x;
 		aim_y = y;
 	}
 
-	public void setOwner(Starship owner_new) {
+	public final void setOwner(Starship owner_new) {
 		owner = owner_new;
 	}
 
-	public void setPosAngle(double angle) {
+	public final void setPosAngle(double angle) {
 		pos_angle = angle;
 	}
 
-	public void setPosRadius(double radius) {
+	public final void setPosRadius(double radius) {
 		pos_radius = radius;
 	}
 
-	public void setFireCooldownTime(int time) {
+	public final void setFireCooldownTime(int time) {
 		fire_cooldown_max = time;
 	}
 
-	public int getFireCooldownTime() {
+	public final int getFireCooldownTime() {
 		return fire_cooldown_max;
 	}
 
-	public double getPosX() {
+	public final double getPosX() {
 		return pos_x;
 	}
 
-	public double getPosY() {
+	public final double getPosY() {
 		return pos_y;
 	}
 
-	public double cosDegrees(double angle) {
+	public final double cosDegrees(double angle) {
 		return Math.cos(Math.toRadians(angle));
 	}
 
-	public double sinDegrees(double angle) {
+	public final double sinDegrees(double angle) {
 		return Math.sin(Math.toRadians(angle));
 	}
 	
-	public boolean exists(Object o)
+	public final boolean exists(Object o)
 	{
 		return o != null;
 	}
