@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Starship_NPC extends Starship {
-	private BehaviorController controller;
-	private ArrayList<Behavior> behaviors;
+	private BehaviorController_Default controller;
+	private ArrayList<Behavior> orders;
 	
 	public Starship_NPC() {
 		initializeAI();
@@ -27,30 +27,31 @@ public class Starship_NPC extends Starship {
 		controller.updateActions();
 		//thrust();
 	}
-	public final Behavior getBehavior(int b) {
-		return behaviors.get(b);
+	public final Behavior getOrder(int b) {
+		return orders.get(b);
 	}
-	public final void setBehavior(int i, Behavior b) {
-		behaviors.set(i, b);
+	public final void setOrder(int i, Behavior b) {
+		orders.set(i, b);
 	}
-	public final void addBehavior(Behavior b) {
-		behaviors.add(b);
+	public final void addOrder(Behavior b) {
+		orders.add(b);
 	}
-	public final void removeBehavior(Behavior b) {
-		behaviors.remove(b);
+	public final void removeOrder(Behavior b) {
+		orders.remove(b);
 	}
-	public final ArrayList<Behavior> getBehaviors() {
-		return behaviors;
+	public final ArrayList<Behavior> getOrders() {
+		return orders;
 	}
-	public final void setController(BehaviorController c) {
+	public final void setController(BehaviorController_Default c) {
 		controller = c;
 	}
-	public final Behavior getController() {
+	public final BehaviorController_Default getController() {
 		return controller;
 	}
 	private final void initializeAI() {
-		controller = new BehaviorController(this);
-		behaviors = new ArrayList<Behavior>();
+		controller = new BehaviorController_Default(this);
+		orders = new ArrayList<Behavior>();
+		controller.initialize();
 	}
 	public final double getVelTowards(SpaceObject object)
 	{
@@ -121,7 +122,7 @@ public class Starship_NPC extends Starship {
 		double faceAngleDiffCCW = modRangeDegrees(target_angle - pos_r_future);
 		double faceAngleDiffCW = modRangeDegrees(pos_r_future - target_angle);
 		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
-		if(faceAngleDiff > getMaxAngleDifference())
+		if(faceAngleDiff > controller.getMaxAngleDifference())
 		{
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
@@ -149,8 +150,19 @@ public class Starship_NPC extends Starship {
 			return Behavior.RotatingState.NOTHING;
 		}
 	}
-	public final double calcFutureAngleDifference(double angle_target)
-	{
+	public final Point2D.Double getFuturePosWithDeceleration() {
+		double x_decel_time = Math.abs(vel_x/DECEL);
+		double y_decel_time = Math.abs(vel_y/DECEL);
+		return new Point2D.Double(
+				pos_x +
+				vel_x * x_decel_time +
+				((vel_x > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(x_decel_time, 2),
+				pos_y +
+				vel_y * y_decel_time+
+				((vel_y > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(y_decel_time, 2)
+				);
+	}
+	public final double getFutureAngleWithDeceleration() {
 		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
 		//Let's relearn AP Physics I!
@@ -159,6 +171,11 @@ public class Starship_NPC extends Starship {
 				+ vel_r * r_decel_time
 				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
+		return pos_r_future;
+	}
+	public final double calcFutureAngleDifference(double angle_target)
+	{
+		double pos_r_future = getFutureAngleWithDeceleration();
 		double faceAngleDiffCCW = modRangeDegrees(angle_target - pos_r_future);
 		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_target);
 		return min(faceAngleDiffCCW, faceAngleDiffCW);
@@ -170,27 +187,5 @@ public class Starship_NPC extends Starship {
 		case	CCW:	turnCCW();			break;
 		case	CW:	turnCW();			break;
 		}
-	}
-	public final double getMaxAngleDifference()
-	{
-		return 1;
-	}
-	public final double getMinSeparationFromAttackers()
-	{
-		return 300;
-	}
-	public final double getMaxSeparationFromTarget()
-	{
-		//return 300;
-		return 700;
-	}
-	public final double getMinSeparationFromTarget()
-	{
-		//return 200;
-		return 400;
-	}
-	public final double getMinSeparationFromOthers()
-	{
-		return 100;
 	}
 }

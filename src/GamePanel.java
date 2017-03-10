@@ -59,11 +59,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player = new Starship();
 		player.setPosRectangular(800, 450);
 
-		//addStarship(player);
-		addWeapon(player, new Weapon_Key(0, 10, 0, 1, 30, 1, 90, Color.RED));
-		addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		addStarship(player);
+		addWeapon(player, new Weapon_Key(0, 0, 0, 1, 30, 1, 90, Color.RED));
+		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
+		Starship_NPC e = new Starship_NPC();
+		addStarship(e);
+		e.setPosRectangular(800, 450);
+		/*
 		Starship_NPC enemy1 = new Starship_NPC();
 		addStarship(enemy1);
 		enemy1.setPosRectangular(400, 225);
@@ -81,7 +85,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy3.setPosRectangular(0, 0);
 		enemy3.setName("Enemy");
 		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
-
+		*/
 
 		/*
 		Asteroid rock = new Asteroid();

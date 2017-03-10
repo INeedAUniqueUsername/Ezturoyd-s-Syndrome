@@ -7,7 +7,7 @@ public class Weapon {
 
 	SpaceObject owner;
 
-	final int SIZE = 10;
+	final int SIZE = 5; //10
 
 	private boolean firing = false;
 

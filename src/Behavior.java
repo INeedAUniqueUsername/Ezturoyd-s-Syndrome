@@ -1,3 +1,4 @@
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Behavior {
@@ -91,5 +92,68 @@ public class Behavior {
 		case	NOTHING:	owner.setFiring(false);	break;
 		default:			owner.setFiring(false);	break;
 		}
+	}
+	
+	
+	
+	//Order_Attack helpers
+	public final double[] getNearestTargetClone(SpaceObject attacker, SpaceObject target) {
+		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
+		return getNearestPosClone(attacker.getPos(), target.getPos());
+	}
+	//Order_Attack helpers
+	public final double[] getNearestPosClone(Point2D.Double origin, Point2D.Double destination) {
+		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
+		double pos_x = origin.getX();
+		double pos_y = origin.getY();
+		double target_x_center = destination.getX();
+		double target_y_center = destination.getY();
+		double target_distance_center = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
+		
+		double target_x_up = target_x_center;
+		double target_y_up = target_y_center - GameWindow.HEIGHT;
+		double target_distance_up = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
+		
+		double target_x_down = target_x_center;
+		double target_y_down = target_y_center + GameWindow.HEIGHT;
+		double target_distance_down = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
+		
+		double target_x_right = target_x_center + GameWindow.WIDTH;
+		double target_y_right = target_y_center;
+		double target_distance_right = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
+		
+		double target_x_left = target_x_center - GameWindow.WIDTH;
+		double target_y_left = target_y_center;
+		double target_distance_left = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
+		
+		double target_x_focus = target_x_center;
+		double target_y_focus = target_y_center;
+		double target_distance_focus = target_distance_center;
+		
+		if(target_distance_focus > target_distance_up)
+		{
+			target_x_focus = target_x_up;
+			target_y_focus = target_y_up;
+			target_distance_focus = target_distance_up;
+		}
+		if(target_distance_focus > target_distance_down)
+		{
+			target_x_focus = target_x_down;
+			target_y_focus = target_y_down;
+			target_distance_focus = target_distance_down;
+		}
+		if(target_distance_focus > target_distance_right)
+		{
+			target_x_focus = target_x_right;
+			target_y_focus = target_y_right;
+			target_distance_focus = target_distance_right;
+		}
+		if(target_distance_focus > target_distance_left)
+		{
+			target_x_focus = target_x_left;
+			target_y_focus = target_y_left;
+			target_distance_focus = target_distance_left;
+		}
+		return new double[] {target_x_focus, target_y_focus, target_distance_focus};
 	}
 }

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Projectile extends SpaceObject {
 
 	private int lifetime;
-	private int width = 3;
-	private int height = 24;
+	private int width = 2; //3
+	private int height = 16; //24
 	private int damage;
 	private SpaceObject owner;
 	private Color color = Color.RED;

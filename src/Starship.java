@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class Starship extends SpaceObject {
 
-	final int HEAD_SIZE = 20;
-	final int BODY_SIZE = 30;
+	final int HEAD_SIZE = 10; //20
+	final int BODY_SIZE = 15; //30
 	final double THRUST = .5; //1
 	final int MAX_SPEED = 8;
 	final double DECEL = .2;
