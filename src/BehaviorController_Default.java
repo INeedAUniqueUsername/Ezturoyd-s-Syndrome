@@ -7,7 +7,6 @@ public class BehaviorController_Default extends Behavior {
 		super(o);
 	}
 	public void initialize() {
-		owner.addOrder(new Order_GoToPos(owner, new Point2D.Double(500, 450)));
 	}
 	public void update() {
 		System.out.println("Updating Controller");
