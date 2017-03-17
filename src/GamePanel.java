@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private boolean active = true;
 	final int INTERVAL = 10;
 	private Starship player;
+	private Starship_NPC enemy_test;
 	private ArrayList<SpaceObject> universe;
 	/*
 	ArrayList<Starship> starships;
@@ -64,12 +66,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		
-		Starship_NPC enemy1 = new Starship_NPC();
-		addStarship(enemy1);
-		enemy1.setPosRectangular(400, 225);
-		enemy1.setName("Enemy");
-		addWeapon(enemy1, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
+		enemy_test = new Starship_NPC();
+		addStarship(enemy_test);
+		enemy_test.setPosRectangular(400, 225);
+		enemy_test.setName("Enemy");
+		addWeapon(enemy_test, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
 		
+		/*
 		Starship_NPC enemy2 = new Starship_NPC();
 		addStarship(enemy2);
 		enemy2.setPosRectangular(800, 525);
@@ -82,8 +85,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy3.setName("Enemy");
 		addWeapon(enemy3, new Weapon(0, 10, 0, 5, 15, 1, 30, Color.RED));
 
-		enemy1.addOrder(new Order_Attack(enemy1, enemy2));
-		enemy2.addOrder(new Order_Attack(enemy2, enemy1));
+		*/
 		/*
 		Asteroid rock = new Asteroid();
 		rock.initializeBody(10, 50, 70);
@@ -242,6 +244,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double y = GameWindow.HEIGHT - e.getY();
 		player.setAimPos(x, y);
 		player.setFiringMouse(true);
+		enemy_test.clearOrders();
+		enemy_test.addOrder(new Order_AttackOrbit(enemy_test, player));
 	}
 
 	@Override

@@ -97,6 +97,9 @@ public class SpaceObject {
 		Point2D.Double posDiff = calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed);
 		return new Point2D.Double(getPosX() + posDiff.getX(), getPosY() + posDiff.getY());
 	}
+	public final double calcFireAngle(SpaceObject target, double projectile_speed) {
+		return calcFireAngle(target.getPosX(), target.getPosY(), target.getVelX(), target.getVelY(), projectile_speed);
+	}
 	public final double calcFireAngle(double target_pos_x, double target_pos_y, double target_vel_x, double target_vel_y, double projectile_speed) {
 		return calcFireAngle(
 				new Point2D.Double(

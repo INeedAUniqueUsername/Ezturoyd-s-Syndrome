@@ -39,6 +39,9 @@ public class Starship_NPC extends Starship {
 	public final void removeOrder(Behavior b) {
 		orders.remove(b);
 	}
+	public final void clearOrders() {
+		orders = new ArrayList<Behavior>();
+	}
 	public final ArrayList<Behavior> getOrders() {
 		return orders;
 	}
