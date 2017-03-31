@@ -55,7 +55,7 @@ public class Projectile extends SpaceObject {
 		drawBody(g);
 	}
 
-	public final void update() {
+	public void update() {
 		updatePosition();
 		lifetime--;
 		if (lifetime < 0) {

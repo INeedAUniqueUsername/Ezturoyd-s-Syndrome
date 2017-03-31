@@ -48,7 +48,7 @@ public class Order_GoToPos extends Behavior {
 						),
 				owner.MAX_SPEED
 				);
-		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_target);
+		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		/*
 		double velAngle = owner.getVelAngle();
 		double velAngleDiffCCW = Space_Object.modRangeDegrees(angle_to_destination - velAngle);

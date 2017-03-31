@@ -80,11 +80,6 @@ public class Starship extends SpaceObject {
 	*/
 
 	public void update() {
-		updateSpaceship();
-	}
-	
-	public void updateSpaceship()
-	{
 		double speed_r = Math.abs(vel_r);
 		if (speed_r > 0)
 			if(speed_r > ROTATION_MAX) {
@@ -112,7 +107,6 @@ public class Starship extends SpaceObject {
 			vel_y = MAX_SPEED * sinDegrees(velAngle);
 		}
 		updatePosition();
-		
 	}
 
 	public void updateBody() {

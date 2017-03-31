@@ -1,8 +1,6 @@
-import java.awt.geom.Point2D;
-
 public class Order_AttackOrbit extends Behavior {
 	private SpaceObject target;
-	private int distance = 200;
+	private int distance = 300;
 	public Order_AttackOrbit(Starship_NPC o, SpaceObject t) {
 		super(o);
 		setTarget(t);
@@ -34,12 +32,12 @@ public class Order_AttackOrbit extends Behavior {
 		
 		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.MAX_SPEED);
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
-		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_destination);
-		double aimAngleDiff = owner.calcFutureAngleDifference(angle_to_aim);
+		double futureFacingDiff = owner.calcFutureFacingDifference(angle_to_destination);
+		double aimingDiff = owner.calcFacingDifference(angle_to_aim);
 			
 		//We are too far away on the target, so focus on orbiting
 		if(SpaceObject.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
-			if(faceAngleDiff > 30) {
+			if(futureFacingDiff > 30) {
 				action_rotation = owner.calcTurnDirection(angle_to_destination);
 				owner.printToWorld("AttackOrbit: Not facing " + target.getName());
 			} else {
@@ -51,7 +49,7 @@ public class Order_AttackOrbit extends Behavior {
 			action_rotation = owner.calcTurnDirection(angle_to_aim);
 			owner.printToWorld("AttackOrbit: Aiming at " + target.getName());
 		}
-		if(aimAngleDiff < 5) {
+		if(aimingDiff < 5) {
 			action_weapon = AttackingState.FIRE;
 			owner.printToWorld("AttackOrbit: Firing at " + target.getName());
 		}

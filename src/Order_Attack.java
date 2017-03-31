@@ -60,7 +60,7 @@ public class Order_Attack extends Behavior {
 				target.getVelY(),
 				owner.getWeaponPrimary().getProjectileSpeed()
 				);
-		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_target);
+		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		
 		double velAngle = owner.getVelAngle();
 		double velAngleDiffCCW = SpaceObject.modRangeDegrees(angle_to_target - velAngle);

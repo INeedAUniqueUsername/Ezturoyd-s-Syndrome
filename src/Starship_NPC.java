@@ -22,7 +22,7 @@ public class Starship_NPC extends Starship {
 	
 	public void update()
 	{
-		updateSpaceship();
+		super.update();
 		controller.update();
 		controller.updateActions();
 		//thrust();
@@ -176,11 +176,17 @@ public class Starship_NPC extends Starship {
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
 		return pos_r_future;
 	}
-	public final double calcFutureAngleDifference(double angle_target)
+	public final double calcFutureFacingDifference(double angle_target)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
 		double faceAngleDiffCCW = modRangeDegrees(angle_target - pos_r_future);
 		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_target);
+		return min(faceAngleDiffCCW, faceAngleDiffCW);
+	}
+	public final double calcFacingDifference(double angle_target)
+	{
+		double faceAngleDiffCCW = modRangeDegrees(angle_target - pos_r);
+		double faceAngleDiffCW = modRangeDegrees(pos_r - angle_target);
 		return min(faceAngleDiffCCW, faceAngleDiffCW);
 	}
 	public final void turnDirection(Behavior.RotatingState direction)

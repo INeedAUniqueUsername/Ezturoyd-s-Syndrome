@@ -40,7 +40,7 @@ public class Order_Hold extends Behavior {
 				target.getVelY(),
 				owner.getWeaponPrimary().getProjectileSpeed()
 				);
-		double faceAngleDiff = owner.calcFutureAngleDifference(angle_to_target);
+		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		
 		if(faceAngleDiff > owner.getController().getMaxAngleDifference())
 		{
