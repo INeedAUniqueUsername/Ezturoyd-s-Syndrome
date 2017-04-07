@@ -26,14 +26,14 @@ public class Order_GoToPos extends Behavior {
 			return;
 		}
 		
-		double[] targetStats = getNearestPosClone(owner.getPos(), destination);
-		double destination_x = targetStats[0];
-		double destination_y = targetStats[1];
+		Point2D.Double pos_destination = getNearestPosClone(owner.getPos(), destination);
+		double destination_x = pos_destination.getY();
+		double destination_y = pos_destination.getX();
 		
-		ThrustingState action_thrusting = ThrustingState.NOTHING;
-		RotatingState action_rotation = RotatingState.NOTHING;
-		StrafingState action_strafing = StrafingState.NOTHING;
-		AttackingState action_weapon = AttackingState.NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NONE;
+		RotatingState action_rotation = RotatingState.NONE;
+		StrafingState action_strafing = StrafingState.NONE;
+		AttackingState action_weapon = AttackingState.NONE;
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		

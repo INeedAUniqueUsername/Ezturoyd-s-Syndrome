@@ -9,7 +9,7 @@ public class BehaviorController_Default extends Behavior {
 	public void initialize() {
 	}
 	public void update() {
-		System.out.println("Updating Controller");
+		//System.out.println("Updating Controller");
 		
 		if(owner.getOrders().size() > 0) {
 			updateCurrentOrder();

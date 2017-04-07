@@ -5,21 +5,21 @@ public class Behavior {
 	Starship_NPC owner;
 	private boolean active;
 	public static enum ThrustingState {
-		NOTHING, BRAKE, THRUST
+		NONE, BRAKE, THRUST
 	}
 	public static enum RotatingState {
-		NOTHING, CCW, CW
+		NONE, CCW, CW
 	}
 	public static enum StrafingState {
-		NOTHING, LEFT, RIGHT
+		NONE, LEFT, RIGHT
 	}
 	public static enum AttackingState {
-		NOTHING, FIRE
+		NONE, FIRE
 	}
-	private ThrustingState action_thrusting = ThrustingState.NOTHING;
-	private RotatingState action_rotating = RotatingState.NOTHING;
-	private StrafingState action_strafing = StrafingState.NOTHING;
-	private AttackingState action_attacking = AttackingState.NOTHING;
+	private ThrustingState action_thrusting = ThrustingState.NONE;
+	private RotatingState action_rotating = RotatingState.NONE;
+	private StrafingState action_strafing = StrafingState.NONE;
+	private AttackingState action_attacking = AttackingState.NONE;
 	public Behavior(Starship_NPC o) {
 		setOwner(o);
 		setActive(true);
@@ -76,7 +76,7 @@ public class Behavior {
 		switch(action_thrusting) {
 		case	THRUST:		owner.thrust();			break;
 		case	BRAKE:		owner.brake();			break;
-		case NOTHING:
+		case NONE:
 			break;
 		default:
 			break;
@@ -84,25 +84,22 @@ public class Behavior {
 		switch(action_rotating) {
 		case	CCW:		owner.turnCCW();		break;
 		case	CW:			owner.turnCW();			break;
-		case NOTHING:								break;
+		case NONE:								break;
 		default:									break;
 		}
 		switch(action_attacking) {
 		case	FIRE:		owner.setFiring(true);	break;
-		case	NOTHING:	owner.setFiring(false);	break;
+		case	NONE:	owner.setFiring(false);	break;
 		default:			owner.setFiring(false);	break;
 		}
 	}
-	
-	
-	
 	//Order_Attack helpers
-	public final double[] getNearestTargetClone(SpaceObject attacker, SpaceObject target) {
+	public static final Point2D.Double getNearestTargetClone(SpaceObject attacker, SpaceObject target) {
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
 		return getNearestPosClone(attacker.getPos(), target.getPos());
 	}
 	//Order_Attack helpers
-	public final double[] getNearestPosClone(Point2D.Double origin, Point2D.Double destination) {
+	public static final Point2D.Double getNearestPosClone(Point2D.Double origin, Point2D.Double destination) {
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
 		double pos_x = origin.getX();
 		double pos_y = origin.getY();
@@ -154,6 +151,6 @@ public class Behavior {
 			target_y_focus = target_y_left;
 			target_distance_focus = target_distance_left;
 		}
-		return new double[] {target_x_focus, target_y_focus, target_distance_focus};
+		return new Point2D.Double(target_x_focus, target_y_focus);
 	}
 }

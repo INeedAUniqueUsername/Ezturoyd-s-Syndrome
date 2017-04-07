@@ -3,34 +3,22 @@ public class Order_Hold extends Behavior {
 	public Order_Hold(Starship_NPC o) {
 		super(o);
 	}
-	public SpaceObject getClosestEnemy() {
-		double distance = Integer.MAX_VALUE;
-		SpaceObject result = null;
-		for(SpaceObject o : GamePanel.world.getStarships()) {
-			double d = owner.getDistanceBetween(o);
-			if(!o.equals(owner) && d < distance) {
-				result = o;
-				distance = d;
-			}
-		}
-		return result;
-	}
 	public void update() {
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
-		SpaceObject target = getClosestEnemy();
+		SpaceObject target = owner.getClosestEnemyStarship();
 		if(target == null) {
 			return;
 		}
 		//Problems: None. Attack as normal
-		double[] targetStats = getNearestTargetClone(owner, target);
-		double target_x = targetStats[0];
-		double target_y = targetStats[1];
-		double target_distance = targetStats[2];
+		Point2D.Double pos_target = getNearestTargetClone(owner, target);
+		double target_x = pos_target.getX();
+		double target_y = pos_target.getY();
+		double target_distance = owner.getDistanceBetweenPos(pos_target);
 		
-		ThrustingState action_thrusting = ThrustingState.NOTHING;
-		RotatingState action_rotation = RotatingState.NOTHING;
-		StrafingState action_strafing = StrafingState.NOTHING;
-		AttackingState action_weapon = AttackingState.NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NONE;
+		RotatingState action_rotation = RotatingState.NONE;
+		StrafingState action_strafing = StrafingState.NONE;
+		AttackingState action_weapon = AttackingState.NONE;
 		//double angle_to_target = getAngleTowardsPos(target_x_focus, target_y_focus);
 		
 		double angle_to_target = owner.calcFireAngle(

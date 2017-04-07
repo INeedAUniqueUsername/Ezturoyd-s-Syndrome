@@ -157,6 +157,10 @@ public class SpaceObject {
 		return getAngleTowardsPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
 	}
 	
+	public static final Point2D.Double calcDiff(Point2D.Double origin, Point2D.Double destination) {
+		return new Point2D.Double(destination.getX() - origin.getX(), destination.getY() - origin.getY());
+	}
+	
 	public static final double calcFireDistance(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
 	{
 		return getDistanceBetweenPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
@@ -507,6 +511,9 @@ public class SpaceObject {
 	{
 		return getVelSpeed()*cosDegrees(getVelAngle() - angle);
 	}
+	public final Point2D.Double getVel() {
+		return new Point2D.Double(getVelX(), getVelY());
+	}
 	public final double getVelX()
 	{
 		return vel_x;
@@ -565,5 +572,19 @@ public class SpaceObject {
 	public final boolean exists(Object o)
 	{
 		return o != null;
+	}
+	
+	
+	public final Starship getClosestEnemyStarship() {
+		double distance = Integer.MAX_VALUE;
+		Starship result = null;
+		for(Starship o : GamePanel.world.getStarships()) {
+			double d = getDistanceBetween(o);
+			if(!o.equals(this) && d < distance) {
+				result = o;
+				distance = d;
+			}
+		}
+		return result;
 	}
 }

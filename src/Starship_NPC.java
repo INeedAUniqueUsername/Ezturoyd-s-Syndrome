@@ -150,7 +150,7 @@ public class Starship_NPC extends Starship {
 		else
 		{
 			printToWorld("Status (Facing): Aligned");
-			return Behavior.RotatingState.NOTHING;
+			return Behavior.RotatingState.NONE;
 		}
 	}
 	public final Point2D.Double getFuturePosWithDeceleration() {
@@ -179,15 +179,16 @@ public class Starship_NPC extends Starship {
 	public final double calcFutureFacingDifference(double angle_target)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
-		double faceAngleDiffCCW = modRangeDegrees(angle_target - pos_r_future);
-		double faceAngleDiffCW = modRangeDegrees(pos_r_future - angle_target);
-		return min(faceAngleDiffCCW, faceAngleDiffCW);
+		return calcAngleDiff(pos_r_future, angle_target);
 	}
 	public final double calcFacingDifference(double angle_target)
 	{
-		double faceAngleDiffCCW = modRangeDegrees(angle_target - pos_r);
-		double faceAngleDiffCW = modRangeDegrees(pos_r - angle_target);
-		return min(faceAngleDiffCCW, faceAngleDiffCW);
+		return calcAngleDiff(pos_r, angle_target);
+	}
+	public static final double calcAngleDiff(double angle1, double angle2) {
+		double angleDiffCCW = modRangeDegrees(angle1 - angle2);
+		double angleDiffCW = modRangeDegrees(angle2 - angle1);
+		return min(angleDiffCCW, angleDiffCW);
 	}
 	public final void turnDirection(Behavior.RotatingState direction)
 	{

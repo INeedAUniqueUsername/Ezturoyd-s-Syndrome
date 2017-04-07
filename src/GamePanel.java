@@ -71,7 +71,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		enemy_test.setPosRectangular(400, 225);
 		enemy_test.setName("Enemy");
 		addWeapon(enemy_test, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
-		
+		enemy_test.addOrder(new Order_Escort(enemy_test, player));
 		/*
 		Starship_NPC enemy2 = new Starship_NPC();
 		addStarship(enemy2);

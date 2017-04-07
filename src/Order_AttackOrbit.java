@@ -1,3 +1,5 @@
+import java.awt.geom.Point2D;
+
 public class Order_AttackOrbit extends Behavior {
 	private SpaceObject target;
 	private int distance = 300;
@@ -21,14 +23,14 @@ public class Order_AttackOrbit extends Behavior {
 			return; //Done
 		}
 		
-		double[] targetStats = getNearestTargetClone(owner, target);
-		double target_x = targetStats[0];
-		double target_y = targetStats[1];
+		Point2D.Double pos_target = getNearestTargetClone(owner, target);
+		double target_x = pos_target.getX();
+		double target_y = pos_target.getY();
 		
-		ThrustingState action_thrusting = ThrustingState.NOTHING;
-		RotatingState action_rotation = RotatingState.NOTHING;
-		StrafingState action_strafing = StrafingState.NOTHING;
-		AttackingState action_weapon = AttackingState.NOTHING;
+		ThrustingState action_thrusting = ThrustingState.NONE;
+		RotatingState action_rotation = RotatingState.NONE;
+		StrafingState action_strafing = StrafingState.NONE;
+		AttackingState action_weapon = AttackingState.NONE;
 		
 		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.MAX_SPEED);
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
