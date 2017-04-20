@@ -62,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player.setPosRectangular(800, 450);
 
 		addStarship(player);
-		addWeapon(player, new Weapon_Key(0, 0, 0, 1, 30, 1, 90, Color.RED));
+		addWeapon(player, new Weapon_Key(0, 0, 0, 5, 30, 1, 90, Color.RED));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		

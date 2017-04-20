@@ -37,14 +37,14 @@ public class Order_Escort extends Behavior{
 		double angle_to_destination = SpaceObject.calcFireAngle(
 				SpaceObject.calcDiff(owner.getPos(), pos_destination),
 				SpaceObject.calcDiff(owner.getVel(), target.getVel()),
-				owner.MAX_SPEED/3
+				owner.MAX_SPEED
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceObject.getDistanceBetweenPos(pos_destination, pos_owner);
 		owner.printToWorld("Angle to Escort Position: " + angle_to_destination);
 		owner.printToWorld("Distance to Escort Position: " + distance_to_destination);
 		//Move towards the escort position
-		if(Math.abs(distance_to_destination - escort_distance) > 30 || Starship_NPC.calcAngleDiff(angle_current, escort_angle) < 10) {
+		if(Math.abs(distance_to_destination - escort_distance) > 10 || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10) {
 			owner.printToWorld("Approaching Escort Position");
 			double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_destination);
 			if(faceAngleDiff > 6)

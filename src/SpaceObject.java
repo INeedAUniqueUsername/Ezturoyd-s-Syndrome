@@ -213,8 +213,12 @@ public class SpaceObject {
 	
 	public final void accelerate(double angle, double speed)
 	{
-		vel_x = (vel_x + speed*cosDegrees(angle));
-		vel_y = (vel_y + speed*sinDegrees(angle));
+		vel_x += speed*cosDegrees(angle);
+		vel_y += speed*sinDegrees(angle);
+	}
+	public final void accelerateEnergy(double angle, double kineticEnergy) {
+		double speed = Math.sqrt((2*kineticEnergy)/size);
+		accelerateEnergy(angle, speed);
 	}
 	
 	public final void decelerate(double speed)
