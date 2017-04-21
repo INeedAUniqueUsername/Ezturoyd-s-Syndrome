@@ -5,7 +5,7 @@ Notice: All commits on this repository were made by one person, but a bug makes 
 
 ## Class Hierarchy
 - `SpaceObject`
-- - `Asteroid`:
+- - `Asteroid`: Scrapped because I could not find an easy way to make them change shape from taking damage without looking excessively unrealistic
 - - `Starship`: A `SpaceObject` that moves by turning, thrusting, and braking
 - - - `Starship_NPC`: A `Starship` with a behavior controller. Can take "Orders"
 - - `Projectile`:
