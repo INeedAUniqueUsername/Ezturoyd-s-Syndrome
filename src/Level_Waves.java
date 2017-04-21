@@ -13,9 +13,14 @@ public class Level_Waves extends Level {
 		enemy_1B.installWeapon(new Weapon());
 		enemy_1C.installWeapon(new Weapon());
 		
-		enemy_1A.addOrder(new Order_Escort(enemy_1A, enemy_1B, 45, 30));
-		enemy_1B.addOrder(new Order_Attack(enemy_1B, player));
-		enemy_1C.addOrder(new Order_Escort(enemy_1C, enemy_1B, 135, 30));
+		//enemy_1A.addOrder(new Order_Escort(enemy_1A, enemy_1B, 45, 30));
+		
+		//enemy_1C.addOrder(new Order_Escort(enemy_1C, enemy_1B, 135, 30));
+		
+		enemy_1A.addOrder(new Order_Attack(enemy_1A, enemy_1B));
+		enemy_1B.addOrder(new Order_Attack(enemy_1B, enemy_1C));
+		enemy_1C.addOrder(new Order_Attack(enemy_1C, player));
+		//enemy_1C.addOrder(new Order_Attack(enemy_1C, player));
 		
 		setWaves(new Wave(enemy_1A, enemy_1B, enemy_1C));
 	}
@@ -45,6 +50,7 @@ public class Level_Waves extends Level {
 			x = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
 			y = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
 		}
+		s.setPosRectangular(x, y);
 	}
 	public Starship_NPC createEnemyStarship() {
 		Starship_NPC s = new Starship_NPC();
@@ -77,7 +83,7 @@ class Wave {
 	}
 	public void activate() {
 		for(Starship s : ships) {
-			GamePanel.world.addStarship(s);
+			GamePanel.world.addSpaceObject(s);
 		}
 	}
 	public ArrayList<Starship> getActiveShips() {

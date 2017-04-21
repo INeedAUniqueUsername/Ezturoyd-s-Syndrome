@@ -1,3 +1,10 @@
+package Deprecated;
+/*
+import GamePanel;
+import GameWindow;
+import Projectile;
+import SpaceObject;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -117,7 +124,7 @@ public class Asteroid_Deprecated_2 extends SpaceObject {
 			int angle = degree_list_int[i];
 			System.out.print(angle + ":" + points.get(angle) + ", ");
 		}
-		*/
+		*//*
 	}
 
 	public void damage(int damage, double x, double y) {
@@ -127,7 +134,7 @@ public class Asteroid_Deprecated_2 extends SpaceObject {
 		{
 			int angle_i = angle_total + i;
 			int distance = points.containsKey(angle_i) ? points.get(angle_i) : (int) getDistanceBetweenPos(x, y);
-			int distance_new = distance - (damage /* - Math.abs(i) */ );
+			int distance_new = distance - (damage /* - Math.abs(i) *//* );
 			points.put(angle_i, distance_new > 0 ? distance_new : 0);
 			System.out.println(angle_i + " (NEW) : " + distance + " -> " + distance_new);
 		}
@@ -154,3 +161,4 @@ public class Asteroid_Deprecated_2 extends SpaceObject {
 		//world.removeAsteroid(this);
 	}
 }
+*/

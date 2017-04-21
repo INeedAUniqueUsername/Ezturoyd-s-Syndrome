@@ -274,7 +274,7 @@ public class Starship extends SpaceObject {
 		}
 		print("Installed Weapon");
 	}
-	
+	/*
 	public final void destroy()
 	{
 		for(Weapon w: weapons)
@@ -283,6 +283,7 @@ public class Starship extends SpaceObject {
 		}
 		super.destroy();
 	}
+	*/
 	
 	public final double getVelTowards(SpaceObject object)
 	{
