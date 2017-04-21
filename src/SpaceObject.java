@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
-public class SpaceObject {
+public abstract class SpaceObject {
 	private String name = "";
 	private final double c = 9131.35261864;
 	
@@ -379,15 +379,9 @@ public class SpaceObject {
 		}
 	}
 	
-	public void update()
-	{
-		
-	}
+	public abstract void update();
 	
-	public void draw(Graphics g)
-	{
-		
-	}
+	public abstract void draw(Graphics g);
 	public final void drawBody(Graphics g)
 	{
 		for(Polygon part : body)

@@ -22,22 +22,23 @@ public class Order_Attack extends Behavior {
 			setActive(false);
 			return; //Done
 		}
-		
-		//Problem: Objects are too close to us
-		ArrayList<SpaceObject> objectsTooClose = getObjectsTooClose();
-		int objectsTooCloseCount = objectsTooClose.size();
-		if(objectsTooCloseCount > 0)
-		{
-			double angle_destination = 0;
-			for(SpaceObject o : objectsTooClose)
+		if(shouldAvoidNearby()) {
+			//Problem: Objects are too close to us
+			ArrayList<SpaceObject> objectsTooClose = getObjectsTooClose();
+			int objectsTooCloseCount = objectsTooClose.size();
+			if(objectsTooCloseCount > 0)
 			{
-				angle_destination += owner.getAngleFrom(o);
+				double angle_destination = 0;
+				for(SpaceObject o : objectsTooClose)
+				{
+					angle_destination += owner.getAngleFrom(o);
+				}
+				angle_destination /= objectsTooCloseCount;
+				owner.turnDirection(owner.calcTurnDirection(angle_destination));
+				setThrusting(ThrustingState.THRUST);
+				System.out.println("Destination Angle: " + angle_destination);
+				return; //Done
 			}
-			angle_destination /= objectsTooCloseCount;
-			owner.turnDirection(owner.calcTurnDirection(angle_destination));
-			setThrusting(ThrustingState.THRUST);
-			System.out.println("Destination Angle: " + angle_destination);
-			return; //Done
 		}
 		
 		//Problems: None. Attack as normal
@@ -120,8 +121,8 @@ public class Order_Attack extends Behavior {
 		owner.printToWorld("Weapons: " + action_weapon);
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
 	}
-	public boolean avoidNearbyObjects() {
-		return true;
+	public boolean shouldAvoidNearby() {
+		return false;
 	}
 	public ArrayList<SpaceObject> getObjectsTooClose() {
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();

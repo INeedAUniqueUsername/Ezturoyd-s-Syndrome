@@ -56,10 +56,12 @@ public class Projectile extends SpaceObject {
 	}
 
 	public void update() {
-		updatePosition();
-		lifetime--;
-		if (lifetime < 0) {
-			destroy();
+		if(getActive()) {
+			updatePosition();
+			lifetime--;
+			if (lifetime < 0) {
+				destroy();
+			}
 		}
 	}
 

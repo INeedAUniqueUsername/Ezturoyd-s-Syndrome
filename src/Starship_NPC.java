@@ -22,10 +22,12 @@ public class Starship_NPC extends Starship {
 	
 	public void update()
 	{
-		super.update();
-		controller.update();
-		controller.updateActions();
-		//thrust();
+		if(getActive()) {
+			super.update();
+			controller.update();
+			controller.updateActions();
+			//thrust();
+		}
 	}
 	public final Behavior getOrder(int b) {
 		return orders.get(b);
@@ -55,11 +57,6 @@ public class Starship_NPC extends Starship {
 		controller = new BehaviorController_Default(this);
 		orders = new ArrayList<Behavior>();
 		controller.initialize();
-	}
-	public final double getVelTowards(SpaceObject object)
-	{
-		double angle_towards_object = getAngleTowards(object);
-		return object.getVelAtAngle(angle_towards_object) - getVelAtAngle(angle_towards_object);
 	}
 	/*
 	public double calcFireSolution(Space_Object target)
@@ -109,19 +106,9 @@ public class Starship_NPC extends Starship {
 		return angle_to_hit;
 	}
 */
-	public final double calcFutureAngle()
-	{
-		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
-		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
-		//Let's relearn AP Physics I!
-		return    pos_r
-				+ vel_r * r_decel_time
-				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
-				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
-	}
 	public final Behavior.RotatingState calcTurnDirection(double target_angle)
 	{
-		double pos_r_future = calcFutureAngle();
+		double pos_r_future = getFutureAngleWithDeceleration();
 		double faceAngleDiffCCW = modRangeDegrees(target_angle - pos_r_future);
 		double faceAngleDiffCW = modRangeDegrees(pos_r_future - target_angle);
 		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
@@ -151,51 +138,6 @@ public class Starship_NPC extends Starship {
 		{
 			printToWorld("Status (Facing): Aligned");
 			return Behavior.RotatingState.NONE;
-		}
-	}
-	public final Point2D.Double getFuturePosWithDeceleration() {
-		double x_decel_time = Math.abs(vel_x/DECEL);
-		double y_decel_time = Math.abs(vel_y/DECEL);
-		return new Point2D.Double(
-				pos_x +
-				vel_x * x_decel_time +
-				((vel_x > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(x_decel_time, 2),
-				pos_y +
-				vel_y * y_decel_time+
-				((vel_y > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(y_decel_time, 2)
-				);
-	}
-	public final double getFutureAngleWithDeceleration() {
-		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
-		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
-		//Let's relearn AP Physics I!
-		double pos_r_future =
-				pos_r
-				+ vel_r * r_decel_time
-				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
-				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
-		return pos_r_future;
-	}
-	public final double calcFutureFacingDifference(double angle_target)
-	{
-		double pos_r_future = getFutureAngleWithDeceleration();
-		return calcAngleDiff(pos_r_future, angle_target);
-	}
-	public final double calcFacingDifference(double angle_target)
-	{
-		return calcAngleDiff(pos_r, angle_target);
-	}
-	public static final double calcAngleDiff(double angle1, double angle2) {
-		double angleDiffCCW = modRangeDegrees(angle1 - angle2);
-		double angleDiffCW = modRangeDegrees(angle2 - angle1);
-		return min(angleDiffCCW, angleDiffCW);
-	}
-	public final void turnDirection(Behavior.RotatingState direction)
-	{
-		switch(direction)
-		{
-		case	CCW:	turnCCW();			break;
-		case	CW:	turnCW();			break;
 		}
 	}
 }

@@ -80,33 +80,35 @@ public class Starship extends SpaceObject {
 	*/
 
 	public void update() {
-		double speed_r = Math.abs(vel_r);
-		if (speed_r > 0)
-			if(speed_r > ROTATION_MAX) {
-				vel_r = (vel_r > 0 ? 1 : -1) * ROTATION_MAX;
-			}
-			else {
-				double vel_r_original = vel_r;
-				vel_r -= (vel_r > 0 ? 1 : -1)*ROTATION_DECEL;
-				//Check if vel_r changed positive to negative or vice versa. If it did, then set it to zero
-				if(vel_r / vel_r_original < 0) {
-					vel_r = 0;
+		if(getActive()) {
+			double speed_r = Math.abs(vel_r);
+			if (speed_r > 0)
+				if(speed_r > ROTATION_MAX) {
+					vel_r = (vel_r > 0 ? 1 : -1) * ROTATION_MAX;
 				}
+				else {
+					double vel_r_original = vel_r;
+					vel_r -= (vel_r > 0 ? 1 : -1)*ROTATION_DECEL;
+					//Check if vel_r changed positive to negative or vice versa. If it did, then set it to zero
+					if(vel_r / vel_r_original < 0) {
+						vel_r = 0;
+					}
+				}
+			if(thrusting)
+				thrust();
+			if(braking)
+				brake();
+			if(turningCCW)
+				turnCCW();
+			if(turningCW)
+				turnCW();
+			if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > MAX_SPEED) {
+				int velAngle = (int) arctanDegrees(vel_y, vel_x);
+				vel_x = MAX_SPEED * cosDegrees(velAngle);
+				vel_y = MAX_SPEED * sinDegrees(velAngle);
 			}
-		if(thrusting)
-			thrust();
-		if(braking)
-			brake();
-		if(turningCCW)
-			turnCCW();
-		if(turningCW)
-			turnCW();
-		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > MAX_SPEED) {
-			int velAngle = (int) arctanDegrees(vel_y, vel_x);
-			vel_x = MAX_SPEED * cosDegrees(velAngle);
-			vel_y = MAX_SPEED * sinDegrees(velAngle);
+			updatePosition();
 		}
-		updatePosition();
 	}
 
 	public void updateBody() {
@@ -280,5 +282,57 @@ public class Starship extends SpaceObject {
 			GamePanel.world.removeWeapon(w);
 		}
 		super.destroy();
+	}
+	
+	public final double getVelTowards(SpaceObject object)
+	{
+		double angle_towards_object = getAngleTowards(object);
+		return object.getVelAtAngle(angle_towards_object) - getVelAtAngle(angle_towards_object);
+	}
+	
+	public final Point2D.Double getFuturePosWithDeceleration() {
+		double x_decel_time = Math.abs(vel_x/DECEL);
+		double y_decel_time = Math.abs(vel_y/DECEL);
+		return new Point2D.Double(
+				pos_x +
+				vel_x * x_decel_time +
+				((vel_x > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(x_decel_time, 2),
+				pos_y +
+				vel_y * y_decel_time+
+				((vel_y > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(y_decel_time, 2)
+				);
+	}
+	public final double getFutureAngleWithDeceleration() {
+		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
+		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
+		//Let's relearn AP Physics I!
+		double pos_r_future =
+				pos_r
+				+ vel_r * r_decel_time
+				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
+				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
+		return pos_r_future;
+	}
+	public final double calcFutureFacingDifference(double angle_target)
+	{
+		double pos_r_future = getFutureAngleWithDeceleration();
+		return calcAngleDiff(pos_r_future, angle_target);
+	}
+	public final double calcFacingDifference(double angle_target)
+	{
+		return calcAngleDiff(pos_r, angle_target);
+	}
+	public static final double calcAngleDiff(double angle1, double angle2) {
+		double angleDiffCCW = modRangeDegrees(angle1 - angle2);
+		double angleDiffCW = modRangeDegrees(angle2 - angle1);
+		return min(angleDiffCCW, angleDiffCW);
+	}
+	public final void turnDirection(Behavior.RotatingState direction)
+	{
+		switch(direction)
+		{
+		case	CCW:	turnCCW();			break;
+		case	CW:	turnCW();			break;
+		}
 	}
 }
