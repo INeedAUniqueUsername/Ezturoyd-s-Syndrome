@@ -18,7 +18,7 @@ public abstract class SpaceObject {
 	protected double vel_x = 0; //Transition to get/set
 	protected double vel_y = 0; //Transition to get/set
 	protected double vel_r = 0; //Transition to get/set
-	protected ArrayList<Polygon> body; //Transition to private get/set
+	private Body body;
 	private double size;
 	
 	private int last_collision_tick = 0;
@@ -204,9 +204,9 @@ public abstract class SpaceObject {
 		setVelRectangular(getVelX() + speed*cosDegrees(angle), getVelY() + speed*sinDegrees(angle));
 	}
 	
-	public final void setAngle(int newAngle)
+	public final void setPosR(double posR)
 	{
-		pos_r = newAngle;
+		pos_r = posR;
 	}
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
@@ -301,8 +301,10 @@ public abstract class SpaceObject {
 	{
 		vel_r = vel_r - accel;
 	}
-	
-	public final ArrayList<Polygon> getBody() {
+	public final void setBody(Body b) {
+		body = b;
+	}
+	public final Body getBody() {
 		return body;
 	}
 	
@@ -373,7 +375,7 @@ public abstract class SpaceObject {
 	public final void updateSize()
 	{
 		size = 0;
-		for(Polygon part : body)
+		for(Polygon part : body.getShapes())
 		{
 			size += Math.abs(polygonArea(part.xpoints, part.ypoints, part.npoints));
 		}
@@ -382,9 +384,10 @@ public abstract class SpaceObject {
 	public abstract void update();
 	
 	public abstract void draw(Graphics g);
+	
 	public final void drawBody(Graphics g)
 	{
-		for(Polygon part : body)
+		for(Polygon part : body.getShapes())
 		{
 			g.drawPolygon(part);
 		}
@@ -465,8 +468,10 @@ public abstract class SpaceObject {
 		if(pos_y > GameWindow.HEIGHT)
 		{
 			pos_y = 0;
-		}
-		
+		}	
+	}
+	public final void updateBody() {
+		body.updateShapes();
 	}
 	
 	public final Point2D.Double getPos()

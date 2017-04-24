@@ -27,11 +27,12 @@ public class Projectile extends SpaceObject {
 		
 		initialize();
 	}
-	
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
 		pos_x = posX;
 		pos_y = posY;
 		pos_r = posR;
+		setPosRectangular(posX, posY);
+		setPosR(posR);
 		this.color = color;
 
 		lifetime = life;
@@ -45,7 +46,7 @@ public class Projectile extends SpaceObject {
 		System.out.println("Projectile X: " + pos_x);
 		System.out.println("Projectile Y: " + pos_y);
 		System.out.println("Projectile R: " + pos_r);
-		
+		setBody(new Body_Projectile(this));
 		updateBody();
 		updateSize();
 	}
@@ -72,59 +73,17 @@ public class Projectile extends SpaceObject {
 	{
 		return owner;
 	}
-
+	public final void setDamage(int d) {
+		damage = d;
+	}
 	public final int getDamage() {
 		return damage;
 	}
-
+	public final void setLifetime(int lt) {
+		lifetime = lt;
+	}
 	public final int getLifetime() {
 		return lifetime;
-	}
-
-	public void updateBody() {
-		/*
-		int[] bodyX = new int[4];
-		int[] bodyY = new int[4];
-
-		int bodyFrontX = (int) (pos_x + height * cosDegrees(pos_r));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + height * sinDegrees(pos_r)));
-
-		bodyX[0] = bodyFrontX;
-		bodyY[0] = bodyFrontY;
-
-		bodyX[1] = (int) (pos_x + width * cosDegrees(pos_r - 120));
-		bodyY[1] = (int) (GameWindow.HEIGHT - (pos_y + width * sinDegrees(pos_r - 120)));
-
-		bodyX[2] = (int) (pos_x + width * cosDegrees(pos_r + 120));
-		bodyY[2] = (int) (GameWindow.HEIGHT - (pos_y + width * sinDegrees(pos_r + 120)));
-
-		bodyX[3] = bodyFrontX;
-		bodyY[3] = bodyFrontY;
-		*/
-		
-		//Rectangle
-		int[] bodyX = new int[5];
-		int[] bodyY = new int[5];
-		
-		//Bottom Left
-		bodyX[0] = (int) (pos_x - (width/2) * cosDegrees(pos_r));
-		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (height/2) * sinDegrees(pos_r)));
-		
-		//Top left
-		bodyX[1] = (int) (bodyX[0] + height * cosDegrees(pos_r));
-		bodyY[1] = (int) (bodyY[0] - height * sinDegrees(pos_r));
-		//Top right
-		bodyX[2] = (int) (bodyX[1] + width * cosDegrees(pos_r+90));
-		bodyY[2] = (int) (bodyY[1] - width * sinDegrees(pos_r+90));
-		
-		//Bottom right
-		bodyX[3] = (int) (bodyX[0] + width * cosDegrees(pos_r+90));
-		bodyY[3] = (int) (bodyY[0] - width * sinDegrees(pos_r+90));
-		
-		bodyX[4] = bodyX[0];
-		bodyY[4] = bodyY[0];
-		body = new ArrayList<Polygon>();
-		body.add(new Polygon(bodyX, bodyY, 5));
 	}
 	public final void damage(int amount) {
 		damage -= amount;

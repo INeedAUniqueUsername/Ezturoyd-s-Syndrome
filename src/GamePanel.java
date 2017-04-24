@@ -295,13 +295,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public static boolean objectsIntersect(SpaceObject a, SpaceObject b) {
 		Area areaA = new Area();
-		for(Polygon part : a.getBody())
+		for(Polygon part : a.getBody().getShapes())
 		{
 			areaA.add(new Area(part));
 		}
 		
 		Area areaB = new Area();
-		for(Polygon part : b.getBody())
+		for(Polygon part : b.getBody().getShapes())
 		{
 			areaB.add(new Area(part));
 		}

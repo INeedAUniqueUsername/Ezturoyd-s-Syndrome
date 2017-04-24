@@ -2,7 +2,7 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 
 public class Body_Starship extends Body {
-	Starship owner;
+	private Starship owner;
 	public Body_Starship(Starship s) {
 		super();
 		setOwner(s);
@@ -44,17 +44,6 @@ public class Body_Starship extends Body {
 		int[] headX = new int[4];
 		int[] headY = new int[4];
 		
-		/*
-		 * int topCornerX = (int) (xPos+SIZE*cosDegrees(angle)); int topCornerY
-		 * = (int) (yPos+SIZE*sinDegrees(angle));
-		 * 
-		 * int bottomRightCornerX = (int) (xPos+SIZE*cosDegrees(angle-120)); int
-		 * bottomRightCornerY = (int) (yPos+SIZE*sinDegrees(angle-120));
-		 * 
-		 * int bottomLeftCornerX = (int) (xPos+SIZE*cosDegrees(angle+120)); int
-		 * bottomLeftCornerY = (int) (xPos+SIZE*sinDegrees(angle+120));
-		 */
-
 		int headFrontX = (int) (middleFrontX + HEAD_SIZE * SpaceObject.cosDegrees(pos_r));
 		int headFrontY = (int) (middleFrontY - HEAD_SIZE * SpaceObject.sinDegrees(pos_r));
 

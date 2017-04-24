@@ -26,7 +26,7 @@ public class GameWindow {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		frame.setTitle("Ezturoyd's Syndrome");
+		frame.setTitle("Ezturoyds Syndrome");
 		
 		frame.setVisible(true);
 		

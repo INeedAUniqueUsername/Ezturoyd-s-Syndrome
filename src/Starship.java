@@ -36,6 +36,7 @@ public class Starship extends SpaceObject {
 	public Starship() {
 		updateBody();
 		updateSize();
+		setBody(new Body_Starship(this));
 	}
 
 	public void draw(Graphics g) {
@@ -109,62 +110,6 @@ public class Starship extends SpaceObject {
 			}
 			updatePosition();
 		}
-	}
-
-	public void updateBody() {
-		int[] middleX = new int[4];
-		int[] middleY = new int[4];
-
-		int middleFrontX = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r));
-		int middleFrontY = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r)));
-
-		middleX[0] = middleFrontX;
-		middleY[0] = middleFrontY;
-
-		middleX[1] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r - 120));
-		middleY[1] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r - 120)));
-
-		middleX[2] = (int) (pos_x + BODY_SIZE * cosDegrees(pos_r + 120));
-		middleY[2] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * sinDegrees(pos_r + 120)));
-
-		middleX[3] = middleFrontX;
-		middleY[3] = middleFrontY;
-		Polygon middle = new Polygon(middleX, middleY, 4);
-		
-		int[] headX = new int[4];
-		int[] headY = new int[4];
-		
-		/*
-		 * int topCornerX = (int) (xPos+SIZE*cosDegrees(angle)); int topCornerY
-		 * = (int) (yPos+SIZE*sinDegrees(angle));
-		 * 
-		 * int bottomRightCornerX = (int) (xPos+SIZE*cosDegrees(angle-120)); int
-		 * bottomRightCornerY = (int) (yPos+SIZE*sinDegrees(angle-120));
-		 * 
-		 * int bottomLeftCornerX = (int) (xPos+SIZE*cosDegrees(angle+120)); int
-		 * bottomLeftCornerY = (int) (xPos+SIZE*sinDegrees(angle+120));
-		 */
-
-		int headFrontX = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r));
-		int headFrontY = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r));
-
-		headX[0] = headFrontX;
-		headY[0] = headFrontY;
-
-		headX[1] = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r - 120));
-		headY[1] = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r - 120));
-
-		headX[2] = (int) (middleFrontX + HEAD_SIZE * cosDegrees(pos_r + 120));
-		headY[2] = (int) (middleFrontY - HEAD_SIZE * sinDegrees(pos_r + 120));
-
-		headX[3] = headFrontX;
-		headY[3] = headFrontY;
-		
-		Polygon head = new Polygon(headX, headY, 4);
-		
-		body = new ArrayList<Polygon>();
-		body.add(middle);
-		body.add(head);
 	}
 	
 	public final void onAttacked(SpaceObject attacker)

@@ -16,6 +16,9 @@ public class Body {
 	public final void setShapes(ArrayList<Polygon> ss) {
 		shapes = ss;
 	}
+	public final ArrayList<Polygon> getShapes() {
+		return shapes;
+	}
 	public final void addShape(Polygon s) {
 		shapes.add(s);
 	}
