@@ -34,52 +34,17 @@ public class Starship extends SpaceObject {
 	private ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
 
 	public Starship() {
+		setBody(new Body_Starship(this));
 		updateBody();
 		updateSize();
-		setBody(new Body_Starship(this));
 	}
 
 	public void draw(Graphics g) {
 		g.setColor(Color.YELLOW);
-		drawStarship(g);
-	}
-	public final void drawStarship(Graphics g)
-	{
+		
 		updateBody();
-
-		/*
-		 * double thrustCos = cosDegrees(angle + 180); double thrustSin =
-		 * sinDegrees(angle + 180);
-		 * 
-		 * int thrustLineStartX = thrustCos
-		 */
-
 		drawBody(g);
-		//drawVel(g, headFrontX, headFrontY);
-		
-		//drawArrow(g, getPos(), polarOffset(getPos(), pos_r, 50));
-		
-		//printToWorld("Velocity Angle: " + getVelAngle());
 	}
-	/*
-	public void drawVel(Graphics g, double x1, double y1)
-	{
-		g.setColor(Color.GREEN);
-		double velAngle = getVelAngle();
-		
-		Point2D.Double arrow_head = polarOffset(x1, y1, velAngle, 20);
-		double x2 = arrow_head.getX();
-		double y2 = arrow_head.getY();
-		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
-		
-		Point2D.Double arrow_left = polarOffset(x2, y2, velAngle + 120, 10);
-		g.drawLine((int) x2, (int) y2, (int) arrow_left.getX(), (int) arrow_left.getY());
-		
-		Point2D.Double arrow_right = polarOffset(x2, y2, velAngle - 120, 10);
-		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
-	}
-	*/
-
 	public void update() {
 		if(getActive()) {
 			double speed_r = Math.abs(vel_r);

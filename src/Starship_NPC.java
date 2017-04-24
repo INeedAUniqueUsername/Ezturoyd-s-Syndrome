@@ -17,7 +17,7 @@ public class Starship_NPC extends Starship {
 	public void draw(Graphics g)
 	{
 		g.setColor(Color.RED);
-		drawStarship(g);
+		super.draw(g);
 	}
 	
 	public void update()

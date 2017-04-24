@@ -7,36 +7,15 @@ import java.util.ArrayList;
 public class Projectile extends SpaceObject {
 
 	private int lifetime;
-	private int width = 2; //3
-	private int height = 16; //24
 	private int damage;
 	private SpaceObject owner;
 	private Color color = Color.RED;
-
-	public Projectile(double posX, double posY, double posR, int damage, int life, int width, int height, Color color) {
-		pos_x = posX;
-		pos_y = posY;
-		pos_r = posR;
-		this.color = color;
-
-		this.width = width;
-		this.height = height;
-		
-		lifetime = life;
-		this.damage = damage;
-		
-		initialize();
-	}
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
-		pos_x = posX;
-		pos_y = posY;
-		pos_r = posR;
 		setPosRectangular(posX, posY);
 		setPosR(posR);
-		this.color = color;
-
-		lifetime = life;
-		this.damage = damage;
+		setColor(color);
+		setLifetime(life);
+		setDamage(damage);
 
 		initialize();
 	}
@@ -72,6 +51,12 @@ public class Projectile extends SpaceObject {
 	public final SpaceObject getOwner()
 	{
 		return owner;
+	}
+	public final void setColor(Color c) {
+		color = c;
+	}
+	public final Color getColor() {
+		return color;
 	}
 	public final void setDamage(int d) {
 		damage = d;

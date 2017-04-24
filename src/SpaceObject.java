@@ -383,7 +383,10 @@ public abstract class SpaceObject {
 	
 	public abstract void update();
 	
-	public abstract void draw(Graphics g);
+	public void draw(Graphics g) {
+		updateBody();
+		drawBody(g);
+	}
 	
 	public final void drawBody(Graphics g)
 	{

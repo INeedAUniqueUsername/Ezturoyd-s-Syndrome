@@ -94,9 +94,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			debug.clear();
 			setTick(getTick() + 1);
 			
-			currentLevel.update();
-			
-			player.setFiringMouse(false);
+			//currentLevel.update();
+			//player.setFiringMouse(false);
 			for(SpaceObject o : universe) {
 				o.update();
 				o.draw(g);

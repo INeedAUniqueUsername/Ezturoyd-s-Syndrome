@@ -13,7 +13,7 @@ public class Body_Starship extends Body {
 	public Starship getOwner() {
 		return owner;
 	}
-	public void update() {
+	public void updateShapes() {
 		
 		final int HEAD_SIZE = 10; //20
 		final int BODY_SIZE = 15; //30
