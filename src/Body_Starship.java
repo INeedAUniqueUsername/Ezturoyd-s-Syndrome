@@ -36,7 +36,7 @@ public class Body_Starship extends Body {
 
 		middleX[2] = (int) (pos_x + BODY_SIZE * SpaceObject.cosDegrees(pos_r + 120));
 		middleY[2] = (int) (GameWindow.HEIGHT - (pos_y + BODY_SIZE * SpaceObject.sinDegrees(pos_r + 120)));
-
+		
 		middleX[3] = middleFrontX;
 		middleY[3] = middleFrontY;
 		Polygon middle = new Polygon(middleX, middleY, 4);

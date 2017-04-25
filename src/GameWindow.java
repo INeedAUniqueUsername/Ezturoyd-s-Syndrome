@@ -1,4 +1,6 @@
 import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Polygon;
 
 import javax.swing.JFrame;
 

@@ -497,7 +497,7 @@ public abstract class SpaceObject {
 		return pos_r;
 	}
 	
-	public final Point2D.Double calcPolarOffset(double angle, double distance)
+	public final Point2D.Double polarOffset(double angle, double distance)
 	{
 		return new Point2D.Double(pos_x + distance * cosDegrees(angle), pos_y + distance * sinDegrees(angle));
 	}
