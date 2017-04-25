@@ -1,3 +1,5 @@
+import java.awt.MouseInfo;
+
 import javax.swing.JFrame;
 
 public class GameWindow {
@@ -16,6 +18,10 @@ public class GameWindow {
 	
 	public GameWindow()
 	{
+		/*
+		System.out.println(MouseInfo.getPointerInfo().getLocation());
+		System.exit(0);
+		*/
 		frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
 		
