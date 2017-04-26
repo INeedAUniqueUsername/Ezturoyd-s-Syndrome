@@ -27,26 +27,30 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
 	private ArrayList<SpaceObject> universe;
+	private ArrayList<SpaceObject> objectsCreated;
+	private ArrayList<SpaceObject> objectsDestroyed;
 	Level currentLevel;
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
 	*/
-	private ArrayList<String> debug = new ArrayList<String>();
+	private ArrayList<String> debugQueue = new ArrayList<String>();
 
 	// counter for hits
-	private int hits = 0;
+	//private int hits = 0;
 
 	private int tick;
-	public static GamePanel world;
+	private static GamePanel world;
 
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
 		world = this;
 	}
-
+	public static GamePanel getWorld() {
+		return world;
+	}
 	public void newGame() {
 		setTick(0);
 		print("*" + getTick() + "*");
@@ -59,7 +63,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player = new Starship_Player();
 		player.setPosRectangular(800, 450);
 
-		addSpaceObject(player);
+		universeAdd(player);
+		
+		objectsCreated = new ArrayList<SpaceObject>();
+		objectsDestroyed = new ArrayList<SpaceObject>();
 		
 		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 1, 90, Color.RED));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
@@ -89,34 +96,30 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
+		
+		//Update everything
 		if(active)
 		{
-			debug.clear();
+			debugQueue.clear();
 			setTick(getTick() + 1);
 			
-			currentLevel.update();
-			for(SpaceObject o : universe) {
-				o.update();
-				o.draw(g);
-			}
+			//currentLevel.update();
 			
-			ArrayList<SpaceObject> o_dead = new ArrayList<SpaceObject>();
-			ArrayList<SpaceObject> o_new = new ArrayList<SpaceObject>();
 			Iterator<SpaceObject> o_i_1 = universe.iterator();
 			while (o_i_1.hasNext()) {
 				SpaceObject o1 = o_i_1.next();
 				
+				o1.update();
 				//Update all weapons
 				if(o1 instanceof Starship) {
 					Iterator<Weapon> w_i = ((Starship) o1).getWeapon().iterator();
 					while (w_i.hasNext()) {
 						Weapon w = w_i.next();
 						w.update();
-						w.draw(g);
 						if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
 							print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 							Projectile shot = w.getShot();
-							o_new.add(shot);
+							createSpaceObject(shot);
 							w.setFireCooldownLeft(0);
 							print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 						}
@@ -148,25 +151,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					}
 				}
 				if(!o1.getActive()) {
-					o_dead.add(o1);
+					objectsDestroyed.add(o1);
 				}
 			}
-			for(SpaceObject n : o_new) {
-				addSpaceObject(n);
+			//Add objects to be created and remove objects to be destroyed
+			for(SpaceObject o : objectsCreated) {
+				universeAdd(o);
 			}
-			for(SpaceObject d : o_dead) {
-				removeSpaceObject(d);
+			objectsCreated.clear();
+			for(SpaceObject d : objectsDestroyed) {
+				universeRemove(d);
 			}
+			objectsDestroyed.clear();
 		}
-		else
+		
+		//Draw everything
+		for(SpaceObject o: universe)
 		{
-			for(SpaceObject o: universe)
-			{
-				o.draw(g);
-				if(o instanceof Starship) {
-					for(Weapon w : ((Starship) o).getWeapon()) {
-						w.draw(g);
-					}
+			o.draw(g);
+			if(o instanceof Starship) {
+				for(Weapon w : ((Starship) o).getWeapon()) {
+					w.draw(g);
 				}
 			}
 		}
@@ -174,7 +179,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g.setColor(Color.WHITE);
 		int print_height = 12;
-		for(String s: debug)
+		for(String s: debugQueue)
 		{
 			g.drawString(s, 10, print_height);
 			print_height += 12;
@@ -183,7 +188,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public void printToScreen(String text)
 	{
-		debug.add(text);
+		debugQueue.add(text);
 	}
 	
 	@Override
@@ -305,9 +310,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		areaA.intersect(areaB);
 		return !areaA.isEmpty();
 	}
-
-	public void addSpaceObject(SpaceObject so) {
-		universe.add(so);
+	//Use these when the universe is in the middle of updating
+	public void createSpaceObject(SpaceObject so) {
+		objectsCreated.add(so);
+	}
+	public void destroySpaceObject(SpaceObject so) {
+		objectsDestroyed.add(so);
 	}
 	/*
 	public void addWeapon(Starship ship, Weapon item) {
@@ -330,8 +338,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		universe.add(asteroid);
 	}
 */
-	public void removeSpaceObject(SpaceObject o) {
-		universe.remove(o);
+	//Warning: Do not use during universe iteration
+	private void universeAdd(SpaceObject so) {
+		universe.add(so);
+	}
+	private void universeRemove(SpaceObject so) {
+		universe.remove(so);
+	}
+	private void universeRemove(int i) {
+		universe.remove(i);
 	}
 	/*
 	public void removeStarship(Starship ship) {

@@ -9,7 +9,13 @@ public class Projectile extends SpaceObject {
 	private int lifetime;
 	private int damage;
 	private SpaceObject owner;
-	private Color color = Color.RED;
+	private Color color;
+	public Projectile() {
+		lifetime = 0;
+		damage = 0;
+		setOwner(new Starship());
+		setColor(new Color(0));
+	}
 	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
 		setPosRectangular(posX, posY);
 		setPosR(posR);

@@ -126,7 +126,7 @@ public class Order_Attack extends Behavior {
 	}
 	public ArrayList<SpaceObject> getObjectsTooClose() {
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
-		for(SpaceObject o : GamePanel.world.getStarships())
+		for(SpaceObject o : GamePanel.getWorld().getStarships())
 		{
 			if(!o.equals(owner))
 			{

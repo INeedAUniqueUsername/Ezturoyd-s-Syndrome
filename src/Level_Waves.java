@@ -4,7 +4,7 @@ import java.util.Arrays;
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 	public Level_Waves() {
-		Starship player = GamePanel.world.getPlayer();
+		Starship player = GamePanel.getWorld().getPlayer();
 		Starship_NPC enemy_1A = createEnemyStarship();
 		Starship_NPC enemy_1B = createEnemyStarship();
 		Starship_NPC enemy_1C = createEnemyStarship();
@@ -83,7 +83,7 @@ class Wave {
 	}
 	public void activate() {
 		for(Starship s : ships) {
-			GamePanel.world.addSpaceObject(s);
+			GamePanel.getWorld().createSpaceObject(s);
 		}
 	}
 	public ArrayList<Starship> getActiveShips() {

@@ -11,21 +11,25 @@ public abstract class SpaceObject {
 	private String name = "";
 	private final double c = 9131.35261864;
 	
-	protected double pos_x = 0; //Transition to get/set
-	protected double pos_y = 0; //Transition to get/set
-	protected double pos_r = 0; //Transition to get/set
+	protected double pos_x; //Transition to get/set
+	protected double pos_y; //Transition to get/set
+	protected double pos_r; //Transition to get/set
 	
-	protected double vel_x = 0; //Transition to get/set
-	protected double vel_y = 0; //Transition to get/set
-	protected double vel_r = 0; //Transition to get/set
+	protected double vel_x; //Transition to get/set
+	protected double vel_y; //Transition to get/set
+	protected double vel_r; //Transition to get/set
 	private Body body;
 	private double size;
 	
-	private int last_collision_tick = 0;
+	//private int last_collision_tick = 0;
 	
 	private boolean active = true;
 	/*	=	=	=	=		Setters			=	=	=	=	=*/
-	
+	public SpaceObject() {
+		setPos(0, 0, 0);
+		setVel(0, 0, 0);
+		setBody(new Body());
+	}
 	public final void setName(String name_new)
 	{
 		name = name_new;
@@ -38,11 +42,11 @@ public abstract class SpaceObject {
 	{
 		if(name.equals(""))
 		{
-			GamePanel.world.printToScreen(text);
+			GamePanel.getWorld().printToScreen(text);
 		}
 		else
 		{
-			GamePanel.world.printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
+			GamePanel.getWorld().printToScreen("[" + getClass().getName() + "]" + " " + name + " - " + text);
 		}
 		
 	}
@@ -182,11 +186,20 @@ public abstract class SpaceObject {
 		pos_x = x;
 		pos_y = y;
 	}
-	
+	public final void setPos(double x, double y, double r) {
+		pos_x = x;
+		pos_y = y;
+		pos_r = r;
+	}
 	public final void setVelRectangular(double x, double y)
 	{
 		vel_x = x;
 		vel_y = y;
+	}
+	public final void setVel(double x, double y, double r) {
+		vel_x = x;
+		vel_y = y;
+		vel_r = r;
 	}
 	
 	public final void setVelPolar(double angle, double speed)
@@ -573,7 +586,7 @@ public abstract class SpaceObject {
 	
 	public final void print(String message)
 	{
-		System.out.println(GamePanel.world.getTick() + ". " + message);
+		System.out.println(GamePanel.getWorld().getTick() + ". " + message);
 	}
 	public final boolean exists(Object o)
 	{
@@ -584,7 +597,7 @@ public abstract class SpaceObject {
 	public final Starship getClosestEnemyStarship() {
 		double distance = Integer.MAX_VALUE;
 		Starship result = null;
-		for(Starship o : GamePanel.world.getStarships()) {
+		for(Starship o : GamePanel.getWorld().getStarships()) {
 			double d = getDistanceBetween(o);
 			if(!o.equals(this) && d < distance) {
 				result = o;
