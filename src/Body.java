@@ -16,6 +16,12 @@ public abstract class Body {
 	public final void setShapes(ArrayList<Polygon> ss) {
 		shapes = ss;
 	}
+	public final void setShapes(Polygon... pp) {
+		resetShapes();
+		for(Polygon p : pp) {
+			addShape(p);
+		}
+	}
 	public final ArrayList<Polygon> getShapes() {
 		return shapes;
 	}
