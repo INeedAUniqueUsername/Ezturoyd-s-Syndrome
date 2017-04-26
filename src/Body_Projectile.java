@@ -1,7 +1,7 @@
 import java.awt.Polygon;
 
 public class Body_Projectile extends Body {
-	Projectile owner;
+	private Projectile owner;
 	public Body_Projectile(Projectile p) {
 		super();
 		setOwner(p);
@@ -13,28 +13,8 @@ public class Body_Projectile extends Body {
 		return owner;
 	}
 	public void updateShapes() {
-		/*
-		int[] bodyX = new int[4];
-		int[] bodyY = new int[4];
-
-		int bodyFrontX = (int) (pos_x + height * cosDegrees(pos_r));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + height * sinDegrees(pos_r)));
-
-		bodyX[0] = bodyFrontX;
-		bodyY[0] = bodyFrontY;
-
-		bodyX[1] = (int) (pos_x + width * cosDegrees(pos_r - 120));
-		bodyY[1] = (int) (GameWindow.HEIGHT - (pos_y + width * sinDegrees(pos_r - 120)));
-
-		bodyX[2] = (int) (pos_x + width * cosDegrees(pos_r + 120));
-		bodyY[2] = (int) (GameWindow.HEIGHT - (pos_y + width * sinDegrees(pos_r + 120)));
-
-		bodyX[3] = bodyFrontX;
-		bodyY[3] = bodyFrontY;
-		*/
-		
-		int width = 2;
-		int height = 16;
+		int width = 2;	//3
+		int height = 16;	//24
 		
 		double pos_x = owner.getPosX();
 		double pos_y = owner.getPosY();

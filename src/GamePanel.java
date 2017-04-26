@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	private boolean active = true;
 	final int INTERVAL = 10;
-	private Starship player;
+	private Starship_Player player;
 	//private Starship_NPC enemy_test;
 	private ArrayList<SpaceObject> universe;
 	Level currentLevel;
@@ -56,12 +56,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
 
-		player = new Starship();
+		player = new Starship_Player();
 		player.setPosRectangular(800, 450);
 
 		addSpaceObject(player);
 		
-		player.installWeapon(new Weapon_Key(0, 0, 0, 5, 30, 1, 90, Color.RED));
+		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 1, 90, Color.RED));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		/*∂
@@ -95,8 +95,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			setTick(getTick() + 1);
 			
 			currentLevel.update();
-			
-			player.setFiringMouse(false);
 			for(SpaceObject o : universe) {
 				o.update();
 				o.draw(g);
@@ -202,9 +200,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		double x = e.getX();
-		double y = GameWindow.HEIGHT - e.getY();
-		player.setAimPos(x, y);
 		player.setFiringMouse(true);
 		/*
 		enemy_test.clearOrders();
@@ -215,6 +210,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		player.setFiringMouse(false);
 	}
 
 	@Override
@@ -295,13 +291,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public static boolean objectsIntersect(SpaceObject a, SpaceObject b) {
 		Area areaA = new Area();
-		for(Polygon part : a.getBody())
+		for(Polygon part : a.getBody().getShapes())
 		{
 			areaA.add(new Area(part));
 		}
 		
 		Area areaB = new Area();
-		for(Polygon part : b.getBody())
+		for(Polygon part : b.getBody().getShapes())
 		{
 			areaB.add(new Area(part));
 		}

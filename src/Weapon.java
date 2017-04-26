@@ -17,10 +17,6 @@ public class Weapon {
 
 	private double fire_angle = 0;
 
-	protected double aim_x;
-
-	protected double aim_y;
-	
 	private double pos_x;
 	private double pos_y;
 
@@ -48,9 +44,6 @@ public class Weapon {
 	}
 
 	public void update() {
-		updateWeapon();
-	}
-	public void updateWeapon() {
 		//System.out.println("---> Weapon Update");
 		fire_cooldown_time++;
 		double angle = pos_angle + owner.getPosR();
@@ -148,11 +141,6 @@ public class Weapon {
 
 	public final SpaceObject getOwner() {
 		return owner;
-	}
-	
-	public final void setAimPos(double x, double y) {
-		aim_x = x;
-		aim_y = y;
 	}
 
 	public final void setOwner(Starship owner_new) {
