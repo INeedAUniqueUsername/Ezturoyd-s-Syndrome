@@ -61,8 +61,6 @@ public class Body_Starship extends Body {
 		
 		Polygon head = new Polygon(headX, headY, 4);
 		
-		resetShapes();
-		addShape(middle);
-		addShape(head);
+		setShapes(head, middle);
 	}
 }
