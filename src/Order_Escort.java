@@ -1,4 +1,5 @@
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Order_Escort extends Behavior{
 	private SpaceObject target;
@@ -20,11 +21,28 @@ public class Order_Escort extends Behavior{
 		escort_distance = distance;
 	}
 	public void update() {
-		//To allow the AI to take advantage of wraparound, we make four clones of the destination, one for each side of the screen.
 		if(!target.getActive()) {
 			setActive(false);
 			return;
 		}
+		
+		updateEscort();
+	}
+	public ArrayList<SpaceObject> getNearbyEnemies() {
+		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
+		int range = getMaxDefendRange();
+		for(Starship s : GamePanel.getWorld().getStarships()) {
+			if(!s.equals(owner) && !s.equals(target) && target.getDistanceBetween(s) < getMaxDefendRange()) {
+				result.add(s);
+			}
+		}
+		return result;
+	}
+	//The maximum range from the target at which the owner is willing to attack an enemy
+	public int getMaxDefendRange() {
+		return 300;
+	}
+	public void updateEscort() {
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
 		Point2D.Double pos_destination = Behavior.getNearestPosClone(pos_owner, SpaceObject.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
 		ThrustingState action_thrusting = ThrustingState.NONE;

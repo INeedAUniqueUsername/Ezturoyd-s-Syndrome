@@ -1,9 +1,9 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class Order_Attack extends Behavior {
+public class Order_AttackDirect extends Behavior {
 	private SpaceObject target;
-	public Order_Attack(Starship_NPC o, SpaceObject t) {
+	public Order_AttackDirect(Starship_NPC o, SpaceObject t) {
 		super(o);
 		setTarget(t);
 	}
@@ -42,6 +42,29 @@ public class Order_Attack extends Behavior {
 		}
 		
 		//Problems: None. Attack as normal
+		updateAttack();
+	}
+	public boolean shouldAvoidNearby() {
+		return false;
+	}
+	public ArrayList<SpaceObject> getObjectsTooClose() {
+		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
+		for(SpaceObject o : GamePanel.getWorld().getStarships())
+		{
+			if(!o.equals(owner))
+			{
+				if(owner.getDistanceBetween(o) < owner.getController().getMinSeparationFromOthers())
+				{
+					System.out.println(o.getName() + " is " + owner.getDistanceBetween(o) + " away (too close).");
+					result.add(o);
+				}
+			} else {
+				System.out.println("It's you.");
+			}
+		}
+		return result;
+	}
+	public void updateAttack() {
 		Point2D.Double pos_target = getNearestTargetClone(owner, target);
 		double target_x = pos_target.getX();
 		double target_y = pos_target.getY();
@@ -120,25 +143,5 @@ public class Order_Attack extends Behavior {
 		owner.printToWorld("Velocity Angle Difference: " + velAngleDiff);
 		owner.printToWorld("Weapons: " + action_weapon);
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
-	}
-	public boolean shouldAvoidNearby() {
-		return false;
-	}
-	public ArrayList<SpaceObject> getObjectsTooClose() {
-		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
-		for(SpaceObject o : GamePanel.getWorld().getStarships())
-		{
-			if(!o.equals(owner))
-			{
-				if(owner.getDistanceBetween(o) < owner.getController().getMinSeparationFromOthers())
-				{
-					System.out.println(o.getName() + " is " + owner.getDistanceBetween(o) + " away (too close).");
-					result.add(o);
-				}
-			} else {
-				System.out.println("It's you.");
-			}
-		}
-		return result;
 	}
 }

@@ -15,7 +15,9 @@ public class Order_AttackOrbit extends Behavior {
 		target = t;
 	}
 	public void update() {
-		
+		updateAttackOrbit();
+	}
+	public void updateAttackOrbit() {
 		owner.printToWorld("AttackOrbit active");
 		//Problem: Target is dead
 		if(!target.getActive()) {

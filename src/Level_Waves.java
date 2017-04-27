@@ -17,9 +17,9 @@ public class Level_Waves extends Level {
 		
 		//enemy_1C.addOrder(new Order_Escort(enemy_1C, enemy_1B, 135, 30));
 		
-		enemy_1A.addOrder(new Order_Attack(enemy_1A, enemy_1B));
-		enemy_1B.addOrder(new Order_Attack(enemy_1B, enemy_1C));
-		enemy_1C.addOrder(new Order_Attack(enemy_1C, player));
+		enemy_1A.addOrder(new Order_AttackDirect(enemy_1A, enemy_1B));
+		enemy_1B.addOrder(new Order_AttackDirect(enemy_1B, enemy_1C));
+		enemy_1C.addOrder(new Order_AttackDirect(enemy_1C, player));
 		//enemy_1C.addOrder(new Order_Attack(enemy_1C, player));
 		
 		setWaves(new Wave(enemy_1A, enemy_1B, enemy_1C));
