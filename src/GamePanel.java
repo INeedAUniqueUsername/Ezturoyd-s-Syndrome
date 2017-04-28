@@ -23,6 +23,7 @@ import javax.swing.Timer;
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
 	private boolean active = true;
+	private boolean cheat_playerActive = true;
 	final int INTERVAL = 10;
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
@@ -132,6 +133,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					SpaceObject o2 = o_i_2.next();
 					if(objectsIntersect(o1, o2)) {
 						if(o1 instanceof Starship && o2 instanceof Starship) {
+							System.out.println("Starship Collision");
 							collisionStarshipStarship((Starship) o1, (Starship) o2);
 						} else if(o1 instanceof Starship && o2 instanceof Projectile) {
 							Starship s = (Starship) o1;
@@ -163,6 +165,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				universeRemove(d);
 			}
 			objectsDestroyed.clear();
+		} else {
+			player.update();
 		}
 		
 		//Draw everything
@@ -239,31 +243,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		print("Key Pressed");
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_Z:		active = !active;			break;
-		case KeyEvent.VK_UP:	player.setThrusting(true);	break;
-		case KeyEvent.VK_DOWN:	player.setBraking(true);	break;
-		case KeyEvent.VK_LEFT:	player.setTurningCCW(true);	break;
-		case KeyEvent.VK_RIGHT:	player.setTurningCW(true);	break;
-		case KeyEvent.VK_SHIFT:	player.setStrafing(true);	break;
-		case KeyEvent.VK_X:		player.setFiringKey(true);	break;
-		}
+		setKeyState(e.getKeyCode(), true);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_UP:	player.setThrusting(false);		break;
-		case KeyEvent.VK_DOWN:	player.setBraking(false);		break;
-		case KeyEvent.VK_LEFT:	player.setTurningCCW(false);	break;
-		case KeyEvent.VK_RIGHT:	player.setTurningCW(false);		break;
-		case KeyEvent.VK_SHIFT:	player.setStrafing(false);		break;
-		case KeyEvent.VK_X:		player.setFiringKey(false);		break;
+		setKeyState(e.getKeyCode(), false);
+	}
+	public void setKeyState(int code, boolean state) {
+		switch(code) {
+		case KeyEvent.VK_UP:	player.setThrusting(state);		break;
+		case KeyEvent.VK_DOWN:	player.setBraking(state);		break;
+		case KeyEvent.VK_LEFT:	player.setTurningCCW(state);	break;
+		case KeyEvent.VK_RIGHT:	player.setTurningCW(state);		break;
+		case KeyEvent.VK_SHIFT:	player.setStrafing(state);		break;
+		case KeyEvent.VK_X:		player.setFiringKey(state);		break;
+		
+		case KeyEvent.VK_Z:		active = !state;				break;
 		}
 	}
-
 	public double arctanDegrees(double y, double x) {
 		double result;
 		if (x < 0) {
@@ -476,8 +475,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double angle_s2_s1 = angleBetween(s2, s1);
 		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
 		double kinetic_energy_half = kinetic_energy_total / 2;
-		s1.impulse(angle_s2_s1, kinetic_energy_half);
-		s2.impulse(angle_s1_s2, kinetic_energy_half);
+		s1.accelerateEnergy(angle_s2_s1, kinetic_energy_half);
+		s2.accelerateEnergy(angle_s1_s2, kinetic_energy_half);
 		//print("<-- GamePanel: Starship-Starship Collision");
 	}
 	public void collisionProjectileProjectile(Projectile p1, Projectile p2)

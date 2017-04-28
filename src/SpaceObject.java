@@ -62,11 +62,6 @@ public abstract class SpaceObject {
 		return result;
 	}
 	
-	public final void impulse(double angle, double kinetic_energy)
-	{
-		incVelPolar(angle, Math.sqrt((2*kinetic_energy)/size));
-	}
-	
 	public final Point2D.Double calcFuturePos(double time)
 	{
 		return new Point2D.Double(pos_x + time * vel_x, pos_y + time * vel_y);
@@ -230,8 +225,7 @@ public abstract class SpaceObject {
 		vel_y += speed*sinDegrees(angle);
 	}
 	public final void accelerateEnergy(double angle, double kineticEnergy) {
-		double speed = Math.sqrt((2*kineticEnergy)/size);
-		accelerateEnergy(angle, speed);
+		accelerate(kineticEnergy > 0 ? angle : -angle, Math.sqrt((2*Math.abs(kineticEnergy)/size)));
 	}
 	
 	public final void decelerate(double speed)
@@ -392,6 +386,7 @@ public abstract class SpaceObject {
 		{
 			size += Math.abs(polygonArea(part.xpoints, part.ypoints, part.npoints));
 		}
+		//System.out.println("Size: " + size);
 	}
 	
 	public abstract void update();
@@ -561,7 +556,9 @@ public abstract class SpaceObject {
 		//System.out.println("Speed: " + getVelSpeed());
 		//System.out.println("Size: " + size);
 		//System.out.println("Momentum: " + getVelSpeed()*size);
-		return (1/2)*getMass()*Math.pow(getVelSpeed(), 2);
+		System.out.println("Vel Speed: " + getVelSpeed());
+		System.out.println("Size: " + getMass());
+		return 0.5*getMass()*Math.pow(getVelSpeed(), 2);
 	}
 	
 	public final double getKineticEnergyAngled(double angle)
@@ -581,6 +578,10 @@ public abstract class SpaceObject {
 		
 		return getMomentum()*cosDegrees(angleDiff);
 		*/
+		System.out.println("Angle: " + angle);
+		System.out.println("Vel Angle: " + angle);
+		System.out.println("Kinetic Energy: " + getKineticEnergy());
+		System.out.println("Angled Kinetic Energy: " + getKineticEnergy()*cosDegrees(getVelAngle()-angle));
 		return getKineticEnergy()*cosDegrees(getVelAngle()-angle);
 	}
 	

@@ -6,6 +6,10 @@ public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
+		
+		Starship_NPC enemy_0 = new Starship_NPC();
+		enemy_0.setPosRectangular(500, 500);
+		
 		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		
 		enemy_1a.installWeapon(new Weapon());
@@ -44,7 +48,7 @@ public class Level_Waves extends Level {
 		
 		player.setStructure(10000);
 		
-		setWaves(new Wave(enemy_1a, enemy_1b, enemy_1c), new Wave(enemy_2a, enemy_2b));
+		setWaves(new Wave(enemy_0), new Wave(enemy_1a, enemy_1b, enemy_1c), new Wave(enemy_2a, enemy_2b));
 	}
 	public void setWaves(Wave... w) {
 		this.waves = new ArrayList<>();
