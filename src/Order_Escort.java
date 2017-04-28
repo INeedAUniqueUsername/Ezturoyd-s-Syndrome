@@ -46,8 +46,7 @@ public class Order_Escort extends Behavior{
 					closestDistance = distance;
 				}
 			}
-			attackMode.setTarget(closest);
-			attackMode.setActive(true);
+			attackMode = new Order_AttackDirect(owner, closest);
 			attackMode.update();
 			return;
 		}
@@ -65,7 +64,7 @@ public class Order_Escort extends Behavior{
 	}
 	//The maximum range from the target at which the owner is willing to attack an enemy
 	public int getMaxDefendRange() {
-		return 100;
+		return 500;
 	}
 	public void updateEscort() {
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
