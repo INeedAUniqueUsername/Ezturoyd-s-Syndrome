@@ -4,7 +4,10 @@ import java.util.ArrayList;
 public class Starship_Player extends Starship {
 	private ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
 	private ArrayList<Weapon_Mouse> weapons_mouse = new ArrayList<Weapon_Mouse>();
-	
+	public Starship_Player() {
+		super();
+		setAlignment(Sovereign.PLAYER);
+	}
 	private boolean thrusting;
 	private boolean turningCCW;
 	private boolean turningCW;

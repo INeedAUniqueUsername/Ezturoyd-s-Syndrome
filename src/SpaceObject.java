@@ -592,18 +592,4 @@ public abstract class SpaceObject {
 	{
 		return o != null;
 	}
-	
-	
-	public final Starship getClosestEnemyStarship() {
-		double distance = Integer.MAX_VALUE;
-		Starship result = null;
-		for(Starship o : GamePanel.getWorld().getStarships()) {
-			double d = getDistanceBetween(o);
-			if(!o.equals(this) && d < distance) {
-				result = o;
-				distance = d;
-			}
-		}
-		return result;
-	}
 }

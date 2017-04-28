@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -5,24 +6,45 @@ public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
-		Starship_NPC enemy_1A = createEnemyStarship();
-		Starship_NPC enemy_1B = createEnemyStarship();
-		Starship_NPC enemy_1C = createEnemyStarship();
+		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		
-		enemy_1A.installWeapon(new Weapon());
-		enemy_1B.installWeapon(new Weapon());
-		enemy_1C.installWeapon(new Weapon());
+		enemy_1a.installWeapon(new Weapon());
+		enemy_1b.installWeapon(new Weapon());
+		enemy_1c.installWeapon(new Weapon());
 		
-		//enemy_1A.addOrder(new Order_Escort(enemy_1A, enemy_1B, 45, 30));
+		enemy_1b.setThrust(2);
+		enemy_1b.setMax_speed(5);
 		
-		//enemy_1C.addOrder(new Order_Escort(enemy_1C, enemy_1B, 135, 30));
+		enemy_1a.addOrderAttackDirect(player);
+		enemy_1b.addOrderAttackDirect(player);
+		enemy_1c.addOrderAttackDirect(player);
 		
-		enemy_1A.addOrder(new Order_AttackDirect(enemy_1A, enemy_1B));
-		enemy_1B.addOrder(new Order_AttackDirect(enemy_1B, enemy_1C));
-		enemy_1C.addOrder(new Order_AttackDirect(enemy_1C, player));
-		//enemy_1C.addOrder(new Order_Attack(enemy_1C, player));
+		Starship_NPC enemy_2a = createEnemyStarship(), enemy_2b = createEnemyStarship(), enemy_2c = createEnemyStarship();
 		
-		setWaves(new Wave(enemy_1A, enemy_1B, enemy_1C));
+		
+		enemy_2a.addOrderAttackOrbit(player);
+		enemy_2a.setMax_speed(12);
+		enemy_2a.setRotation_max(24);
+		enemy_2b.setMax_speed(4);
+		enemy_2b.setThrust(2);
+		enemy_2b.setRotation_accel(0.3);
+		enemy_2b.setRotation_decel(0.2);
+		enemy_2c.setMax_speed(10);
+		enemy_2c.setRotation_max(21);
+		
+		
+		
+		enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50, Color.YELLOW));
+		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 30, 30, Color.GREEN));
+		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50, Color.YELLOW));
+		
+		enemy_2a.addOrderAttackOrbit(player);
+		enemy_2b.addOrderAttackDirect(player);
+		enemy_2c.addOrderEscort(enemy_2a);
+		
+		player.setStructure(10000);
+		
+		setWaves(new Wave(enemy_1a, enemy_1b, enemy_1c), new Wave(enemy_2a, enemy_2b));
 	}
 	public void setWaves(Wave... w) {
 		this.waves = new ArrayList<>();
@@ -58,7 +80,10 @@ public class Level_Waves extends Level {
 		return s;
 	}
 	public void update() {
-		
+		if(waves.get(0).getActiveShips().size() == 0) {
+			waves.remove(0);
+			waves.get(0).activate();
+		}
 	}
 	@Override
 	public void start() {

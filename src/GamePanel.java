@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		objectsCreated = new ArrayList<SpaceObject>();
 		objectsDestroyed = new ArrayList<SpaceObject>();
 		
-		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 1, 90, Color.RED));
+		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90, Color.RED));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
 		player.setName("Player");
 		/*∂
@@ -103,7 +103,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			debugQueue.clear();
 			setTick(getTick() + 1);
 			
-			//currentLevel.update();
+			currentLevel.update();
 			
 			Iterator<SpaceObject> o_i_1 = universe.iterator();
 			while (o_i_1.hasNext()) {

@@ -12,6 +12,7 @@ public class Starship_NPC extends Starship {
 	
 	public Starship_NPC() {
 		initializeAI();
+		setAlignment(Sovereign.ENEMY);
 	}
 	
 	public void draw(Graphics g)
@@ -37,6 +38,15 @@ public class Starship_NPC extends Starship {
 	}
 	public final void addOrder(Behavior b) {
 		orders.add(b);
+	}
+	public final void addOrderAttackDirect(SpaceObject target) {
+		addOrder(new Order_AttackDirect(this, target));
+	}
+	public final void addOrderAttackOrbit(SpaceObject target) {
+		addOrder(new Order_AttackOrbit(this, target));
+	}
+	public final void addOrderEscort(SpaceObject target) {
+		addOrder(new Order_Escort(this, target));
 	}
 	public final void removeOrder(Behavior b) {
 		orders.remove(b);

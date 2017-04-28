@@ -46,7 +46,7 @@ public class Order_GoToPos extends Behavior {
 						0 - owner.getVelX(),
 						0 - owner.getVelY()
 						),
-				owner.MAX_SPEED
+				owner.getMaxSpeed()
 				);
 		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		/*

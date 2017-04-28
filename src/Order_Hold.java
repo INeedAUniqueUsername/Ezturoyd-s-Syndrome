@@ -9,13 +9,16 @@ public class Order_Hold extends Behavior {
 		if(target == null) {
 			return;
 		}
+		if(!owner.hasWeapon()) {
+			return;
+		}
 		//Problems: None. Attack as normal
 		Point2D.Double pos_target = getNearestTargetClone(owner, target);
 		double target_x = pos_target.getX();
 		double target_y = pos_target.getY();
 		double target_distance = owner.getDistanceBetweenPos(pos_target);
 		
-		ThrustingState action_thrusting = ThrustingState.NONE;
+		ThrustingState action_thrusting = ThrustingState.BRAKE;
 		RotatingState action_rotation = RotatingState.NONE;
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;

@@ -40,7 +40,10 @@ public class Order_AttackDirect extends Behavior {
 				return; //Done
 			}
 		}
-		
+		if(!owner.hasWeapon()) {
+			setActive(false);
+			return;
+		}
 		//Problems: None. Attack as normal
 		updateAttack();
 	}
@@ -59,7 +62,7 @@ public class Order_AttackDirect extends Behavior {
 					result.add(o);
 				}
 			} else {
-				System.out.println("It's you.");
+				//System.out.println("It's you.");
 			}
 		}
 		return result;

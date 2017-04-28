@@ -13,23 +13,46 @@ import java.util.Set;
 
 public class Starship extends SpaceObject {
 
+	/*
 	final int HEAD_SIZE = 10; //20
 	final int BODY_SIZE = 15; //30
-	final double THRUST = .5; //1
-	final int MAX_SPEED = 8;
-	final double DECEL = .2;
-	final double ROTATION_MAX = 15;
-	final double ROTATION_ACCEL = .6;
-	final double ROTATION_DECEL = .4;
-	private double structure = 1000;
+	*/
+	public static final double THRUST_DEFAULT = .5; //1
+	public static final double MAX_SPEED_DEFAULT = 8;
+	public static final double DECEL_DEFAULT = .2;
+	public static final double ROTATION_MAX_DEFAULT = 15;
+	public static final double ROTATION_ACCEL_DEFAULT = .6;
+	public static final double ROTATION_DECEL_DEFAULT = .4;
+	
+	private double thrust, max_speed, decel, rotation_max, rotation_accel, rotation_decel;
+
+	private double structure = 100;
 	private ArrayList<String> print = new ArrayList<String>();
 
 	private ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 
+	enum Sovereign {
+		PLAYER, ENEMY
+	}
+	Sovereign alignment;
+	
 	public Starship() {
 		setBody(new Body_Starship(this));
 		updateBody();
 		updateSize();
+		setManeuverStats(
+				THRUST_DEFAULT,
+				MAX_SPEED_DEFAULT,
+				DECEL_DEFAULT
+				);
+		setRotationStats(
+				ROTATION_MAX_DEFAULT,
+				ROTATION_ACCEL_DEFAULT,
+				ROTATION_DECEL_DEFAULT
+				);
+	}
+	public double getMaxSpeed() {
+		return max_speed;
 	}
 
 	public void draw(Graphics g) {
@@ -46,21 +69,21 @@ public class Starship extends SpaceObject {
 	public void updateActive() {
 		double speed_r = Math.abs(vel_r);
 		if (speed_r > 0)
-			if(speed_r > ROTATION_MAX) {
-				vel_r = (vel_r > 0 ? 1 : -1) * ROTATION_MAX;
+			if(speed_r > rotation_max) {
+				vel_r = (vel_r > 0 ? 1 : -1) * rotation_max;
 			}
 			else {
 				double vel_r_original = vel_r;
-				vel_r -= (vel_r > 0 ? 1 : -1)*ROTATION_DECEL;
+				vel_r -= (vel_r > 0 ? 1 : -1)*rotation_decel;
 				//Check if vel_r changed positive to negative or vice versa. If it did, then set it to zero
 				if(vel_r / vel_r_original < 0) {
 					vel_r = 0;
 				}
 			}
-		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > MAX_SPEED) {
+		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > max_speed) {
 			int velAngle = (int) arctanDegrees(vel_y, vel_x);
-			vel_x = MAX_SPEED * cosDegrees(velAngle);
-			vel_y = MAX_SPEED * sinDegrees(velAngle);
+			vel_x = max_speed * cosDegrees(velAngle);
+			vel_y = max_speed * sinDegrees(velAngle);
 		}
 		updatePosition();
 	}
@@ -73,22 +96,22 @@ public class Starship extends SpaceObject {
 	public final void thrust() {
 		//Add rectangular exhaust effects
 		GamePanel.getWorld().createSpaceObject(new Projectile_StarshipExhaust());
-		accelerate(pos_r, THRUST);
+		accelerate(pos_r, thrust);
 	}
 	public final void turnCCW() {
-		rotateLeft(ROTATION_ACCEL);
+		rotateLeft(rotation_accel);
 	}
 	public final void turnCW() {
-		rotateRight(ROTATION_ACCEL);
+		rotateRight(rotation_accel);
 	}
 	public final void strafeLeft() {
-		accelerate(pos_r, THRUST);
+		accelerate(pos_r, thrust);
 	}
 	public final void strafeRight() {
-		accelerate(pos_r, THRUST);
+		accelerate(pos_r, thrust);
 	}
 	public final void brake() {
-		decelerate(DECEL);
+		decelerate(decel);
 	}
 
 	public final void damage(double damage) {
@@ -107,7 +130,9 @@ public class Starship extends SpaceObject {
 	{
 		return weapons.size() > 0 ? weapons.get(0) : null;
 	}
-
+	public boolean hasWeapon() {
+		return weapons.size() > 0;
+	}
 	public final void setFiring(boolean state) {
 		for (Weapon weapon : weapons) {
 			weapon.setFiring(state);
@@ -137,25 +162,25 @@ public class Starship extends SpaceObject {
 	}
 	
 	public final Point2D.Double getFuturePosWithDeceleration() {
-		double x_decel_time = Math.abs(vel_x/DECEL);
-		double y_decel_time = Math.abs(vel_y/DECEL);
+		double x_decel_time = Math.abs(vel_x/decel);
+		double y_decel_time = Math.abs(vel_y/decel);
 		return new Point2D.Double(
 				pos_x +
 				vel_x * x_decel_time +
-				((vel_x > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(x_decel_time, 2),
+				((vel_x > 0) ? -1 : 1) * (1/2) * decel * Math.pow(x_decel_time, 2),
 				pos_y +
 				vel_y * y_decel_time+
-				((vel_y > 0) ? -1 : 1) * (1/2) * DECEL * Math.pow(y_decel_time, 2)
+				((vel_y > 0) ? -1 : 1) * (1/2) * decel * Math.pow(y_decel_time, 2)
 				);
 	}
 	public final double getFutureAngleWithDeceleration() {
-		double r_decel_time = Math.abs(vel_r/ROTATION_DECEL);
+		double r_decel_time = Math.abs(vel_r/rotation_decel);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
 		//Let's relearn AP Physics I!
 		double pos_r_future =
 				pos_r
 				+ vel_r * r_decel_time
-				+ ((vel_r > 0) ? -1 : 1) * (1/2) * ROTATION_DECEL * Math.pow(r_decel_time, 2)
+				+ ((vel_r > 0) ? -1 : 1) * (1/2) * rotation_decel * Math.pow(r_decel_time, 2)
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
 		return pos_r_future;
 	}
@@ -180,5 +205,87 @@ public class Starship extends SpaceObject {
 		case	CCW:	turnCCW();			break;
 		case	CW:	turnCW();			break;
 		}
+	}
+	public void setAlignment(Sovereign a) {
+		alignment = a;
+	}
+	public Sovereign getAlignment() {
+		return alignment;
+	}
+	public boolean targetIsEnemy(Starship s) {
+		return !alignment.equals(s.getAlignment());
+	}
+	
+	public final Starship getClosestEnemyStarship() {
+		double distance = Integer.MAX_VALUE;
+		Starship result = null;
+		for(Starship o : GamePanel.getWorld().getStarships()) {
+			double d = getDistanceBetween(o);
+			if(!o.equals(this) && targetIsEnemy(o) && d < distance) {
+				result = o;
+				distance = d;
+			}
+		}
+		return result;
+	}
+	public void setStructure(int structure) {
+		this.structure = structure;
+	}
+	public void setManeuverStats(double thrust, double max_speed, double decel) {
+		setThrust(thrust);
+		setMax_speed(max_speed);
+		setDecel(decel);
+	}
+	public void setRotationStats(double rotation_max, double rotation_accel, double rotation_decel) {
+		setRotation_max(rotation_max);
+		setRotation_accel(rotation_accel);
+		setRotation_decel(rotation_decel);
+	}
+	public double getThrust() {
+		return thrust;
+	}
+
+	public void setThrust(double thrust) {
+		this.thrust = thrust;
+	}
+
+	public double getMax_speed() {
+		return max_speed;
+	}
+
+	public void setMax_speed(double max_speed) {
+		this.max_speed = max_speed;
+	}
+
+	public double getDecel() {
+		return decel;
+	}
+
+	public void setDecel(double decel) {
+		this.decel = decel;
+	}
+
+	public double getRotation_max() {
+		return rotation_max;
+	}
+
+	public void setRotation_max(double rotation_max) {
+		this.rotation_max = rotation_max;
+	}
+
+	public double getRotation_accel() {
+		return rotation_accel;
+	}
+
+	public void setRotation_accel(double rotation_accel) {
+		this.rotation_accel = rotation_accel;
+	}
+
+	public double getRotation_decel() {
+		return rotation_decel;
+	}
+
+	public void setRotation_decel(double rotation_decel) {
+		this.rotation_decel = rotation_decel;
 	}
 }

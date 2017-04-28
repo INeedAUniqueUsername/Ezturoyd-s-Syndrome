@@ -6,6 +6,8 @@ public class Order_Escort extends Behavior{
 	private int escort_angle = 180;
 	private int escort_distance = 10;
 	
+	Order_AttackDirect attackMode;
+	
 	public Order_Escort(Starship_NPC owner, SpaceObject target) {
 		this(owner, target, 180, 100);
 		// TODO Auto-generated constructor stub
@@ -14,6 +16,9 @@ public class Order_Escort extends Behavior{
 		super(owner);
 		setOwner(owner);
 		setParameters(target, angle, distance);
+		
+		attackMode = new Order_AttackDirect(owner, null);
+		attackMode.setActive(false);
 	}
 	public void setParameters(SpaceObject target, int angle, int distance) {
 		this.target = target;
@@ -25,14 +30,34 @@ public class Order_Escort extends Behavior{
 			setActive(false);
 			return;
 		}
-		
+		if(attackMode.getActive()) {
+			attackMode.update();
+			return;
+		}
+		//If there is an enemy nearby, go into attack mode
+		ArrayList<SpaceObject> nearbyEnemies = getNearbyEnemies();
+		if(nearbyEnemies.size() > 0) {
+			SpaceObject closest = null;
+			double closestDistance = Integer.MAX_VALUE;
+			for(SpaceObject o : nearbyEnemies) {
+				double distance = owner.getDistanceBetween(o);
+				if(distance < closestDistance) {
+					closest = o;
+					closestDistance = distance;
+				}
+			}
+			attackMode.setTarget(closest);
+			attackMode.setActive(true);
+			attackMode.update();
+			return;
+		}
 		updateEscort();
 	}
 	public ArrayList<SpaceObject> getNearbyEnemies() {
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
 		int range = getMaxDefendRange();
 		for(Starship s : GamePanel.getWorld().getStarships()) {
-			if(!s.equals(owner) && !s.equals(target) && target.getDistanceBetween(s) < getMaxDefendRange()) {
+			if(s.targetIsEnemy(owner) && target.getDistanceBetween(s) < getMaxDefendRange()) {
 				result.add(s);
 			}
 		}
@@ -40,7 +65,7 @@ public class Order_Escort extends Behavior{
 	}
 	//The maximum range from the target at which the owner is willing to attack an enemy
 	public int getMaxDefendRange() {
-		return 300;
+		return 100;
 	}
 	public void updateEscort() {
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
@@ -55,7 +80,7 @@ public class Order_Escort extends Behavior{
 		double angle_to_destination = SpaceObject.calcFireAngle(
 				SpaceObject.calcDiff(owner.getPos(), pos_destination),
 				SpaceObject.calcDiff(owner.getVel(), target.getVel()),
-				owner.MAX_SPEED
+				owner.getMaxSpeed()
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceObject.getDistanceBetweenPos(pos_destination, pos_owner);

@@ -1,7 +1,7 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class Behavior {
+public abstract class Behavior {
 	Starship_NPC owner;
 	private boolean active;
 	public static enum ThrustingState {

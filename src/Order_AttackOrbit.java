@@ -24,7 +24,10 @@ public class Order_AttackOrbit extends Behavior {
 			setActive(false);
 			return; //Done
 		}
-		
+		if(!owner.hasWeapon()) {
+			setActive(false);
+			return;
+		}
 		Point2D.Double pos_target = getNearestTargetClone(owner, target);
 		double target_x = pos_target.getX();
 		double target_y = pos_target.getY();
@@ -34,7 +37,7 @@ public class Order_AttackOrbit extends Behavior {
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;
 		
-		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.MAX_SPEED);
+		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMaxSpeed());
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
 		double futureFacingDiff = owner.calcFutureFacingDifference(angle_to_destination);
 		double aimingDiff = owner.calcFacingDifference(angle_to_aim);

@@ -11,7 +11,6 @@ public class GameWindow {
 	private GamePanel panel;
 	private JFrame frame;
 	
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		GameWindow game = new GameWindow();
