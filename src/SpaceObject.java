@@ -398,10 +398,7 @@ public abstract class SpaceObject {
 	
 	public final void drawBody(Graphics g)
 	{
-		for(Polygon part : body.getShapes())
-		{
-			g.drawPolygon(part);
-		}
+		body.draw(g);
 	}
 	
 	public void destroy()
@@ -459,7 +456,7 @@ public abstract class SpaceObject {
 	
 	public final void updatePosition()
 	{
-		pos_r = (int) (pos_r + vel_r);
+		pos_r = pos_r + vel_r;
 		pos_x = pos_x + vel_x;
 		pos_y = pos_y + vel_y;
 		

@@ -9,34 +9,25 @@ public class Projectile extends SpaceObject {
 	private int lifetime;
 	private int damage;
 	private SpaceObject owner;
-	private Color color;
 	public Projectile() {
 		lifetime = 0;
 		damage = 0;
 		setOwner(new Starship());
-		setColor(new Color(0));
 	}
-	public Projectile(double posX, double posY, double posR, int damage, int life, Color color) {
+	public Projectile(double posX, double posY, double posR, int damage, int life) {
+		this(posX, posY, posR, damage, life, new Body());
+		setBody(new Body_Projectile(this));
+	}
+	public Projectile(double posX, double posY, double posR, int damage, int life, Body body) {
 		setPosRectangular(posX, posY);
 		setPosR(posR);
-		setColor(color);
 		setLifetime(life);
 		setDamage(damage);
-
-		initialize();
-	}
-
-	public final void initialize()
-	{
-		System.out.println("Projectile X: " + pos_x);
-		System.out.println("Projectile Y: " + pos_y);
-		System.out.println("Projectile R: " + pos_r);
-		setBody(new Body_Projectile(this));
+		setBody(body);
 		updateBody();
 		updateSize();
 	}
 	public final void draw(Graphics g) {
-		g.setColor(color);
 		updateBody();
 		drawBody(g);
 	}
@@ -57,12 +48,6 @@ public class Projectile extends SpaceObject {
 	public final SpaceObject getOwner()
 	{
 		return owner;
-	}
-	public final void setColor(Color c) {
-		color = c;
-	}
-	public final Color getColor() {
-		return color;
 	}
 	public final void setDamage(int d) {
 		damage = d;

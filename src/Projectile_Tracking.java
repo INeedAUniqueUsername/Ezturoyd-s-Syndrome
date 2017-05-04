@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class Projectile_Tracking extends Projectile {
 	SpaceObject target;
-	public Projectile_Tracking(double posX, double posY, double posR, int damage, int life, Color color) {
-		super(posX, posY, posR, damage, life, color);
+	public Projectile_Tracking(double posX, double posY, double posR, int damage, int life) {
+		super(posX, posY, posR, damage, life);
 		// TODO Auto-generated constructor stub
 	}
 	public void setTarget(SpaceObject so) {

@@ -26,7 +26,7 @@ public class Body {
 		shapes.add(s);
 	}
 	public void updateShapes(){}
-	public final void draw(Graphics g) {
+	public void draw(Graphics g) {
 		for(Polygon s : shapes) {
 			g.drawPolygon(s);
 		}

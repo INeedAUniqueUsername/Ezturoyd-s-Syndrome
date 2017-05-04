@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Polygon;
 
 public class Body_Projectile extends Body {
@@ -42,5 +44,10 @@ public class Body_Projectile extends Body {
 		bodyX[4] = bodyX[0];
 		bodyY[4] = bodyY[0];
 		setShapes(new Polygon(bodyX, bodyY, 5));
+	}
+	public void draw(Graphics g) {
+		g.setColor(Color.RED);
+		System.out.println("DRAW PROJECTILE BODY");
+		super.draw(g);
 	}
 }

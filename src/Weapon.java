@@ -25,8 +25,6 @@ public class Weapon {
 	private int projectile_speed = 10;
 	private int projectile_damage = 5;
 	private int projectile_lifetime = 60;
-
-	private Color color = Color.RED;
 	public Weapon()
 	{
 		
@@ -34,13 +32,13 @@ public class Weapon {
 	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color) {
 		pos_angle = angle;
 		pos_radius = radius;
-		this.fire_angle = fire_angle;
-		fire_cooldown_max = cooldown;
-		fire_cooldown_time = fire_cooldown_max;
-		projectile_speed = speed;
-		projectile_damage = damage;
-		projectile_lifetime = lifetime;
-		this.color = color;
+		
+		setFireAngle(fire_angle);
+		setFireCooldownTime(cooldown);
+		setFireCooldownLeft(cooldown);
+		setProjectileSpeed(speed);
+		setProjectileDamage(damage);
+		setProjectileLifetime(lifetime);
 	}
 
 	public void update() {
@@ -76,7 +74,7 @@ public class Weapon {
 	}
 
 	public final Projectile getShotType() {
-		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime(), color);
+		return new Projectile_Tracking(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
 	}
 
 	public final Projectile getShot() {
@@ -110,29 +108,31 @@ public class Weapon {
 	public double getFireAngle() {
 		return fire_angle;
 	}
-
+	public void setFireAngle(double fire_angle) {
+		this.fire_angle = fire_angle;
+	}
 	public final int getProjectileSpeed() {
 		return projectile_speed;
 	}
 	
-	public final void setProjectileSpeed(int speed) {
-		projectile_speed = speed;
+	public final void setProjectileSpeed(int projectile_speed) {
+		this.projectile_speed = projectile_speed;
 	}
 
 	public final int getProjectileDamage() {
 		return projectile_damage;
 	}
 
-	public final void setProjectileDamage(int damage) {
-		projectile_damage = damage;
+	public final void setProjectileDamage(int projectile_damage) {
+		this.projectile_damage = projectile_damage;
 	}
 
 	public final int getProjectileLifetime() {
 		return projectile_lifetime;
 	}
 	
-	public final void setProjectileLifetime(int lifetime) {
-		projectile_lifetime = lifetime;
+	public final void setProjectileLifetime(int projectile_lifetime) {
+		this.projectile_lifetime = projectile_lifetime;
 	}
 	
 	public final int getProjectileRange() {

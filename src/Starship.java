@@ -20,10 +20,12 @@ public class Starship extends SpaceObject {
 	public static final double THRUST_DEFAULT = .5; //1
 	public static final double MAX_SPEED_DEFAULT = 8;
 	public static final double DECEL_DEFAULT = .2;
-	public static final double ROTATION_MAX_DEFAULT = 15;
-	public static final double ROTATION_ACCEL_DEFAULT = .6;
-	public static final double ROTATION_DECEL_DEFAULT = .4;
-	
+	//public static final double ROTATION_MAX_DEFAULT = 15; //Original
+	public static final double ROTATION_MAX_DEFAULT = 8;
+	//public static final double ROTATION_ACCEL_DEFAULT = .6; //Original
+	public static final double ROTATION_ACCEL_DEFAULT = .75;
+	//public static final double ROTATION_DECEL_DEFAULT = .4;
+	public static final double ROTATION_DECEL_DEFAULT = .6;
 	private double thrust, max_speed, decel, rotation_max, rotation_accel, rotation_decel;
 
 	private double structure = 100;
@@ -167,10 +169,10 @@ public class Starship extends SpaceObject {
 		return new Point2D.Double(
 				pos_x +
 				vel_x * x_decel_time +
-				((vel_x > 0) ? -1 : 1) * (1/2) * decel * Math.pow(x_decel_time, 2),
+				((vel_x > 0) ? -1 : 1) * 0.5 * decel * Math.pow(x_decel_time, 2),
 				pos_y +
 				vel_y * y_decel_time+
-				((vel_y > 0) ? -1 : 1) * (1/2) * decel * Math.pow(y_decel_time, 2)
+				((vel_y > 0) ? -1 : 1) * 0.5 * decel * Math.pow(y_decel_time, 2)
 				);
 	}
 	public final double getFutureAngleWithDeceleration() {
@@ -180,7 +182,7 @@ public class Starship extends SpaceObject {
 		double pos_r_future =
 				pos_r
 				+ vel_r * r_decel_time
-				+ ((vel_r > 0) ? -1 : 1) * (1/2) * rotation_decel * Math.pow(r_decel_time, 2)
+				+ ((vel_r > 0) ? -1 : 1) * 0.5 * rotation_decel * Math.pow(r_decel_time, 2)
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
 		return pos_r_future;
 	}
