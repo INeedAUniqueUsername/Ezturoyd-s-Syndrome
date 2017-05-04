@@ -1,4 +1,7 @@
+import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 public class Body_Projectile extends Body {
 	private Projectile owner;
@@ -24,23 +27,13 @@ public class Body_Projectile extends Body {
 		int[] bodyX = new int[5];
 		int[] bodyY = new int[5];
 		
-		//Bottom Left
-		bodyX[0] = (int) (pos_x - (width/2) * SpaceObject.cosDegrees(pos_r));
-		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (height/2) * SpaceObject.sinDegrees(pos_r)));
-		
-		//Top left
-		bodyX[1] = (int) (bodyX[0] + height * SpaceObject.cosDegrees(pos_r));
-		bodyY[1] = (int) (bodyY[0] - height * SpaceObject.sinDegrees(pos_r));
-		//Top right
-		bodyX[2] = (int) (bodyX[1] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[2] = (int) (bodyY[1] - width * SpaceObject.sinDegrees(pos_r+90));
-		
-		//Bottom right
-		bodyX[3] = (int) (bodyX[0] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[3] = (int) (bodyY[0] - width * SpaceObject.sinDegrees(pos_r+90));
-		
-		bodyX[4] = bodyX[0];
-		bodyY[4] = bodyY[0];
-		setShapes(new Polygon(bodyX, bodyY, 5));
+		double angle = SpaceObject.arctanDegrees(height, width);
+		double distance = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+		setShapes(createPolygon(
+				owner.polarOffset(pos_r - angle, distance),			//Top right
+				owner.polarOffset(pos_r + angle, distance),			//Top left
+				owner.polarOffset(180 + (pos_r - angle), distance),	//Bottom left
+				owner.polarOffset(180 + (pos_r + angle), distance)	//Bottom right
+				));
 	}
 }

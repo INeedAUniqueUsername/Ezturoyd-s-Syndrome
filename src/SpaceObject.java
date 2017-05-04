@@ -173,7 +173,7 @@ public abstract class SpaceObject {
 	*/
 	public static final Point2D.Double polarOffset(Point2D.Double origin, double angle, double distance)
 	{
-		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), origin.getY() + distance * sinDegrees(angle));
+		return new Point2D.Double(origin.getX() + distance * cosDegrees(angle), (origin.getY() + distance * sinDegrees(angle)));
 	}
 	
 	public final void setPosRectangular(double x, double y)
@@ -507,7 +507,7 @@ public abstract class SpaceObject {
 	
 	public final Point2D.Double polarOffset(double angle, double distance)
 	{
-		return new Point2D.Double(pos_x + distance * cosDegrees(angle), pos_y + distance * sinDegrees(angle));
+		return polarOffset(this.getPos(), angle, distance);
 	}
 	
 	public final double getVelAngle()
