@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//asteroids = new ArrayList<Asteroid>();
 
 		player = new Starship_Player();
-		player.setPosRectangular(800, 450);
+		player.setPosRectangular(GameWindow.WIDTH/2, GameWindow.HEIGHT/2);
 
 		universeAdd(player);
 		
@@ -83,6 +83,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void paintComponent(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
+		//g.clearRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
 		 * Starship player = ships.get(0); Asteroid rock = asteroids.get(0);
 		 * double angle = player.getAngleTowards(rock); int playerY = (int)
@@ -162,12 +163,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		Graphics2D g2D = ((Graphics2D) g);
-		/*
+		//g2D.rotate(-Math.toRadians(pos_r_player));
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
-		g2D.rotate(-Math.toRadians(pos_r_player), pos_x_player, pos_y_player);
-		*/
+		g2D.translate(GameWindow.WIDTH/2 - pos_x_player, GameWindow.HEIGHT/2 + pos_y_player);
+		
 		
 		//Draw everything
 		for(SpaceObject o: universe)
@@ -179,6 +180,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
+		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g.setColor(Color.WHITE);
 		int print_height = 12;

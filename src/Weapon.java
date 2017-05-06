@@ -8,8 +8,6 @@ public class Weapon {
 
 	SpaceObject owner;
 
-	final int SIZE = 5; //10
-
 	private boolean firing = false;
 
 	private double pos_angle = 0;
@@ -25,6 +23,8 @@ public class Weapon {
 	private int projectile_speed = 10;
 	private int projectile_damage = 5;
 	private int projectile_lifetime = 60;
+	
+	Body body;
 	public Weapon()
 	{
 		
@@ -39,8 +39,8 @@ public class Weapon {
 		setProjectileSpeed(speed);
 		setProjectileDamage(damage);
 		setProjectileLifetime(lifetime);
+		setBody(new Body_Weapon(this));
 	}
-
 	public void update() {
 		//System.out.println("---> Weapon Update");
 		fire_cooldown_time++;
@@ -53,26 +53,12 @@ public class Weapon {
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
-		int[] bodyX = new int[4];
-		int[] bodyY = new int[4];
-
-		int bodyFrontX = (int) (pos_x + SIZE * cosDegrees(fire_angle));
-		int bodyFrontY = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle)));
-
-		bodyX[0] = bodyFrontX;
-		bodyY[0] = bodyFrontY;
-
-		bodyX[1] = (int) (pos_x + SIZE * cosDegrees(fire_angle - 120));
-		bodyY[1] = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle - 120)));
-
-		bodyX[2] = (int) (pos_x + SIZE * cosDegrees(fire_angle + 120));
-		bodyY[2] = (int) (GameWindow.HEIGHT - (pos_y + SIZE * sinDegrees(fire_angle + 120)));
-
-		bodyX[3] = bodyFrontX;
-		bodyY[3] = bodyFrontY;
-		g.drawPolygon(new Polygon(bodyX, bodyY, 4));
+		body.updateShapes();
+		drawBody(g);
 	}
-
+	public final void drawBody(Graphics g) {
+		body.draw(g);
+	}
 	public final Projectile getShotType() {
 		return new Projectile_Tracking(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
 	}
@@ -85,6 +71,12 @@ public class Weapon {
 		return shot;
 	}
 
+	public final void setBody(Body b) {
+		body = b;
+	}
+	public final Body getBody() {
+		return body;
+	}
 	public final void setFiring(boolean state) {
 		firing = state;
 	}

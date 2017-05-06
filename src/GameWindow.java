@@ -1,16 +1,22 @@
+import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
 public class GameWindow {
 
-	public static final int WIDTH = 1600;
-	public static final int HEIGHT = 900;
+	public static final int WIDTH;
+	public static final int HEIGHT;
 	private GamePanel panel;
 	private JFrame frame;
-	
+	static {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		WIDTH = (int) screenSize.getWidth();
+		HEIGHT = (int) screenSize.getHeight();
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		GameWindow game = new GameWindow();
@@ -21,7 +27,7 @@ public class GameWindow {
 	{
 		frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
-		
+		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		panel = new GamePanel();
 		frame.add(panel);
 		frame.addMouseListener(panel);

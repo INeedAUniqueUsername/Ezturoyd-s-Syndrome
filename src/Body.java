@@ -28,10 +28,28 @@ public class Body {
 	}
 	public void updateShapes(){}
 	public void draw(Graphics g) {
-		for(Polygon s : shapes) {
-			g.drawPolygon(s);
+		for(Polygon p : shapes) {
+			g.drawPolygon(p);
+			drawWrapClones(g, p);
 		}
-	} 
+	}
+	public final void drawWrapClones(Graphics g, Polygon p) {
+		drawTranslate(g, p, GameWindow.WIDTH, 0);
+		drawTranslate(g, p, -GameWindow.WIDTH, 0);
+		drawTranslate(g, p, 0, GameWindow.HEIGHT);
+		drawTranslate(g, p, 0, -GameWindow.HEIGHT);
+	}
+	public final void drawTranslate(Graphics g, Polygon p, int x, int y) {
+		Polygon translated = new Polygon();
+		int[] xPoints = p.xpoints;
+		int[] yPoints = p.ypoints;
+		int nPoints = p.npoints;
+		for(int i = 0; i < nPoints; i++) {
+			translated.addPoint(xPoints[i]+x, yPoints[i]+y);
+		}
+		System.out.println("Drawing clone: " + "(" + x + ", " + y + ")");
+		g.drawPolygon(translated);
+	}
 	public static Polygon createPolygon(Point2D.Double... points) {
 		Polygon result = new Polygon();
 		for(Point2D.Double p : points) {

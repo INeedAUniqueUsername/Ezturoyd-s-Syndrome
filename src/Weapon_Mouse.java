@@ -12,6 +12,7 @@ public class Weapon_Mouse extends Weapon{
 	public final double getFireAngle()
 	{
 		Point aimPos = MouseInfo.getPointerInfo().getLocation();
-		return SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - owner.getPosX(), (GameWindow.HEIGHT - aimPos.getY() + 50) - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+		//return SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - owner.getPosX(), (GameWindow.HEIGHT - aimPos.getY() + 50) - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+		return SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.WIDTH/2, (GameWindow.HEIGHT - aimPos.getY() + 50) - GameWindow.HEIGHT/2), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 	}
 }
