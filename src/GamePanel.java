@@ -1,6 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -10,13 +10,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -104,18 +100,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			debugQueue.clear();
 			setTick(getTick() + 1);
 			
-			currentLevel.update();
+			//currentLevel.update();
 			
-			Iterator<SpaceObject> o_i_1 = universe.iterator();
-			while (o_i_1.hasNext()) {
-				SpaceObject o1 = o_i_1.next();
+			for(int i1 = 0; i1 < universe.size(); i1++) {
+				SpaceObject o1 = universe.get(i1);
 				
 				o1.update();
 				//Update all weapons
 				if(o1 instanceof Starship) {
-					Iterator<Weapon> w_i = ((Starship) o1).getWeapon().iterator();
-					while (w_i.hasNext()) {
-						Weapon w = w_i.next();
+					for(Weapon w : ((Starship) o1).getWeapon()) {
 						w.update();
 						if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
 							print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
@@ -126,11 +119,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						}
 					}
 				}
-				
-				
-				Iterator<SpaceObject> o_i_2 = universe.subList(universe.indexOf(o1)+1, universe.size()).iterator();
-				while(o_i_2.hasNext()) {
-					SpaceObject o2 = o_i_2.next();
+				for(int i2 = i1 + 1; i2 < universe.size(); i2++) {
+					SpaceObject o2 = universe.get(i2);
 					if(objectsIntersect(o1, o2)) {
 						if(o1 instanceof Starship && o2 instanceof Starship) {
 							System.out.println("Starship Collision");
@@ -152,10 +142,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						}
 					}
 				}
-				if(!o1.getActive()) {
-					objectsDestroyed.add(o1);
-				}
 			}
+			
+			universe.removeIf((SpaceObject o) -> {
+				return !o.getActive();
+			});
+			
 			//Add objects to be created and remove objects to be destroyed
 			for(SpaceObject o : objectsCreated) {
 				universeAdd(o);
@@ -169,17 +161,24 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			player.update();
 		}
 		
+		Graphics2D g2D = ((Graphics2D) g);
+		/*
+		double pos_x_player = player.getPosX();
+		double pos_y_player = player.getPosY();
+		double pos_r_player = player.getPosR();
+		g2D.rotate(-Math.toRadians(pos_r_player), pos_x_player, pos_y_player);
+		*/
+		
 		//Draw everything
 		for(SpaceObject o: universe)
 		{
-			o.draw(g);
+			o.draw(g2D);
 			if(o instanceof Starship) {
 				for(Weapon w : ((Starship) o).getWeapon()) {
-					w.draw(g);
+					w.draw(g2D);
 				}
 			}
 		}
-		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g.setColor(Color.WHITE);
 		int print_height = 12;

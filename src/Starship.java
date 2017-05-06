@@ -97,7 +97,7 @@ public class Starship extends SpaceObject {
 
 	public final void thrust() {
 		//Add rectangular exhaust effects
-		GamePanel.getWorld().createSpaceObject(new Projectile_StarshipExhaust(this));
+		//GamePanel.getWorld().createSpaceObject(new Projectile_StarshipExhaust(this));
 		accelerate(pos_r, thrust);
 	}
 	public final void turnCCW() {
