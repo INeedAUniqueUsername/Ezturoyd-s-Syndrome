@@ -57,5 +57,15 @@ public class Body {
 		}
 		return result;
 	}
-	
+	public static Polygon createRectangle(Point2D.Double pos, double facingAngle, double width, double height) {
+		double angle = SpaceObject.arctanDegrees(width, height);
+		double distance = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+		return createPolygon(
+				SpaceObject.polarOffset(pos, facingAngle + angle, distance), //Top left
+				SpaceObject.polarOffset(pos, facingAngle - angle, distance), //Top right
+				SpaceObject.polarOffset(pos, facingAngle + angle + 180, distance), //Bottom right
+				SpaceObject.polarOffset(pos, facingAngle - angle + 180, distance), //Bottom left
+				SpaceObject.polarOffset(pos, facingAngle + angle, distance) //Top left
+				);
+	}
 }

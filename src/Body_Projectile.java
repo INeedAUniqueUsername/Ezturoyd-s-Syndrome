@@ -18,35 +18,12 @@ public class Body_Projectile extends Body {
 		int width = 2;	//3
 		int height = 16;	//24
 		
-		double pos_x = owner.getPosX();
-		double pos_y = owner.getPosY();
-		double pos_r = owner.getPosR();
-		
-		//Rectangle
-		int[] bodyX = new int[5];
-		int[] bodyY = new int[5];
-		
-		//Bottom Left
-		bodyX[0] = (int) (pos_x - (width/2) * SpaceObject.cosDegrees(pos_r));
-		bodyY[0] = (int) (pos_y - (height/2) * SpaceObject.sinDegrees(pos_r));
-		
-		//Top left
-		bodyX[1] = (int) (bodyX[0] + height * SpaceObject.cosDegrees(pos_r));
-		bodyY[1] = (int) (bodyY[0] + height * SpaceObject.sinDegrees(pos_r));
-		//Top right
-		bodyX[2] = (int) (bodyX[1] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[2] = (int) (bodyY[1] + width * SpaceObject.sinDegrees(pos_r+90));
-		
-		//Bottom right
-		bodyX[3] = (int) (bodyX[0] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[3] = (int) (bodyY[0] + width * SpaceObject.sinDegrees(pos_r+90));
-		
-		bodyX[4] = bodyX[0];
-		bodyY[4] = bodyY[0];
-		setShapes(new Polygon(bodyX, bodyY, 5));
+		setShapes(createRectangle(owner.getPos(), owner.getPosR(), width, height));
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
-		super.draw(g);
+		for(Polygon p : getShapes()) {
+			g.fillPolygon(p);
+		}
 	}
 }

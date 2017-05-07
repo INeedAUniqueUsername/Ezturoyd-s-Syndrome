@@ -1,4 +1,6 @@
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 
 public class Body_StarshipExhaust extends Body_Projectile {
 	public Body_StarshipExhaust(Projectile p) {
@@ -6,19 +8,14 @@ public class Body_StarshipExhaust extends Body_Projectile {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void updateShapes(Graphics g) {
+	public void updateShapes() {
 		SpaceObject owner = getOwner();
-		double pos_r = owner.getPosR();
-		int height = 12;
-		int width = 4;
-		double angle = SpaceObject.arctanDegrees(height, width);
-		double distance = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
-		setShapes(createPolygon(
-				owner.polarOffset(pos_r+angle, distance),
-				owner.polarOffset(pos_r-angle, distance),
-				owner.polarOffset(pos_r+angle+180, distance),
-				owner.polarOffset(pos_r-angle+180, distance),
-				owner.polarOffset(pos_r+angle, distance)
-				));
+		setShapes(createRectangle(owner.getPos(), owner.getPosR(), 12, 4));
+	}
+	public void draw(Graphics g) {
+		g.setColor(Color.YELLOW);
+		for(Polygon p : getShapes()) {
+			g.drawPolygon(p);
+		}
 	}
 }

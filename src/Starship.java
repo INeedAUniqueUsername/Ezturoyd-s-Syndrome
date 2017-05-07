@@ -97,7 +97,15 @@ public class Starship extends SpaceObject {
 
 	public final void thrust() {
 		//Add rectangular exhaust effects
-		//GamePanel.getWorld().createSpaceObject(new Projectile_StarshipExhaust(this));
+		double exhaustAngle = pos_r + 180;
+		Point2D.Double exhaustPos = polarOffset(exhaustAngle, 10);
+		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 10, 10);
+		exhaust.setOwner(this);
+		exhaust.setBody(new Body_StarshipExhaust(exhaust));
+		//exhaust.setVelPolar(velAngle, getVelSpeed());
+		exhaust.incVelPolar(exhaustAngle, 10);
+		exhaust.setPosR(pos_r);
+		GamePanel.getWorld().createSpaceObject(exhaust);
 		accelerate(pos_r, thrust);
 	}
 	public final void turnCCW() {
