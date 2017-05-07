@@ -84,13 +84,13 @@ public abstract class SpaceObject {
 		
 		double angle = arctanDegrees(y2 - y1, x2 - x1);
 		
-		g.drawLine((int) x1, GameWindow.HEIGHT - (int) y1, (int) x2, GameWindow.HEIGHT - (int) y2);
+		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
 		
 		Point2D.Double arrow_left = polarOffset(dest, angle + 120, 10);
-		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_left.getX(), GameWindow.HEIGHT - (int) arrow_left.getY());
+		g.drawLine((int) x2, (int) y2, (int) arrow_left.getX(), (int) arrow_left.getY());
 		
 		Point2D.Double arrow_right = polarOffset(dest, angle - 120, 10);
-		g.drawLine((int) x2, GameWindow.HEIGHT - (int) y2, (int) arrow_right.getX(), GameWindow.HEIGHT - (int) arrow_right.getY());
+		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
 	}
 	public final Point2D.Double calcFireTargetPos(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
 		Point2D.Double posDiff = calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed);

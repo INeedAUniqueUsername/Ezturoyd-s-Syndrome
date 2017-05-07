@@ -28,18 +28,18 @@ public class Body_Projectile extends Body {
 		
 		//Bottom Left
 		bodyX[0] = (int) (pos_x - (width/2) * SpaceObject.cosDegrees(pos_r));
-		bodyY[0] = (int) (GameWindow.HEIGHT - (pos_y - (height/2) * SpaceObject.sinDegrees(pos_r)));
+		bodyY[0] = (int) (pos_y - (height/2) * SpaceObject.sinDegrees(pos_r));
 		
 		//Top left
 		bodyX[1] = (int) (bodyX[0] + height * SpaceObject.cosDegrees(pos_r));
-		bodyY[1] = (int) (bodyY[0] - height * SpaceObject.sinDegrees(pos_r));
+		bodyY[1] = (int) (bodyY[0] + height * SpaceObject.sinDegrees(pos_r));
 		//Top right
 		bodyX[2] = (int) (bodyX[1] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[2] = (int) (bodyY[1] - width * SpaceObject.sinDegrees(pos_r+90));
+		bodyY[2] = (int) (bodyY[1] + width * SpaceObject.sinDegrees(pos_r+90));
 		
 		//Bottom right
 		bodyX[3] = (int) (bodyX[0] + width * SpaceObject.cosDegrees(pos_r+90));
-		bodyY[3] = (int) (bodyY[0] - width * SpaceObject.sinDegrees(pos_r+90));
+		bodyY[3] = (int) (bodyY[0] + width * SpaceObject.sinDegrees(pos_r+90));
 		
 		bodyX[4] = bodyX[0];
 		bodyY[4] = bodyY[0];

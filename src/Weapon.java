@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Point2D;
 
 public class Weapon {
 
@@ -30,8 +31,8 @@ public class Weapon {
 		
 	}
 	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color) {
-		pos_angle = angle;
-		pos_radius = radius;
+		setPosAngle(angle);
+		setPosRadius(radius);
 		
 		setFireAngle(fire_angle);
 		setFireCooldownTime(cooldown);
@@ -43,18 +44,23 @@ public class Weapon {
 	}
 	public void update() {
 		//System.out.println("---> Weapon Update");
-		fire_cooldown_time++;
+		updateCooldown();
 		double angle = pos_angle + owner.getPosR();
-		pos_x = owner.getPosX() + pos_radius * cosDegrees(angle);
-		pos_y = owner.getPosY() + pos_radius * sinDegrees(angle);
-
-		fire_angle = angle;
+		setPos(owner.polarOffset(angle, pos_radius));
+		setFireAngle(angle);
 		//System.out.println("<--- Weapon Update");
 	}
+	public void updateCooldown() {
+		fire_cooldown_time++;
+	}
 	public void draw(Graphics g) {
+		owner.printToWorld("Drawing Weapon");
 		g.setColor(Color.WHITE);
 		body.updateShapes();
 		drawBody(g);
+		g.setColor(Color.RED);
+		Point2D.Double projectile_end = owner.polarOffset(fire_angle, getProjectileRange());
+		g.drawLine((int) pos_x, (int) pos_y, (int) projectile_end.getX(), (int) projectile_end.getY());
 	}
 	public final void drawBody(Graphics g) {
 		body.draw(g);
@@ -96,7 +102,6 @@ public class Weapon {
 	public final int getFireCooldownMax() {
 		return fire_cooldown_max;
 	}
-
 	public double getFireAngle() {
 		return fire_angle;
 	}
@@ -146,6 +151,12 @@ public class Weapon {
 	public final void setPosRadius(double radius) {
 		pos_radius = radius;
 	}
+	public double getPosAngle() {
+		return pos_angle;
+	}
+	public double getPosRadius() {
+		return pos_radius;
+	}
 
 	public final void setFireCooldownTime(int time) {
 		fire_cooldown_max = time;
@@ -158,11 +169,19 @@ public class Weapon {
 	public final double getPosX() {
 		return pos_x;
 	}
-
 	public final double getPosY() {
 		return pos_y;
 	}
-
+	public void setPosX(double pos_x) {
+		this.pos_x = pos_x;
+	}
+	public void setPosY(double pos_y) {
+		this.pos_y = pos_y;
+	}
+	public void setPos(Point2D.Double pos) {
+		setPosX(pos.getX());
+		setPosY(pos.getY());
+	}
 	public final double cosDegrees(double angle) {
 		return Math.cos(Math.toRadians(angle));
 	}

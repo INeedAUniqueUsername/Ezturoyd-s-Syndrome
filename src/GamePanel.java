@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -101,7 +102,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			debugQueue.clear();
 			setTick(getTick() + 1);
 			
-			//currentLevel.update();
+			currentLevel.update();
 			
 			for(int i1 = 0; i1 < universe.size(); i1++) {
 				SpaceObject o1 = universe.get(i1);
@@ -159,7 +160,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			objectsDestroyed.clear();
 		} else {
-			player.update();
+			//player.update();
 		}
 		
 		Graphics2D g2D = ((Graphics2D) g);
@@ -167,7 +168,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
-		g2D.translate(GameWindow.WIDTH/2 - pos_x_player, GameWindow.HEIGHT/2 + pos_y_player);
+		double translateX = GameWindow.WIDTH/2 - pos_x_player;
+		double translateY = GameWindow.HEIGHT/2 + pos_y_player;
+		g2D.translate(translateX, translateY);
+		g2D.scale(1, -1);
 		
 		
 		//Draw everything
@@ -181,13 +185,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 		}
 		
+		g2D.scale(1, -1);
+		g2D.translate(-translateX, -translateY);
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g.setColor(Color.WHITE);
-		int print_height = 12;
+		g.setFont(new Font("Consolas", Font.PLAIN, 18));
+		final int line_height = 18;
+		int print_y = line_height;
 		for(String s: debugQueue)
 		{
-			g.drawString(s, 10, print_height);
-			print_height += 12;
+			g.drawString(s, 10, print_y);
+			print_y += line_height;
 		}
 	}
 
@@ -472,12 +480,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void collisionStarshipStarship(Starship s1, Starship s2)
 	{
 		//print("--> GamePanel: Starship-Starship Collision");
-		double angle_s1_s2 = angleBetween(s1, s2);
-		double angle_s2_s1 = angleBetween(s2, s1);
-		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1_s2) + s2.getKineticEnergyAngled(angle_s2_s1);
+		double angle_s1 = s1.getVelAngle(); //angleBetween(s1, s2);
+		double angle_s2 = s2.getVelAngle(); //angleBetween(s2, s1);
+		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) + s2.getKineticEnergyAngled(angle_s2);
 		double kinetic_energy_half = kinetic_energy_total / 2;
-		s1.accelerateEnergy(angle_s2_s1, kinetic_energy_half);
-		s2.accelerateEnergy(angle_s1_s2, kinetic_energy_half);
+		s1.accelerateEnergy(angle_s2, kinetic_energy_half);
+		s2.accelerateEnergy(angle_s1, kinetic_energy_half);
 		//print("<-- GamePanel: Starship-Starship Collision");
 	}
 	public void collisionProjectileProjectile(Projectile p1, Projectile p2)
