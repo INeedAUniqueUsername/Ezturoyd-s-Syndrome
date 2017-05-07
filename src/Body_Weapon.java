@@ -18,7 +18,6 @@ public class Body_Weapon extends Body {
 		double pos_x = owner.getPosX();
 		double pos_y = owner.getPosY();
 		double fire_angle = owner.getFireAngle();
-		
 		final int SIZE = 5; //10
 		
 		int[] bodyX = new int[4];
@@ -43,7 +42,6 @@ public class Body_Weapon extends Body {
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
-		System.out.println("DRAW Weapon BODY");
 		super.draw(g);
 	}
 }

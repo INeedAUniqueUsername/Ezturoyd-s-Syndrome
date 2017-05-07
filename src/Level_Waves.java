@@ -38,9 +38,9 @@ public class Level_Waves extends Level {
 		
 		
 		
-		enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50, Color.YELLOW));
-		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 30, 30, Color.GREEN));
-		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50, Color.YELLOW));
+		enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50));
+		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 30, 30));
+		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50));
 		
 		enemy_2a.addOrderAttackOrbit(player);
 		enemy_2b.addOrderAttackDirect(player);
@@ -84,7 +84,10 @@ public class Level_Waves extends Level {
 		return s;
 	}
 	public void update() {
-		if(waves.get(0).getActiveShips().size() == 0) {
+		if(waves.size() == 0) {
+		}
+		else if(waves.get(0).getActiveShips().size() == 0) {
+			System.out.println("Next Wave");
 			waves.remove(0);
 			waves.get(0).activate();
 		}

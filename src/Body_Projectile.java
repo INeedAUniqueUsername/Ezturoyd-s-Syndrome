@@ -47,7 +47,6 @@ public class Body_Projectile extends Body {
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
-		System.out.println("DRAW PROJECTILE BODY");
 		super.draw(g);
 	}
 }

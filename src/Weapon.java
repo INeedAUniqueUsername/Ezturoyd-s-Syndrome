@@ -11,10 +11,10 @@ public class Weapon {
 
 	private boolean firing = false;
 
-	private double pos_angle = 0;
-	private double pos_radius = 0;
+	private double pos_angle;
+	private double pos_radius;
 
-	private double fire_angle = 0;
+	private double fire_angle;
 
 	private double pos_x;
 	private double pos_y;
@@ -25,12 +25,13 @@ public class Weapon {
 	private int projectile_damage = 5;
 	private int projectile_lifetime = 60;
 	
-	Body body;
+	private Body body;
+	
 	public Weapon()
 	{
-		
+		this(0, 0, 0, 10, 10, 5, 60);
 	}
-	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime, Color color) {
+	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime) {
 		setPosAngle(angle);
 		setPosRadius(radius);
 		
@@ -50,6 +51,9 @@ public class Weapon {
 		setFireAngle(angle);
 		//System.out.println("<--- Weapon Update");
 	}
+	public void updateBody() {
+		body.updateShapes();
+	}
 	public void updateCooldown() {
 		fire_cooldown_time++;
 	}
@@ -58,9 +62,18 @@ public class Weapon {
 		g.setColor(Color.WHITE);
 		body.updateShapes();
 		drawBody(g);
+		
+		
+		/*
 		g.setColor(Color.RED);
-		Point2D.Double projectile_end = owner.polarOffset(fire_angle, getProjectileRange());
+		double trajectoryAngle = SpaceObject.arctanDegrees(
+				projectile_speed * SpaceObject.sinDegrees(fire_angle) + owner.getVelY(),
+				projectile_speed * SpaceObject.cosDegrees(fire_angle) + owner.getVelX()
+				);
+		
+		Point2D.Double projectile_end = owner.polarOffset(trajectoryAngle, getProjectileRange());
 		g.drawLine((int) pos_x, (int) pos_y, (int) projectile_end.getX(), (int) projectile_end.getY());
+		*/
 	}
 	public final void drawBody(Graphics g) {
 		body.draw(g);

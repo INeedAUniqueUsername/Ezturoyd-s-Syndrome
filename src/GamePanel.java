@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
@@ -33,7 +35,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
 	*/
-	private ArrayList<String> debugQueue = new ArrayList<String>();
+	private ArrayList<String> debugQueue = new ArrayList<String>(0);
 
 	// counter for hits
 	//private int hits = 0;
@@ -53,7 +55,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		setTick(0);
 		print("*" + getTick() + "*");
 
-		universe = new ArrayList<SpaceObject>();
+		universe = new ArrayList<SpaceObject>(0);
 		//starships = new ArrayList<Starship>();
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
@@ -63,11 +65,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		universeAdd(player);
 		
-		objectsCreated = new ArrayList<SpaceObject>();
-		objectsDestroyed = new ArrayList<SpaceObject>();
+		objectsCreated = new ArrayList<SpaceObject>(0);
+		objectsDestroyed = new ArrayList<SpaceObject>(0);
 		
-		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90, Color.RED));
+		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
+		player.installWeapon(new Weapon_Key(0, 0, 0, 5, 30, 10, 90));
 		player.setName("Player");
 		/*∂
 		enemy_test = new Starship_NPC();
@@ -103,7 +106,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			setTick(getTick() + 1);
 			
 			currentLevel.update();
-			
 			for(int i1 = 0; i1 < universe.size(); i1++) {
 				SpaceObject o1 = universe.get(i1);
 				
@@ -270,6 +272,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		case KeyEvent.VK_X:		player.setFiringKey(state);		break;
 		
 		case KeyEvent.VK_Z:		active = !state;				break;
+		case KeyEvent.VK_ESCAPE:	System.exit(0);
 		}
 	}
 	public double arctanDegrees(double y, double x) {

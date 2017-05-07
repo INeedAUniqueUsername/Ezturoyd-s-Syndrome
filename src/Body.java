@@ -47,7 +47,7 @@ public class Body {
 		for(int i = 0; i < nPoints; i++) {
 			translated.addPoint(xPoints[i]+x, yPoints[i]+y);
 		}
-		System.out.println("Drawing clone: " + "(" + x + ", " + y + ")");
+		//System.out.println("Drawing clone: " + "(" + x + ", " + y + ")");
 		g.drawPolygon(translated);
 	}
 	public static Polygon createPolygon(Point2D.Double... points) {
