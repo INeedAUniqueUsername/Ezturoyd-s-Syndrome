@@ -1,9 +1,12 @@
+package Space;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
+
+import Interfaces.NewtonianMotion;
 
 public class Weapon {
 
@@ -82,8 +85,10 @@ public class Weapon {
 		return new Projectile_Tracking(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
 	}
 
-	public final Projectile getShot() {
+	public final Projectile createShot() {
 		Projectile shot = getShotType();
+		Point2D.Double pos = owner.polarOffset(fire_angle, projectile_speed);
+		shot.setPosRectangular(pos.getX(), pos.getY());
 		shot.setVelPolar(getFireAngle(), getProjectileSpeed());
 		shot.incVelRectangular(owner.getVelX(), owner.getVelY());
 		shot.setOwner(owner);
@@ -149,7 +154,7 @@ public class Weapon {
 		return projectile_speed * projectile_lifetime;
 	}
 
-	public final SpaceObject getOwner() {
+	public final NewtonianMotion getOwner() {
 		return owner;
 	}
 

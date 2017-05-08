@@ -1,4 +1,7 @@
+package Space;
 import java.awt.geom.Point2D;
+
+import Interfaces.NewtonianMotion;
 
 public class Order_AttackOrbit extends Behavior {
 	private SpaceObject target;
@@ -8,7 +11,7 @@ public class Order_AttackOrbit extends Behavior {
 		setTarget(t);
 	}
 	
-	public SpaceObject getTarget() {
+	public NewtonianMotion getTarget() {
 		return target;
 	}
 	public void setTarget(SpaceObject t) {
@@ -37,13 +40,13 @@ public class Order_AttackOrbit extends Behavior {
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;
 		
-		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMaxSpeed());
+		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMax_speed());
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
 		double futureFacingDiff = owner.calcFutureFacingDifference(angle_to_destination);
 		double aimingDiff = owner.calcFacingDifference(angle_to_aim);
 			
 		//We are too far away on the target, so focus on orbiting
-		if(SpaceObject.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
+		if(Helper.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
 			if(futureFacingDiff > 30) {
 				action_rotation = owner.calcTurnDirection(angle_to_destination);
 				owner.printToWorld("AttackOrbit: Not facing " + target.getName());

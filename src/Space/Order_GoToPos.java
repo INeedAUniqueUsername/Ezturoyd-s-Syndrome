@@ -1,3 +1,4 @@
+package Space;
 import java.awt.geom.Point2D;
 
 public class Order_GoToPos extends Behavior {
@@ -37,7 +38,7 @@ public class Order_GoToPos extends Behavior {
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
-		double angle_to_target = SpaceObject.calcFireAngle(
+		double angle_to_target = Helper.calcFireAngle(
 				new Point2D.Double(
 						destination_x - owner.getPosX(),
 						destination_y - owner.getPosY()
@@ -46,7 +47,7 @@ public class Order_GoToPos extends Behavior {
 						0 - owner.getVelX(),
 						0 - owner.getVelY()
 						),
-				owner.getMaxSpeed()
+				owner.getMax_speed()
 				);
 		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		/*
@@ -64,7 +65,7 @@ public class Order_GoToPos extends Behavior {
 			action_rotation = owner.calcTurnDirection(angle_to_target);
 		} else {
 			action_weapon = AttackingState.FIRE;
-			if(SpaceObject.getDistanceBetweenPos(owner.getFuturePosWithDeceleration(), destination) > min_distance){
+			if(Helper.getDistanceBetweenPos(owner.getFuturePosWithDeceleration(), destination) > min_distance){
 				action_thrusting = ThrustingState.THRUST;
 			}
 		}

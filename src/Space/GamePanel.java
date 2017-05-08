@@ -1,3 +1,4 @@
+package Space;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -19,10 +20,16 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Interfaces.NewtonianMotion;
+
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
 	private boolean active = true;
 	private boolean cheat_playerActive = true;
+	enum CameraMode {
+		FIXED, FOLLOW_PLAYER
+	}
+	public static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
 	final int INTERVAL = 10;
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
@@ -116,7 +123,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						w.update();
 						if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
 							print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
-							Projectile shot = w.getShot();
+							Projectile shot = w.createShot();
 							createSpaceObject(shot);
 							w.setFireCooldownLeft(0);
 							print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
@@ -157,7 +164,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				universeAdd(o);
 			}
 			objectsCreated.clear();
-			for(SpaceObject d : objectsDestroyed) {
+			for(NewtonianMotion d : objectsDestroyed) {
 				universeRemove(d);
 			}
 			objectsDestroyed.clear();
@@ -168,31 +175,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
-		
-		/*
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
+		
 		double translateX = GameWindow.WIDTH/2 - pos_x_player;
 		double translateY = GameWindow.HEIGHT/2 + pos_y_player;
-		g2D.translate(translateX, translateY);
-		*/
 		
-		g2D.scale(1, -1);
-		
-		//Draw everything
-		for(SpaceObject o: universe)
-		{
-			o.draw(g2D);
-			if(o instanceof Starship) {
-				for(Weapon w : ((Starship) o).getWeapon()) {
-					w.draw(g2D);
-				}
-			}
+		switch(camera) {
+		case FOLLOW_PLAYER:
+			g2D.translate(translateX, translateY);
+			break;
 		}
 		
-		g2D.scale(1, -1);
-		//g2D.translate(-translateX, -translateY);
+		drawUniverse(g2D);
+		
+		switch(camera) {
+		case FOLLOW_PLAYER:
+			g2D.translate(-translateX, -translateY);
+			break;
+		}
 		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g2D.setColor(Color.WHITE);
@@ -206,6 +208,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		g2D.dispose();
+	}
+	public void drawUniverse(Graphics2D g2D) {
+		g2D.scale(1, -1);
+		for(SpaceObject o: universe)
+		{
+			o.draw(g2D);
+			if(o instanceof Starship) {
+				for(Weapon w : ((Starship) o).getWeapon()) {
+					w.draw(g2D);
+				}
+			}
+		}
+		g2D.scale(1, -1);
 	}
 
 	public void printToScreen(String text)
@@ -360,7 +375,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private void universeAdd(SpaceObject so) {
 		universe.add(so);
 	}
-	private void universeRemove(SpaceObject so) {
+	private void universeRemove(NewtonianMotion so) {
 		universe.remove(so);
 	}
 	private void universeRemove(int i) {
@@ -395,7 +410,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return starships;
 		ArrayList<Starship> result = new ArrayList<Starship>();
-		for(SpaceObject o : universe) {
+		for(NewtonianMotion o : universe) {
 			if(o instanceof Starship) {
 				result.add((Starship) o);
 			}
@@ -406,7 +421,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return projectiles;
 		ArrayList<Projectile> result = new ArrayList<Projectile>();
-		for(SpaceObject o : universe) {
+		for(NewtonianMotion o : universe) {
 			if(o instanceof Projectile) {
 				result.add((Projectile) o);
 			}
@@ -427,7 +442,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public boolean exists(Object what) {
 		return what != null;
 	}
-	public boolean isAlive(SpaceObject what)
+	public boolean isAlive(NewtonianMotion what)
 	{
 		boolean result = false;
 		if(what instanceof Starship)
