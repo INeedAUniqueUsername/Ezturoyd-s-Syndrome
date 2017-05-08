@@ -1,3 +1,4 @@
+package Space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -79,7 +80,7 @@ public class Order_Escort extends Behavior{
 		double angle_to_destination = Helper.calcFireAngle(
 				Helper.calcDiff(owner.getPos(), pos_destination),
 				Helper.calcDiff(owner.getVel(), target.getVel()),
-				owner.getMaxSpeed()
+				owner.getMax_speed()
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = Helper.getDistanceBetweenPos(pos_destination, pos_owner);

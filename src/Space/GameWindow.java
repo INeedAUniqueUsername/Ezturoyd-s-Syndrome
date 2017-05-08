@@ -1,3 +1,4 @@
+package Space;
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;

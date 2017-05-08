@@ -1,3 +1,4 @@
+package Space;
 import java.awt.geom.Point2D;
 
 public class Order_GoToPos extends Behavior {
@@ -46,7 +47,7 @@ public class Order_GoToPos extends Behavior {
 						0 - owner.getVelX(),
 						0 - owner.getVelY()
 						),
-				owner.getMaxSpeed()
+				owner.getMax_speed()
 				);
 		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		/*

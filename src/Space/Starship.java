@@ -1,3 +1,4 @@
+package Space;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -11,23 +12,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import Interfaces.IStarship;
 import Interfaces.NewtonianMotion;
 
-public class Starship extends SpaceObject {
+public class Starship extends SpaceObject implements IStarship {
 
-	/*
-	final int HEAD_SIZE = 10; //20
-	final int BODY_SIZE = 15; //30
-	*/
-	public static final double THRUST_DEFAULT = .5; //1
-	public static final double MAX_SPEED_DEFAULT = 8;
-	public static final double DECEL_DEFAULT = .2;
-	//public static final double ROTATION_MAX_DEFAULT = 15; //Original
-	public static final double ROTATION_MAX_DEFAULT = 8;
-	//public static final double ROTATION_ACCEL_DEFAULT = .6; //Original
-	public static final double ROTATION_ACCEL_DEFAULT = .75;
-	//public static final double ROTATION_DECEL_DEFAULT = .4;
-	public static final double ROTATION_DECEL_DEFAULT = .6;
 	private double thrust, max_speed, decel, rotation_max, rotation_accel, rotation_decel;
 
 	private double structure = 100;
@@ -54,9 +43,6 @@ public class Starship extends SpaceObject {
 				ROTATION_ACCEL_DEFAULT,
 				ROTATION_DECEL_DEFAULT
 				);
-	}
-	public double getMaxSpeed() {
-		return max_speed;
 	}
 
 	public void draw(Graphics g) {
@@ -113,18 +99,38 @@ public class Starship extends SpaceObject {
 		*/
 		accelerate(pos_r, thrust);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#turnCCW()
+	 */
+	@Override
 	public final void turnCCW() {
 		rotateLeft(rotation_accel);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#turnCW()
+	 */
+	@Override
 	public final void turnCW() {
 		rotateRight(rotation_accel);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#strafeLeft()
+	 */
+	@Override
 	public final void strafeLeft() {
 		accelerate(pos_r, thrust);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#strafeRight()
+	 */
+	@Override
 	public final void strafeRight() {
 		accelerate(pos_r, thrust);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#brake()
+	 */
+	@Override
 	public final void brake() {
 		decelerate(decel);
 	}
@@ -176,6 +182,10 @@ public class Starship extends SpaceObject {
 		return object.getVelAtAngle(angle_towards_object) - getVelAtAngle(angle_towards_object);
 	}
 	
+	/* (non-Javadoc)
+	 * @see IStarship#getFuturePosWithDeceleration()
+	 */
+	@Override
 	public final Point2D.Double getFuturePosWithDeceleration() {
 		double x_decel_time = Math.abs(vel_x/decel);
 		double y_decel_time = Math.abs(vel_y/decel);
@@ -188,6 +198,10 @@ public class Starship extends SpaceObject {
 				((vel_y > 0) ? -1 : 1) * 0.5 * decel * Math.pow(y_decel_time, 2)
 				);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#getFutureAngleWithDeceleration()
+	 */
+	@Override
 	public final double getFutureAngleWithDeceleration() {
 		double r_decel_time = Math.abs(vel_r/rotation_decel);
 		//double angle_to_target_future = angle_to_target + target.getVelR() * r_decel_time;
@@ -199,11 +213,19 @@ public class Starship extends SpaceObject {
 				;	//Make sure that the deceleration value has the opposite sign of the rotation speed
 		return pos_r_future;
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#calcFutureFacingDifference(double)
+	 */
+	@Override
 	public final double calcFutureFacingDifference(double angle_target)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
 		return calcAngleDiff(pos_r_future, angle_target);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#calcFacingDifference(double)
+	 */
+	@Override
 	public final double calcFacingDifference(double angle_target)
 	{
 		return calcAngleDiff(pos_r, angle_target);
@@ -213,6 +235,10 @@ public class Starship extends SpaceObject {
 		double angleDiffCW = Helper.modRangeDegrees(angle2 - angle1);
 		return Helper.min(angleDiffCCW, angleDiffCW);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#turnDirection(Behavior.RotatingState)
+	 */
+	@Override
 	public final void turnDirection(Behavior.RotatingState direction)
 	{
 		switch(direction)
@@ -246,32 +272,60 @@ public class Starship extends SpaceObject {
 	public void setStructure(int structure) {
 		this.structure = structure;
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#setManeuverStats(double, double, double)
+	 */
+	@Override
 	public void setManeuverStats(double thrust, double max_speed, double decel) {
 		setThrust(thrust);
 		setMax_speed(max_speed);
 		setDecel(decel);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#setRotationStats(double, double, double)
+	 */
+	@Override
 	public void setRotationStats(double rotation_max, double rotation_accel, double rotation_decel) {
 		setRotation_max(rotation_max);
 		setRotation_accel(rotation_accel);
 		setRotation_decel(rotation_decel);
 	}
+	/* (non-Javadoc)
+	 * @see IStarship#getThrust()
+	 */
+	@Override
 	public double getThrust() {
 		return thrust;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#setThrust(double)
+	 */
+	@Override
 	public void setThrust(double thrust) {
 		this.thrust = thrust;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#getMax_speed()
+	 */
+	@Override
 	public double getMax_speed() {
 		return max_speed;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#setMax_speed(double)
+	 */
+	@Override
 	public void setMax_speed(double max_speed) {
 		this.max_speed = max_speed;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#getDecel()
+	 */
+	@Override
 	public double getDecel() {
 		return decel;
 	}
@@ -280,26 +334,50 @@ public class Starship extends SpaceObject {
 		this.decel = decel;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#getRotation_max()
+	 */
+	@Override
 	public double getRotation_max() {
 		return rotation_max;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#setRotation_max(double)
+	 */
+	@Override
 	public void setRotation_max(double rotation_max) {
 		this.rotation_max = rotation_max;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#getRotation_accel()
+	 */
+	@Override
 	public double getRotation_accel() {
 		return rotation_accel;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#setRotation_accel(double)
+	 */
+	@Override
 	public void setRotation_accel(double rotation_accel) {
 		this.rotation_accel = rotation_accel;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#getRotation_decel()
+	 */
+	@Override
 	public double getRotation_decel() {
 		return rotation_decel;
 	}
 
+	/* (non-Javadoc)
+	 * @see IStarship#setRotation_decel(double)
+	 */
+	@Override
 	public void setRotation_decel(double rotation_decel) {
 		this.rotation_decel = rotation_decel;
 	}

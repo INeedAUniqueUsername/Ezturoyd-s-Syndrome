@@ -1,3 +1,4 @@
+package Space;
 import java.awt.geom.Point2D;
 public class Order_Hold extends Behavior {
 	public Order_Hold(Starship_NPC o) {

@@ -1,3 +1,4 @@
+package Space;
 import java.awt.geom.Point2D;
 
 import Interfaces.NewtonianMotion;
@@ -39,7 +40,7 @@ public class Order_AttackOrbit extends Behavior {
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;
 		
-		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMaxSpeed());
+		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMax_speed());
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
 		double futureFacingDiff = owner.calcFutureFacingDifference(angle_to_destination);
 		double aimingDiff = owner.calcFacingDifference(angle_to_aim);

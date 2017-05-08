@@ -1,3 +1,4 @@
+package Space;
 
 import java.awt.Color;
 import java.awt.MouseInfo;
