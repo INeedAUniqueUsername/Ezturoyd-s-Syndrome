@@ -68,7 +68,7 @@ public class Order_Escort extends Behavior{
 	}
 	public void updateEscort() {
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
-		Point2D.Double pos_destination = Behavior.getNearestPosClone(pos_owner, SpaceObject.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
+		Point2D.Double pos_destination = Behavior.getNearestPosClone(pos_owner, Helper.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
 		ThrustingState action_thrusting = ThrustingState.NONE;
 		RotatingState action_rotation = RotatingState.NONE;
 		StrafingState action_strafing = StrafingState.NONE;
@@ -76,13 +76,13 @@ public class Order_Escort extends Behavior{
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
-		double angle_to_destination = SpaceObject.calcFireAngle(
-				SpaceObject.calcDiff(owner.getPos(), pos_destination),
-				SpaceObject.calcDiff(owner.getVel(), target.getVel()),
+		double angle_to_destination = Helper.calcFireAngle(
+				Helper.calcDiff(owner.getPos(), pos_destination),
+				Helper.calcDiff(owner.getVel(), target.getVel()),
 				owner.getMaxSpeed()
 				);
 		double angle_current = owner.getAngleTowards(target);
-		double distance_to_destination = SpaceObject.getDistanceBetweenPos(pos_destination, pos_owner);
+		double distance_to_destination = Helper.getDistanceBetweenPos(pos_destination, pos_owner);
 		owner.printToWorld("Angle to Escort Position: " + angle_to_destination);
 		owner.printToWorld("Distance to Escort Position: " + distance_to_destination);
 		//Move towards the escort position

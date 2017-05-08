@@ -119,9 +119,9 @@ public class Starship_NPC extends Starship {
 	public final Behavior.RotatingState calcTurnDirection(double target_angle)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
-		double faceAngleDiffCCW = modRangeDegrees(target_angle - pos_r_future);
-		double faceAngleDiffCW = modRangeDegrees(pos_r_future - target_angle);
-		double faceAngleDiff = min(faceAngleDiffCCW, faceAngleDiffCW);
+		double faceAngleDiffCCW = Helper.modRangeDegrees(target_angle - pos_r_future);
+		double faceAngleDiffCW = Helper.modRangeDegrees(pos_r_future - target_angle);
+		double faceAngleDiff = Helper.min(faceAngleDiffCCW, faceAngleDiffCW);
 		if(faceAngleDiff > controller.getMaxAngleDifference())
 		{
 			if(faceAngleDiffCW < faceAngleDiffCCW)

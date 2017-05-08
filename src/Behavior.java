@@ -1,6 +1,8 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Interfaces.NewtonianMotion;
+
 public abstract class Behavior {
 	Starship_NPC owner;
 	private boolean active;
@@ -27,7 +29,7 @@ public abstract class Behavior {
 	public final void setOwner(Starship_NPC o) {
 		owner = o;
 	}
-	public final SpaceObject getOwner() {
+	public final NewtonianMotion getOwner() {
 		return owner;
 	}
 	public void update() {
@@ -105,23 +107,23 @@ public abstract class Behavior {
 		double pos_y = origin.getY();
 		double target_x_center = destination.getX();
 		double target_y_center = destination.getY();
-		double target_distance_center = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
+		double target_distance_center = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
 		
 		double target_x_up = target_x_center;
 		double target_y_up = target_y_center - GameWindow.HEIGHT;
-		double target_distance_up = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
+		double target_distance_up = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
 		
 		double target_x_down = target_x_center;
 		double target_y_down = target_y_center + GameWindow.HEIGHT;
-		double target_distance_down = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
+		double target_distance_down = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
 		
 		double target_x_right = target_x_center + GameWindow.WIDTH;
 		double target_y_right = target_y_center;
-		double target_distance_right = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
+		double target_distance_right = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
 		
 		double target_x_left = target_x_center - GameWindow.WIDTH;
 		double target_y_left = target_y_center;
-		double target_distance_left = SpaceObject.getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
+		double target_distance_left = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
 		
 		double target_x_focus = target_x_center;
 		double target_y_focus = target_y_center;

@@ -19,6 +19,8 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Interfaces.NewtonianMotion;
+
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 
 	private boolean active = true;
@@ -116,7 +118,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						w.update();
 						if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
 							print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
-							Projectile shot = w.getShot();
+							Projectile shot = w.createShot();
 							createSpaceObject(shot);
 							w.setFireCooldownLeft(0);
 							print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
@@ -157,7 +159,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				universeAdd(o);
 			}
 			objectsCreated.clear();
-			for(SpaceObject d : objectsDestroyed) {
+			for(NewtonianMotion d : objectsDestroyed) {
 				universeRemove(d);
 			}
 			objectsDestroyed.clear();
@@ -360,7 +362,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private void universeAdd(SpaceObject so) {
 		universe.add(so);
 	}
-	private void universeRemove(SpaceObject so) {
+	private void universeRemove(NewtonianMotion so) {
 		universe.remove(so);
 	}
 	private void universeRemove(int i) {
@@ -395,7 +397,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return starships;
 		ArrayList<Starship> result = new ArrayList<Starship>();
-		for(SpaceObject o : universe) {
+		for(NewtonianMotion o : universe) {
 			if(o instanceof Starship) {
 				result.add((Starship) o);
 			}
@@ -406,7 +408,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		//return projectiles;
 		ArrayList<Projectile> result = new ArrayList<Projectile>();
-		for(SpaceObject o : universe) {
+		for(NewtonianMotion o : universe) {
 			if(o instanceof Projectile) {
 				result.add((Projectile) o);
 			}
@@ -427,7 +429,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public boolean exists(Object what) {
 		return what != null;
 	}
-	public boolean isAlive(SpaceObject what)
+	public boolean isAlive(NewtonianMotion what)
 	{
 		boolean result = false;
 		if(what instanceof Starship)

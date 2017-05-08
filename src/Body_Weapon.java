@@ -23,17 +23,17 @@ public class Body_Weapon extends Body {
 		int[] bodyX = new int[4];
 		int[] bodyY = new int[4];
 
-		int bodyFrontX = (int) (pos_x + SIZE * SpaceObject.cosDegrees(fire_angle));
-		int bodyFrontY = (int) (pos_y + SIZE * SpaceObject.sinDegrees(fire_angle));
+		int bodyFrontX = (int) (pos_x + SIZE * Helper.cosDegrees(fire_angle));
+		int bodyFrontY = (int) (pos_y + SIZE * Helper.sinDegrees(fire_angle));
 
 		bodyX[0] = bodyFrontX;
 		bodyY[0] = bodyFrontY;
 
-		bodyX[1] = (int) (pos_x + SIZE * SpaceObject.cosDegrees(fire_angle - 120));
-		bodyY[1] = (int) (pos_y + SIZE * SpaceObject.sinDegrees(fire_angle - 120));
+		bodyX[1] = (int) (pos_x + SIZE * Helper.cosDegrees(fire_angle - 120));
+		bodyY[1] = (int) (pos_y + SIZE * Helper.sinDegrees(fire_angle - 120));
 
-		bodyX[2] = (int) (pos_x + SIZE * SpaceObject.cosDegrees(fire_angle + 120));
-		bodyY[2] = (int) (pos_y + SIZE * SpaceObject.sinDegrees(fire_angle + 120));
+		bodyX[2] = (int) (pos_x + SIZE * Helper.cosDegrees(fire_angle + 120));
+		bodyY[2] = (int) (pos_y + SIZE * Helper.sinDegrees(fire_angle + 120));
 
 		bodyX[3] = bodyFrontX;
 		bodyY[3] = bodyFrontY;

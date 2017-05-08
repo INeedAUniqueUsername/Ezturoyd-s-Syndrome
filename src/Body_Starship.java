@@ -25,17 +25,17 @@ public class Body_Starship extends Body {
 		int[] middleX = new int[4];
 		int[] middleY = new int[4];
 
-		int middleFrontX = (int) (pos_x + BODY_SIZE * SpaceObject.cosDegrees(pos_r));
-		int middleFrontY = (int) (pos_y + BODY_SIZE * SpaceObject.sinDegrees(pos_r));
+		int middleFrontX = (int) (pos_x + BODY_SIZE * Helper.cosDegrees(pos_r));
+		int middleFrontY = (int) (pos_y + BODY_SIZE * Helper.sinDegrees(pos_r));
 
 		middleX[0] = middleFrontX;
 		middleY[0] = middleFrontY;
 
-		middleX[1] = (int) (pos_x + BODY_SIZE * SpaceObject.cosDegrees(pos_r - 120));
-		middleY[1] = (int) (pos_y + BODY_SIZE * SpaceObject.sinDegrees(pos_r - 120));
+		middleX[1] = (int) (pos_x + BODY_SIZE * Helper.cosDegrees(pos_r - 120));
+		middleY[1] = (int) (pos_y + BODY_SIZE * Helper.sinDegrees(pos_r - 120));
 
-		middleX[2] = (int) (pos_x + BODY_SIZE * SpaceObject.cosDegrees(pos_r + 120));
-		middleY[2] = (int) (pos_y + BODY_SIZE * SpaceObject.sinDegrees(pos_r + 120));
+		middleX[2] = (int) (pos_x + BODY_SIZE * Helper.cosDegrees(pos_r + 120));
+		middleY[2] = (int) (pos_y + BODY_SIZE * Helper.sinDegrees(pos_r + 120));
 		
 		middleX[3] = middleFrontX;
 		middleY[3] = middleFrontY;
@@ -44,17 +44,17 @@ public class Body_Starship extends Body {
 		int[] headX = new int[4];
 		int[] headY = new int[4];
 		
-		int headFrontX = (int) (middleFrontX + HEAD_SIZE * SpaceObject.cosDegrees(pos_r));
-		int headFrontY = (int) (middleFrontY + HEAD_SIZE * SpaceObject.sinDegrees(pos_r));
+		int headFrontX = (int) (middleFrontX + HEAD_SIZE * Helper.cosDegrees(pos_r));
+		int headFrontY = (int) (middleFrontY + HEAD_SIZE * Helper.sinDegrees(pos_r));
 
 		headX[0] = headFrontX;
 		headY[0] = headFrontY;
 
-		headX[1] = (int) (middleFrontX + HEAD_SIZE * SpaceObject.cosDegrees(pos_r - 120));
-		headY[1] = (int) (middleFrontY + HEAD_SIZE * SpaceObject.sinDegrees(pos_r - 120));
+		headX[1] = (int) (middleFrontX + HEAD_SIZE * Helper.cosDegrees(pos_r - 120));
+		headY[1] = (int) (middleFrontY + HEAD_SIZE * Helper.sinDegrees(pos_r - 120));
 
-		headX[2] = (int) (middleFrontX + HEAD_SIZE * SpaceObject.cosDegrees(pos_r + 120));
-		headY[2] = (int) (middleFrontY + HEAD_SIZE * SpaceObject.sinDegrees(pos_r + 120));
+		headX[2] = (int) (middleFrontX + HEAD_SIZE * Helper.cosDegrees(pos_r + 120));
+		headY[2] = (int) (middleFrontY + HEAD_SIZE * Helper.sinDegrees(pos_r + 120));
 
 		headX[3] = headFrontX;
 		headY[3] = headFrontY;

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import Interfaces.NewtonianMotion;
+
 public class Starship extends SpaceObject {
 
 	/*
@@ -83,20 +85,21 @@ public class Starship extends SpaceObject {
 				}
 			}
 		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > max_speed) {
-			int velAngle = (int) arctanDegrees(vel_y, vel_x);
-			vel_x = max_speed * cosDegrees(velAngle);
-			vel_y = max_speed * sinDegrees(velAngle);
+			int velAngle = (int) Helper.arctanDegrees(vel_y, vel_x);
+			vel_x = max_speed * Helper.cosDegrees(velAngle);
+			vel_y = max_speed * Helper.sinDegrees(velAngle);
 		}
 		updatePosition();
 	}
 	
-	public final void onAttacked(SpaceObject attacker)
+	public final void onAttacked(NewtonianMotion attacker)
 	{
 		
 	}
 
 	public final void thrust() {
 		//Add rectangular exhaust effects
+		/*
 		double exhaustAngle = pos_r + 180;
 		Point2D.Double exhaustPos = polarOffset(exhaustAngle, 10);
 		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 10, 10);
@@ -107,6 +110,7 @@ public class Starship extends SpaceObject {
 		//exhaust.incVelPolar(exhaustAngle + (vel_r > 0 ? 90 : -90), vel_r*2);
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
+		*/
 		accelerate(pos_r, thrust);
 	}
 	public final void turnCCW() {
@@ -205,9 +209,9 @@ public class Starship extends SpaceObject {
 		return calcAngleDiff(pos_r, angle_target);
 	}
 	public static final double calcAngleDiff(double angle1, double angle2) {
-		double angleDiffCCW = modRangeDegrees(angle1 - angle2);
-		double angleDiffCW = modRangeDegrees(angle2 - angle1);
-		return min(angleDiffCCW, angleDiffCW);
+		double angleDiffCCW = Helper.modRangeDegrees(angle1 - angle2);
+		double angleDiffCW = Helper.modRangeDegrees(angle2 - angle1);
+		return Helper.min(angleDiffCCW, angleDiffCW);
 	}
 	public final void turnDirection(Behavior.RotatingState direction)
 	{
