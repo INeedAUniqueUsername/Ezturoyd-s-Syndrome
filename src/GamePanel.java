@@ -25,6 +25,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	private boolean active = true;
 	private boolean cheat_playerActive = true;
+	enum CameraMode {
+		FIXED, FOLLOW_PLAYER
+	}
+	public static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
 	final int INTERVAL = 10;
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
@@ -170,31 +174,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
-		
-		/*
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
+		
 		double translateX = GameWindow.WIDTH/2 - pos_x_player;
 		double translateY = GameWindow.HEIGHT/2 + pos_y_player;
-		g2D.translate(translateX, translateY);
-		*/
 		
-		g2D.scale(1, -1);
-		
-		//Draw everything
-		for(SpaceObject o: universe)
-		{
-			o.draw(g2D);
-			if(o instanceof Starship) {
-				for(Weapon w : ((Starship) o).getWeapon()) {
-					w.draw(g2D);
-				}
-			}
+		switch(camera) {
+		case FOLLOW_PLAYER:
+			g2D.translate(translateX, translateY);
+			break;
 		}
 		
-		g2D.scale(1, -1);
-		//g2D.translate(-translateX, -translateY);
+		drawUniverse(g2D);
+		
+		switch(camera) {
+		case FOLLOW_PLAYER:
+			g2D.translate(-translateX, -translateY);
+			break;
+		}
 		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g2D.setColor(Color.WHITE);
@@ -208,6 +207,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		g2D.dispose();
+	}
+	public void drawUniverse(Graphics2D g2D) {
+		g2D.scale(1, -1);
+		for(SpaceObject o: universe)
+		{
+			o.draw(g2D);
+			if(o instanceof Starship) {
+				for(Weapon w : ((Starship) o).getWeapon()) {
+					w.draw(g2D);
+				}
+			}
+		}
+		g2D.scale(1, -1);
 	}
 
 	public void printToScreen(String text)
