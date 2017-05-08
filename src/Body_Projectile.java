@@ -22,8 +22,6 @@ public class Body_Projectile extends Body {
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.RED);
-		for(Polygon p : getShapes()) {
-			g.fillPolygon(p);
-		}
+		super.draw(g);
 	}
 }

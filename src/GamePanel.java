@@ -165,16 +165,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			//player.update();
 		}
 		
+		
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
+		
+		/*
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
 		double translateX = GameWindow.WIDTH/2 - pos_x_player;
 		double translateY = GameWindow.HEIGHT/2 + pos_y_player;
 		g2D.translate(translateX, translateY);
-		g2D.scale(1, -1);
+		*/
 		
+		g2D.scale(1, -1);
 		
 		//Draw everything
 		for(SpaceObject o: universe)
@@ -188,17 +192,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		g2D.scale(1, -1);
-		g2D.translate(-translateX, -translateY);
+		//g2D.translate(-translateX, -translateY);
+		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
-		g.setColor(Color.WHITE);
-		g.setFont(new Font("Consolas", Font.PLAIN, 18));
+		g2D.setColor(Color.WHITE);
+		g2D.setFont(new Font("Consolas", Font.PLAIN, 18));
 		final int line_height = 18;
 		int print_y = line_height;
 		for(String s: debugQueue)
 		{
-			g.drawString(s, 10, print_y);
+			g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
+		
+		g2D.dispose();
 	}
 
 	public void printToScreen(String text)

@@ -37,7 +37,8 @@ public class Weapon_Mouse extends Weapon{
 			fireAngle = SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.WIDTH/2, (GameWindow.HEIGHT - aimPos.getY()) + 30 - GameWindow.HEIGHT/2), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 		}
 		*/
-		double fireAngle = SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.WIDTH/2, (GameWindow.HEIGHT - aimPos.getY()) + 30 - GameWindow.HEIGHT/2), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+		//double fireAngle = SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.WIDTH/2, (GameWindow.HEIGHT - aimPos.getY()) + 30 - GameWindow.HEIGHT/2), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+		double fireAngle = SpaceObject.calcFireAngle(new Point2D.Double(aimPos.getX() - owner.getPosX(), (GameWindow.HEIGHT - aimPos.getY() + 50) - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 		setFireAngle(fireAngle);
 	}
 	/*
