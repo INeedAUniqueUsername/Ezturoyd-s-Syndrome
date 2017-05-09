@@ -280,18 +280,18 @@ public abstract class SpaceObject implements ISpaceObject, NewtonianMotion {
 		
 		if(pos_x < 0)
 		{
-			pos_x = GameWindow.WIDTH;
+			pos_x = GameWindow.GAME_WIDTH;
 		}
-		else if(pos_x > GameWindow.WIDTH)
+		else if(pos_x > GameWindow.GAME_WIDTH)
 		{
 			pos_x = 0;
 		}
 		
 		if(pos_y < 0)
 		{
-			pos_y = GameWindow.HEIGHT;
+			pos_y = GameWindow.GAME_HEIGHT;
 		}
-		if(pos_y > GameWindow.HEIGHT)
+		if(pos_y > GameWindow.GAME_HEIGHT)
 		{
 			pos_y = 0;
 		}	

@@ -35,10 +35,10 @@ public class Body {
 		}
 	}
 	public final void drawWrapClones(Graphics g, Polygon p) {
-		drawTranslate(g, p, GameWindow.WIDTH, 0);
-		drawTranslate(g, p, -GameWindow.WIDTH, 0);
-		drawTranslate(g, p, 0, GameWindow.HEIGHT);
-		drawTranslate(g, p, 0, -GameWindow.HEIGHT);
+		drawTranslate(g, p, GameWindow.GAME_WIDTH, 0);
+		drawTranslate(g, p, -GameWindow.GAME_WIDTH, 0);
+		drawTranslate(g, p, 0, GameWindow.GAME_HEIGHT);
+		drawTranslate(g, p, 0, -GameWindow.GAME_HEIGHT);
 	}
 	public final void drawTranslate(Graphics g, Polygon p, int x, int y) {
 		Polygon translated = new Polygon();

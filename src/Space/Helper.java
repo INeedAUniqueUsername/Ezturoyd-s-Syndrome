@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 
 public class Helper {
 
-	public static final void drawArrow(Graphics g, Point2D.Double origin, Point2D.Double dest)
+	public static final void drawArrow(Graphics g, Point2D origin, Point2D dest)
 	{
 		g.setColor(Color.GREEN);
 		
@@ -81,7 +81,7 @@ public class Helper {
 		return new Point2D.Double(x + distance * cosDegrees(angle), y - distance * sinDegrees(angle));
 	}
 	*/
-	public static final Point2D.Double polarOffset(Point2D.Double origin, double angle, double distance)
+	public static final Point2D.Double polarOffset(Point2D origin, double angle, double distance)
 	{
 		return new Point2D.Double(origin.getX() + distance * Helper.cosDegrees(angle), origin.getY() + distance * Helper.sinDegrees(angle));
 	}

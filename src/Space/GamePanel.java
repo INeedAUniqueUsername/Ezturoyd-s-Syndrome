@@ -23,7 +23,6 @@ import javax.swing.Timer;
 import Interfaces.NewtonianMotion;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
-
 	private boolean active = true;
 	private boolean cheat_playerActive = true;
 	enum CameraMode {
@@ -68,7 +67,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//asteroids = new ArrayList<Asteroid>();
 
 		player = new Starship_Player();
-		player.setPosRectangular(GameWindow.WIDTH/2, GameWindow.HEIGHT/2);
+		player.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2);
 
 		universeAdd(player);
 		
@@ -93,7 +92,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public void paintComponent(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
+		g.fillRect(0, 0, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
 		//g.clearRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
 		 * Starship player = ships.get(0); Asteroid rock = asteroids.get(0);
@@ -105,14 +104,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		
+		updateUniverse();
+		updateDraw(g);
+	}
+	public void updateUniverse() {
 		//Update everything
 		if(active)
 		{
-			debugQueue.clear();
 			setTick(getTick() + 1);
 			
-			currentLevel.update();
+			//currentLevel.update();
 			for(int i1 = 0; i1 < universe.size(); i1++) {
 				SpaceObject o1 = universe.get(i1);
 				
@@ -171,20 +172,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		} else {
 			//player.update();
 		}
-		
-		
+	}
+	public void updateDraw(Graphics g) {
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
 		double pos_x_player = player.getPosX();
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
 		
-		double translateX = GameWindow.WIDTH/2 - pos_x_player;
-		double translateY = GameWindow.HEIGHT/2 + pos_y_player;
+		double translateX = GameWindow.SCREEN_CENTER_X - pos_x_player;
+		double translateY = GameWindow.SCREEN_CENTER_Y + pos_y_player;
 		
 		switch(camera) {
 		case FOLLOW_PLAYER:
 			g2D.translate(translateX, translateY);
+			break;
+		default:
 			break;
 		}
 		
@@ -193,6 +196,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		switch(camera) {
 		case FOLLOW_PLAYER:
 			g2D.translate(-translateX, -translateY);
+			break;
+		default:
 			break;
 		}
 		
@@ -206,11 +211,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
+		debugQueue.clear();
 		
 		g2D.dispose();
 	}
 	public void drawUniverse(Graphics2D g2D) {
 		g2D.scale(1, -1);
+		
 		for(SpaceObject o: universe)
 		{
 			o.draw(g2D);

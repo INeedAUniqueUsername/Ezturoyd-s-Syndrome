@@ -65,17 +65,17 @@ public class Level_Waves extends Level {
 		double roll = Math.random() * 3;
 		if(roll < 1) {
 			//Spawn somewhere past the left or right border
-			x = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
-			y = (int) (Math.random() * (GameWindow.HEIGHT + (2 * borderDistance) - borderDistance));
+			x = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			y = (int) (Math.random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
 		}
 		else if(roll < 2) {
 			//Spawn somewhere past the left or right border
-			x = (int) (Math.random() * (GameWindow.HEIGHT + (2 * borderDistance) - borderDistance));
-			y = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
+			x = (int) (Math.random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
+			y = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
 		} else {
 			//On one of the corners
-			x = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
-			y = Math.random() > 0.5 ? GameWindow.WIDTH + borderDistance : -borderDistance;
+			x = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			y = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
 		}
 		s.setPosRectangular(x, y);
 	}
