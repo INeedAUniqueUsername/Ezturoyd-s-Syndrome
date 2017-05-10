@@ -91,8 +91,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void paintComponent(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
 		//g.clearRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
 		 * Starship player = ships.get(0); Asteroid rock = asteroids.get(0);
@@ -104,74 +102,74 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		updateUniverse();
-		updateDraw(g);
+		if(active) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+			
+			updateUniverse();
+			updateDraw(g);
+		}
 	}
 	public void updateUniverse() {
 		//Update everything
-		if(active)
-		{
-			setTick(getTick() + 1);
+		setTick(getTick() + 1);
+		
+		currentLevel.update();
+		for(int i1 = 0; i1 < universe.size(); i1++) {
+			SpaceObject o1 = universe.get(i1);
 			
-			//currentLevel.update();
-			for(int i1 = 0; i1 < universe.size(); i1++) {
-				SpaceObject o1 = universe.get(i1);
-				
-				o1.update();
-				//Update all weapons
-				if(o1 instanceof Starship) {
-					for(Weapon w : ((Starship) o1).getWeapon()) {
-						w.update();
-						if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-							print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
-							Projectile shot = w.createShot();
-							createSpaceObject(shot);
-							w.setFireCooldownLeft(0);
-							print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
-						}
-					}
-				}
-				for(int i2 = i1 + 1; i2 < universe.size(); i2++) {
-					SpaceObject o2 = universe.get(i2);
-					if(objectsIntersect(o1, o2)) {
-						if(o1 instanceof Starship && o2 instanceof Starship) {
-							System.out.println("Starship Collision");
-							collisionStarshipStarship((Starship) o1, (Starship) o2);
-						} else if(o1 instanceof Starship && o2 instanceof Projectile) {
-							Starship s = (Starship) o1;
-							Projectile p = (Projectile) o2;
-							if(!p.getOwner().equals(s)) {
-								collisionStarshipProjectile(s, p);
-							}
-						} else if(o1 instanceof Projectile && o2 instanceof Starship) {
-							Starship s = (Starship) o2;
-							Projectile p = (Projectile) o1;
-							if(!p.getOwner().equals(s)) {
-								collisionStarshipProjectile(s, p);
-							}
-						} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
-							collisionProjectileProjectile((Projectile) o1, (Projectile) o2);
-						}
+			o1.update();
+			//Update all weapons
+			if(o1 instanceof Starship) {
+				for(Weapon w : ((Starship) o1).getWeapon()) {
+					w.update();
+					if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+						print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
+						Projectile shot = w.createShot();
+						createSpaceObject(shot);
+						w.setFireCooldownLeft(0);
+						print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 					}
 				}
 			}
-			
-			universe.removeIf((SpaceObject o) -> {
-				return !o.getActive();
-			});
-			
-			//Add objects to be created and remove objects to be destroyed
-			for(SpaceObject o : objectsCreated) {
-				universeAdd(o);
+			for(int i2 = i1 + 1; i2 < universe.size(); i2++) {
+				SpaceObject o2 = universe.get(i2);
+				if(objectsIntersect(o1, o2)) {
+					if(o1 instanceof Starship && o2 instanceof Starship) {
+						System.out.println("Starship Collision");
+						collisionStarshipStarship((Starship) o1, (Starship) o2);
+					} else if(o1 instanceof Starship && o2 instanceof Projectile) {
+						Starship s = (Starship) o1;
+						Projectile p = (Projectile) o2;
+						if(!p.getOwner().equals(s)) {
+							collisionStarshipProjectile(s, p);
+						}
+					} else if(o1 instanceof Projectile && o2 instanceof Starship) {
+						Starship s = (Starship) o2;
+						Projectile p = (Projectile) o1;
+						if(!p.getOwner().equals(s)) {
+							collisionStarshipProjectile(s, p);
+						}
+					} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
+						collisionProjectileProjectile((Projectile) o1, (Projectile) o2);
+					}
+				}
 			}
-			objectsCreated.clear();
-			for(NewtonianMotion d : objectsDestroyed) {
-				universeRemove(d);
-			}
-			objectsDestroyed.clear();
-		} else {
-			//player.update();
 		}
+		
+		universe.removeIf((SpaceObject o) -> {
+			return !o.getActive();
+		});
+		
+		//Add objects to be created and remove objects to be destroyed
+		for(SpaceObject o : objectsCreated) {
+			universeAdd(o);
+		}
+		objectsCreated.clear();
+		for(NewtonianMotion d : objectsDestroyed) {
+			universeRemove(d);
+		}
+		objectsDestroyed.clear();
 	}
 	public void updateDraw(Graphics g) {
 		Graphics2D g2D = ((Graphics2D) g);

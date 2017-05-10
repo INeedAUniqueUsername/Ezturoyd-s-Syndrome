@@ -17,7 +17,7 @@ public abstract class SpaceObject implements ISpaceObject, NewtonianMotion {
 	protected double vel_x; //Transition to get/set
 	protected double vel_y; //Transition to get/set
 	protected double vel_r; //Transition to get/set
-	private Body body;
+	private IBody body;
 	private double size;
 	
 	//private int last_collision_tick = 0;
@@ -207,10 +207,10 @@ public abstract class SpaceObject implements ISpaceObject, NewtonianMotion {
 	{
 		vel_r = vel_r - accel;
 	}
-	public final void setBody(Body b) {
+	public final void setBody(IBody b) {
 		body = b;
 	}
-	public final Body getBody() {
+	public final IBody getBody() {
 		return body;
 	}
 	

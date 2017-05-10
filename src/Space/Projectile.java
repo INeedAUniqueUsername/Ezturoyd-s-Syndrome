@@ -5,13 +5,14 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
+import Interfaces.ISpaceObject;
 import Interfaces.NewtonianMotion;
 
 public class Projectile extends SpaceObject {
 
 	private int lifetime;
 	private int damage;
-	private NewtonianMotion owner;
+	private ISpaceObject owner;
 	public Projectile() {
 		lifetime = 0;
 		damage = 0;
@@ -21,7 +22,7 @@ public class Projectile extends SpaceObject {
 		this(posX, posY, posR, damage, life, new Body());
 		setBody(new Body_Projectile(this));
 	}
-	public Projectile(double posX, double posY, double posR, int damage, int life, Body body) {
+	public Projectile(double posX, double posY, double posR, int damage, int life, IBody body) {
 		setPosRectangular(posX, posY);
 		setPosR(posR);
 		setLifetime(life);
@@ -45,10 +46,10 @@ public class Projectile extends SpaceObject {
 		}
 	}
 
-	public final void setOwner(NewtonianMotion object) {
+	public final void setOwner(ISpaceObject object) {
 		owner = object;
 	}
-	public final NewtonianMotion getOwner()
+	public final ISpaceObject getOwner()
 	{
 		return owner;
 	}
