@@ -28,7 +28,7 @@ public class Weapon {
 	private int projectile_damage = 5;
 	private int projectile_lifetime = 60;
 	
-	private Body body;
+	private IBody body;
 	
 	public Weapon()
 	{
@@ -95,10 +95,10 @@ public class Weapon {
 		return shot;
 	}
 
-	public final void setBody(Body b) {
+	public final void setBody(IBody b) {
 		body = b;
 	}
-	public final Body getBody() {
+	public final IBody getBody() {
 		return body;
 	}
 	public final void setFiring(boolean state) {

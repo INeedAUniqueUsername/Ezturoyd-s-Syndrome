@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import Interfaces.ISpaceObject;
 import Interfaces.IStarship;
 import Interfaces.NewtonianMotion;
 
@@ -78,7 +79,7 @@ public class Starship extends SpaceObject implements IStarship {
 		updatePosition();
 	}
 	
-	public final void onAttacked(NewtonianMotion attacker)
+	public final void onAttacked(ISpaceObject attacker)
 	{
 		
 	}
