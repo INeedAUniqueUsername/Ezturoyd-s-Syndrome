@@ -41,11 +41,11 @@ public class Weapon_Mouse extends Weapon{
 		double fireAngle;
 		switch(GamePanel.camera) {
 		case FOLLOW_PLAYER:
-			fireAngle = Helper.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.GAME_WIDTH/2, (GameWindow.GAME_HEIGHT - aimPos.getY()) + 30 - GameWindow.GAME_HEIGHT/2), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = Helper.calcFireAngle(new Point2D.Double(aimPos.getX() - GameWindow.SCREEN_CENTER_X, (GameWindow.SCREEN_HEIGHT - aimPos.getY()) + 30 - GameWindow.SCREEN_CENTER_Y), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 			break;
 		case FIXED:
 		default:
-			fireAngle = Helper.calcFireAngle(new Point2D.Double(aimPos.getX() - owner.getPosX(), (GameWindow.GAME_HEIGHT - aimPos.getY() + 50) - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = Helper.calcFireAngle(new Point2D.Double(aimPos.getX() - owner.getPosX(), (GameWindow.SCREEN_HEIGHT - aimPos.getY() + 50) - getPosY()), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 			break;
 		}
 		setFireAngle(fireAngle);
