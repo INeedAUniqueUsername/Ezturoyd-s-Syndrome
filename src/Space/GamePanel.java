@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import Interfaces.NewtonianMotion;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
+	private static double timeScale = 1;
 	private boolean active = true;
 	private boolean cheat_playerActive = true;
 	enum CameraMode {
@@ -104,7 +105,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		updateUniverse();
+		try {
+			Thread.sleep((long) (1.0/timeScale));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i = 0; i < timeScale; i++) {
+			updateUniverse();
+		}
 		updateDraw(g);
 	}
 	public void updateUniverse() {
@@ -217,7 +226,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	public void drawUniverse(Graphics2D g2D) {
 		g2D.scale(1, -1);
-		
+		final double shearX = 0;
+		final double shearY = 0;
+		g2D.shear(shearX, shearY);
 		for(SpaceObject o: universe)
 		{
 			o.draw(g2D);
@@ -227,9 +238,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
+		g2D.shear(-shearX, -shearY);
 		g2D.scale(1, -1);
 	}
-
 	public void printToScreen(String text)
 	{
 		debugQueue.add(text);
@@ -300,8 +311,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		case KeyEvent.VK_SHIFT:	player.setStrafing(state);		break;
 		case KeyEvent.VK_X:		player.setFiringKey(state);		break;
 		
+		case KeyEvent.VK_CLOSE_BRACKET:		timeScale *= 2;					break;
+		case KeyEvent.VK_OPEN_BRACKET:	timeScale /= 2;					break;
+		
 		case KeyEvent.VK_Z:		active = !state;				break;
-		case KeyEvent.VK_ESCAPE:	System.exit(0);
+		case KeyEvent.VK_ESCAPE:	System.exit(0);				break;
 		}
 	}
 	public double arctanDegrees(double y, double x) {
