@@ -173,7 +173,7 @@ public abstract class SpaceObject implements ISpaceObject, NewtonianMotion {
 	}
 	@Override
 	public final void accelerateEnergy(double angle, double kineticEnergy) {
-		accelerate(kineticEnergy > 0 ? angle : -angle, Math.sqrt((2*Math.abs(kineticEnergy)/size)));
+		accelerate(kineticEnergy > 0 ? angle : angle + 180, Math.sqrt((2*Math.abs(kineticEnergy)/size)));
 	}
 	
 	@Override

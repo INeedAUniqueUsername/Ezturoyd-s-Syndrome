@@ -71,11 +71,13 @@ public class Starship extends SpaceObject implements IStarship {
 					vel_r = 0;
 				}
 			}
+		/*
 		if (Math.sqrt(Math.pow(vel_x, 2) + Math.pow(vel_y, 2)) > max_speed) {
 			int velAngle = (int) Helper.arctanDegrees(vel_y, vel_x);
 			vel_x = max_speed * Helper.cosDegrees(velAngle);
 			vel_y = max_speed * Helper.sinDegrees(velAngle);
 		}
+		*/
 		updatePosition();
 	}
 	
@@ -96,7 +98,7 @@ public class Starship extends SpaceObject implements IStarship {
 		//exhaust.incVelPolar(exhaustAngle + (vel_r > 0 ? 90 : -90), vel_r*2);
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
-		accelerate(pos_r, thrust);
+		accelerateEnergy(pos_r, thrust);
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#turnCCW()
