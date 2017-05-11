@@ -49,10 +49,7 @@ public class Level_Waves extends Level {
 		
 		player.setStructure(10000);
 		
-		setWaves(
-				//new Wave(enemy_0),
-				new Wave(enemy_1a, enemy_1b, enemy_1c),
-				new Wave(enemy_2a, enemy_2b, enemy_2c));
+		setWaves(new Wave(enemy_0), new Wave(enemy_1a, enemy_1b, enemy_1c), new Wave(enemy_2a, enemy_2b, enemy_2c));
 	}
 	public void setWaves(Wave... w) {
 		this.waves = new ArrayList<>();
