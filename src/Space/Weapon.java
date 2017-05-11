@@ -82,7 +82,7 @@ public class Weapon {
 		body.draw(g);
 	}
 	public final Projectile getShotType() {
-		return new Projectile_Tracking(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
+		return new Projectile(getPosX(), getPosY(), getFireAngle(), getProjectileDamage(), getProjectileLifetime());
 	}
 
 	public final Projectile createShot() {

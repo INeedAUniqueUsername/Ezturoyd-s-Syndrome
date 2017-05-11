@@ -1,6 +1,8 @@
 package Space;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 
 
@@ -222,5 +224,12 @@ public class Helper {
 	{
 		return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));		
 	}
-
+	public final static Point2D.Double getMousePosRelativeToCenter() {
+		Point mousePos = MouseInfo.getPointerInfo().getLocation();
+		return new Point2D.Double(mousePos.getX() - GameWindow.SCREEN_CENTER_X, (GameWindow.SCREEN_HEIGHT - mousePos.getY()) + 30 - GameWindow.SCREEN_CENTER_Y);
+	}
+	public final static Point2D.Double getMousePosRelativeToObject(SpaceObject o) {
+		Point mousePos = MouseInfo.getPointerInfo().getLocation();
+		return new Point2D.Double(mousePos.getX() - o.getPosX(), (GameWindow.SCREEN_HEIGHT - mousePos.getY() + 50) - o.getPosY());
+	}
 }

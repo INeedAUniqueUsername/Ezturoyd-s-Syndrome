@@ -33,6 +33,12 @@ public class GameWindow {
 		GameWindow game = new GameWindow();
 		
 	}
+	public static int randomGameWidth() {
+		return (int) Helper.random(GAME_WIDTH);
+	}
+	public static int randomGameHeight() {
+		return (int) Helper.random(GAME_HEIGHT);
+	}
 	
 	public GameWindow()
 	{

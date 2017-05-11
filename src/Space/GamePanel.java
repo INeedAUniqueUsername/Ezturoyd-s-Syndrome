@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +37,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private ArrayList<SpaceObject> universe;
 	private ArrayList<SpaceObject> objectsCreated;
 	private ArrayList<SpaceObject> objectsDestroyed;
+	private ArrayList<BackgroundStar> background;
 	Level currentLevel;
 	/*
 	ArrayList<Starship> starships;
@@ -62,6 +65,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		print("*" + getTick() + "*");
 
 		universe = new ArrayList<SpaceObject>(0);
+		objectsCreated = new ArrayList<SpaceObject>(0);
+		objectsDestroyed = new ArrayList<SpaceObject>(0);
+		background = new ArrayList<BackgroundStar>(0);
+		for(int i = 0; i < 100; i++) {
+			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(), Helper.random(360), 5));
+		}
 		//starships = new ArrayList<Starship>();
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
@@ -70,9 +79,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		player.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2);
 
 		universeAdd(player);
-		
-		objectsCreated = new ArrayList<SpaceObject>(0);
-		objectsDestroyed = new ArrayList<SpaceObject>(0);
 		
 		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90));
 		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
@@ -104,7 +110,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 */
 		if(active) {
 			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 			
 			updateUniverse();
 			updateDraw(g);
@@ -115,6 +121,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		setTick(getTick() + 1);
 		
 		currentLevel.update();
+		
+		for(BackgroundStar b : background) {
+			b.update();
+		}
 		for(int i1 = 0; i1 < universe.size(); i1++) {
 			SpaceObject o1 = universe.get(i1);
 			
@@ -215,7 +225,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	public void drawUniverse(Graphics2D g2D) {
 		g2D.scale(1, -1);
-		
+		for(BackgroundStar b : background) {
+			b.draw(g2D);
+		}
 		for(SpaceObject o: universe)
 		{
 			o.draw(g2D);
@@ -248,6 +260,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.setFiringMouse(true);
+		Point2D.Double mousePosRelative = Helper.getMousePosRelativeToCenter();
+		/*
+		double angle = Helper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
+		player.setVelPolar(angle, 100);
+		*/
+		player.incPosRectangular(mousePosRelative.getX(), mousePosRelative.getY());
 		/*
 		enemy_test.clearOrders();
 		enemy_test.addOrder(new Order_AttackOrbit(enemy_test, player));

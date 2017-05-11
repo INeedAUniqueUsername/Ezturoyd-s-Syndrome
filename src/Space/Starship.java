@@ -86,7 +86,6 @@ public class Starship extends SpaceObject implements IStarship {
 
 	public final void thrust() {
 		//Add rectangular exhaust effects
-		/*
 		double exhaustAngle = pos_r + 180;
 		Point2D.Double exhaustPos = polarOffset(exhaustAngle, 10);
 		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 10, 10);
@@ -97,7 +96,6 @@ public class Starship extends SpaceObject implements IStarship {
 		//exhaust.incVelPolar(exhaustAngle + (vel_r > 0 ? 90 : -90), vel_r*2);
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
-		*/
 		accelerate(pos_r, thrust);
 	}
 	/* (non-Javadoc)

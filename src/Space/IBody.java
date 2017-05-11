@@ -18,8 +18,4 @@ public interface IBody {
 
 	public abstract void draw(Graphics g);
 
-	public abstract void drawWrapClones(Graphics g, Polygon p);
-
-	public abstract void drawTranslate(Graphics g, Polygon p, int x, int y);
-
 }

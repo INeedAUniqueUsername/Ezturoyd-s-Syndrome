@@ -58,21 +58,23 @@ public class Body implements IBody {
 			drawWrapClones(g, p);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#drawWrapClones(java.awt.Graphics, java.awt.Polygon)
-	 */
-	@Override
-	public final void drawWrapClones(Graphics g, Polygon p) {
+	public static final void drawWrapClones(Graphics g, Polygon p) {
+		//Edge cases
 		drawTranslate(g, p, GameWindow.GAME_WIDTH, 0);
 		drawTranslate(g, p, -GameWindow.GAME_WIDTH, 0);
 		drawTranslate(g, p, 0, GameWindow.GAME_HEIGHT);
 		drawTranslate(g, p, 0, -GameWindow.GAME_HEIGHT);
+		
+		//Corner cases
+		//Right corners
+		drawTranslate(g, p, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+		drawTranslate(g, p, GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
+		
+		//Left corners
+		drawTranslate(g, p, -GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+		drawTranslate(g, p, -GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
 	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#drawTranslate(java.awt.Graphics, java.awt.Polygon, int, int)
-	 */
-	@Override
-	public final void drawTranslate(Graphics g, Polygon p, int x, int y) {
+	public static final void drawTranslate(Graphics g, Polygon p, int x, int y) {
 		Polygon translated = new Polygon();
 		int[] xPoints = p.xpoints;
 		int[] yPoints = p.ypoints;
