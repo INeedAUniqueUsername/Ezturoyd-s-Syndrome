@@ -528,8 +528,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void collisionStarshipStarship(Starship s1, Starship s2)
 	{
 		//print("--> GamePanel: Starship-Starship Collision");
-		double angle_s1 = s1.getVelAngle(); //angleBetween(s1, s2);
-		double angle_s2 = s2.getVelAngle(); //angleBetween(s2, s1);
+		double angle_s1 =
+				//s1.getVelAngle()
+				angleBetween(s1, s2)
+				;
+		double angle_s2 =
+				//s2.getVelAngle()
+				angleBetween(s2, s1)
+				;
+		
+		/*
+		double angle_diff_ccw = Helper.modRangeDegrees(angle_s1 - angle_s2);
+		double angle_diff_cw = Helper.modRangeDegrees(angle_s2 - angle_s1);
+		double angle_diff = Helper.min(angle_diff_ccw, angle_diff_cw);
+		*/
 		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) + s2.getKineticEnergyAngled(angle_s2);
 		double kinetic_energy_half = kinetic_energy_total / 2;
 		s1.accelerateEnergy(angle_s2, kinetic_energy_half);
