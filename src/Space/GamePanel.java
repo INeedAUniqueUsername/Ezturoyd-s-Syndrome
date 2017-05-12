@@ -22,10 +22,11 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Display.ScreenCracking;
 import Interfaces.NewtonianMotion;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
-	private boolean active = true;
+	private boolean active = false;
 	private boolean cheat_playerActive = true;
 	enum CameraMode {
 		FIXED, FOLLOW_PLAYER
@@ -38,7 +39,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private ArrayList<SpaceObject> objectsCreated;
 	private ArrayList<SpaceObject> objectsDestroyed;
 	private ArrayList<BackgroundStar> background;
-	Level currentLevel;
+	private Level currentLevel;
+	
+	//ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 10);
+	ScreenCracking screenEffect = new ScreenCracking(110, 110, 100);
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
@@ -94,6 +98,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		*/
 		currentLevel = new Level_Waves();
 		currentLevel.start();
+		
+		for(int i = 0; i < 5; i++) {
+			screenEffect.update();
+		}
 	}
 
 	public void paintComponent(Graphics g) {
@@ -108,7 +116,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
+		screenEffect.draw(g);
 		if(active) {
+			
+			screenEffect.update();
+			
+			
+			if(true) {
+				return;
+			}
+			
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 			

@@ -5,14 +5,14 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
-import Interfaces.ISpaceObject;
+import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 
 public class Projectile extends SpaceObject {
 
 	private int lifetime;
 	private int damage;
-	private ISpaceObject owner;
+	private GameObject owner;
 	public Projectile() {
 		lifetime = 0;
 		damage = 0;
@@ -46,10 +46,10 @@ public class Projectile extends SpaceObject {
 		}
 	}
 
-	public final void setOwner(ISpaceObject object) {
+	public final void setOwner(GameObject object) {
 		owner = object;
 	}
-	public final ISpaceObject getOwner()
+	public final GameObject getOwner()
 	{
 		return owner;
 	}

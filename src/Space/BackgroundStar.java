@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D.Double;
 
-import Interfaces.ISpaceObject;
+import Interfaces.GameObject;
 
-public class BackgroundStar implements ISpaceObject {
+public class BackgroundStar implements GameObject {
 	int pos_x, pos_y;
 	double drawAngle;
 	int lineCount;

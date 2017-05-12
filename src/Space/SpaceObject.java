@@ -3,10 +3,10 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
-import Interfaces.ISpaceObject;
+import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 
-public abstract class SpaceObject implements ISpaceObject, NewtonianMotion {
+public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	private String name = "";
 	private final double c = 9131.35261864;
 	
