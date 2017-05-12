@@ -18,13 +18,13 @@ public class GameWindow {
 		SCREEN_WIDTH = (int) screenSize.getWidth();
 		SCREEN_HEIGHT = (int) screenSize.getHeight();
 		
-		GAME_WIDTH = SCREEN_WIDTH*2;
-		GAME_HEIGHT = SCREEN_HEIGHT*2;
+		GAME_WIDTH = SCREEN_WIDTH;
+		GAME_HEIGHT = SCREEN_HEIGHT;
 	}
 	
 	public static final int SCREEN_CENTER_X = SCREEN_WIDTH/2;
 	public static final int SCREEN_CENTER_Y = SCREEN_HEIGHT/2;
-	public static final Point2D SCREEN_CENTER = new Point(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+	public static final Point SCREEN_CENTER = new Point(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 	
 	private GamePanel panel;
 	private JFrame frame;

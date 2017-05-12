@@ -144,24 +144,25 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			for(int i2 = i1 + 1; i2 < universe.size(); i2++) {
 				SpaceObject o2 = universe.get(i2);
-				if(objectsIntersect(o1, o2)) {
+				Area intersection = getIntersection(o1, o2);
+				if(!intersection.isEmpty()) {
 					if(o1 instanceof Starship && o2 instanceof Starship) {
 						System.out.println("Starship Collision");
-						collisionStarshipStarship((Starship) o1, (Starship) o2);
+						collisionStarshipStarship((Starship) o1, (Starship) o2, intersection);
 					} else if(o1 instanceof Starship && o2 instanceof Projectile) {
 						Starship s = (Starship) o1;
 						Projectile p = (Projectile) o2;
 						if(!p.getOwner().equals(s)) {
-							collisionStarshipProjectile(s, p);
+							collisionStarshipProjectile(s, p, intersection);
 						}
 					} else if(o1 instanceof Projectile && o2 instanceof Starship) {
 						Starship s = (Starship) o2;
 						Projectile p = (Projectile) o1;
 						if(!p.getOwner().equals(s)) {
-							collisionStarshipProjectile(s, p);
+							collisionStarshipProjectile(s, p, intersection);
 						}
 					} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
-						collisionProjectileProjectile((Projectile) o1, (Projectile) o2);
+						collisionProjectileProjectile((Projectile) o1, (Projectile) o2, intersection);
 					}
 				}
 			}
@@ -350,7 +351,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return !areaA.isEmpty();
 	}
 
-	public static boolean objectsIntersect(SpaceObject a, SpaceObject b) {
+	public static Area getIntersection(SpaceObject a, SpaceObject b) {
 		Area areaA = new Area();
 		for(Polygon part : a.getBody().getShapes())
 		{
@@ -364,7 +365,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		areaA.intersect(areaB);
-		return !areaA.isEmpty();
+		return areaA;
 	}
 	//Use these when the universe is in the middle of updating
 	public void createSpaceObject(SpaceObject so) {
@@ -519,13 +520,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		a2.damage((int) halfKineticEnergy/1000, a1.getPosX(), a1.getPosY());
 	}
 	*/
-	public void collisionStarshipProjectile(Starship s1, Projectile p1)
+	public void collisionStarshipProjectile(Starship s1, Projectile p1, Area intersection)
 	{
 		s1.damage(p1.getDamage());
 		s1.onAttacked(p1.getOwner());
 		p1.destroy();
 	}
-	public void collisionStarshipStarship(Starship s1, Starship s2)
+	public void collisionStarshipStarship(Starship s1, Starship s2, Area intersection)
 	{
 		//print("--> GamePanel: Starship-Starship Collision");
 		double angle_s1 =
@@ -537,21 +538,39 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				angleBetween(s2, s1)
 				;
 		
+		//Old collision model
+		/*
+		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) + s2.getKineticEnergyAngled(angle_s2);
+		double kinetic_energy_half = kinetic_energy_total / 2;
+		s1.accelerateEnergy(angle_s2, kinetic_energy_half);
+		s2.accelerateEnergy(angle_s1, kinetic_energy_half);
+		*/
+		
 		/*
 		double angle_diff_ccw = Helper.modRangeDegrees(angle_s1 - angle_s2);
 		double angle_diff_cw = Helper.modRangeDegrees(angle_s2 - angle_s1);
 		double angle_diff = Helper.min(angle_diff_ccw, angle_diff_cw);
 		*/
-		double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) + s2.getKineticEnergyAngled(angle_s2);
-		double kinetic_energy_half = kinetic_energy_total / 2;
-		s1.accelerateEnergy(angle_s2, kinetic_energy_half);
-		s2.accelerateEnergy(angle_s1, kinetic_energy_half);
+		double velAngle_s1 = s1.getVelAngle();
+		double velAngle_s2 = s2.getVelAngle();
+		double velAngle_diff_ccw = Helper.modRangeDegrees(velAngle_s1 - velAngle_s2);
+		double velAngle_diff_cw = Helper.modRangeDegrees(velAngle_s2 - velAngle_s1);
+		double velAngle_diff = Helper.min(velAngle_diff_ccw, velAngle_diff_cw);
+		
+		double impactEnergy_s1 = Math.abs(s1.getKineticEnergy() - s2.getKineticEnergy() * Helper.cosDegrees(velAngle_diff));
+		double impactEnergy_s2 = Math.abs(s2.getKineticEnergy() - s1.getKineticEnergy() * Helper.cosDegrees(velAngle_diff));
+		
+		s1.accelerateEnergy(angle_s2, impactEnergy_s1*0.01);
+		s2.accelerateEnergy(angle_s1, impactEnergy_s2*0.01);
 		//print("<-- GamePanel: Starship-Starship Collision");
 	}
-	public void collisionProjectileProjectile(Projectile p1, Projectile p2)
+	public void collisionProjectileProjectile(Projectile p1, Projectile p2, Area intersection)
 	{
 		p1.damage(p2.getDamage());
 		p2.damage(p1.getDamage());
+		
+		p1.destroy();
+		p2.destroy();
 	}
 
 	public int getTick() {
