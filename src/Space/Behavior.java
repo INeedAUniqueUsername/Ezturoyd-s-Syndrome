@@ -2,6 +2,7 @@ package Space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Game.GameWindow;
 import Interfaces.NewtonianMotion;
 
 public abstract class Behavior {

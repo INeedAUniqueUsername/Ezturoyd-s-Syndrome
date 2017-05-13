@@ -12,7 +12,8 @@ public class Starship_Player extends Starship {
 	private boolean thrusting;
 	private boolean turningCCW;
 	private boolean turningCW;
-	private boolean strafing;
+	private boolean strafingLeft;
+	private boolean strafingRight;
 	private boolean braking;
 	public void update() {
 		if(getActive()) {
@@ -25,6 +26,10 @@ public class Starship_Player extends Starship {
 				turnCCW();
 			if(turningCW)
 				turnCW();
+			if(strafingLeft)
+				strafeLeft();
+			if(strafingRight)
+				strafeRight();
 		}
 	}
 	public final void setThrusting(boolean b) {
@@ -42,14 +47,24 @@ public class Starship_Player extends Starship {
 	{
 		braking = b;
 	}
-	public final void setStrafing(boolean enabled)
+	public final void setStrafingLeft(boolean enabled)
 	{
-		strafing = enabled;
+		strafingLeft = enabled;
 	}
-	public final boolean getStrafing()
+	public final void setStrafingRight(boolean enabled)
 	{
-		return strafing;
+		strafingRight = enabled;
 	}
+	
+	public final boolean getStrafingLeft()
+	{
+		return strafingLeft;
+	}
+	public final boolean getStrafingRight()
+	{
+		return strafingRight;
+	}
+	
 	public final void installWeapon(Weapon item) {
 		super.installWeapon(item);
 		if(item instanceof Weapon_Key)

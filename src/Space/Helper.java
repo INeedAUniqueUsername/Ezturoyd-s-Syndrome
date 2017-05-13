@@ -5,6 +5,8 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import Game.GameWindow;
+
 
 public class Helper {
 
@@ -173,10 +175,15 @@ public class Helper {
 			return input;
 		}
 	}
-
+	public final static <T> T random(T[] array) {
+		return array[(int) Math.random() * array.length];
+	}
 	public final static double random(double input)
 	{
 		return Math.random()*input;
+	}
+	public final static double randomRange(double min, double max) {
+		return min + Math.random() * (max - min);
 	}
 
 	public final static double randomMin(double minimum, double input)

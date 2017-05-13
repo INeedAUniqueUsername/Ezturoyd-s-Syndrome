@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
+import Body.Body_Weapon;
 import Interfaces.NewtonianMotion;
 
 public class Weapon {

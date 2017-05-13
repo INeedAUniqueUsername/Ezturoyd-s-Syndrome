@@ -1,7 +1,9 @@
-package Space;
+package Body;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+
+import Space.Projectile;
 
 public class Body_Projectile extends Body {
 	private Projectile owner;

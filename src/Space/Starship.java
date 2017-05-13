@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import Body.Body_Starship;
+import Body.Body_StarshipExhaust;
+import Game.GamePanel;
+
 import java.util.Set;
 
 import Interfaces.GameObject;
@@ -119,14 +124,14 @@ public class Starship extends SpaceObject implements IStarship {
 	 */
 	@Override
 	public final void strafeLeft() {
-		accelerate(pos_r, thrust);
+		accelerateEnergy(pos_r+90, thrust);
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#strafeRight()
 	 */
 	@Override
 	public final void strafeRight() {
-		accelerate(pos_r, thrust);
+		accelerateEnergy(pos_r-90, thrust);
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#brake()

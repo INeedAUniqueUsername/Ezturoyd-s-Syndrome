@@ -1,10 +1,12 @@
-package Space;
+package Game;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 
 import javax.swing.JFrame;
+
+import Space.Helper;
 
 public class GameWindow {
 	public static final int SCREEN_WIDTH;

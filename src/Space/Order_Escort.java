@@ -2,6 +2,8 @@ package Space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Game.GamePanel;
+
 public class Order_Escort extends Behavior{
 	private SpaceObject target;
 	private int escort_angle = 180;

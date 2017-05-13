@@ -1,4 +1,4 @@
-package Space;
+package Game;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -24,14 +24,27 @@ import javax.swing.Timer;
 
 import Display.ScreenCracking;
 import Interfaces.NewtonianMotion;
+import Space.BackgroundStar;
+import Space.Helper;
+import Space.Level;
+import Space.Level_Waves;
+import Space.Projectile;
+import Space.SpaceObject;
+import Space.Starship;
+import Space.Starship_Player;
+import Space.Weapon;
+import Space.Weapon_Key;
+import Space.Weapon_Mouse;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
-	private boolean active = false;
+	private boolean active = true;
 	private boolean cheat_playerActive = true;
-	enum CameraMode {
+	private boolean strafeMode = false;
+	public enum CameraMode {
 		FIXED, FOLLOW_PLAYER
 	}
-	public static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
+	private static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
+	private int cameraOffset_x, cameraOffset_y;
 	final int INTERVAL = 10;
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
@@ -42,7 +55,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private Level currentLevel;
 	
 	//ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 10);
-	ScreenCracking screenEffect = new ScreenCracking(110, 110, 100);
+	ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 7, 1);
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
@@ -63,6 +76,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 	public static GamePanel getWorld() {
 		return world;
+	}
+	public static CameraMode getCameraMode() {
+		return camera;
 	}
 	public void newGame() {
 		setTick(0);
@@ -98,10 +114,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		*/
 		currentLevel = new Level_Waves();
 		currentLevel.start();
-		
-		for(int i = 0; i < 5; i++) {
-			screenEffect.update();
-		}
 	}
 
 	public void paintComponent(Graphics g) {
@@ -116,15 +128,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		screenEffect.draw(g);
 		if(active) {
-			
-			screenEffect.update();
-			
-			
-			if(true) {
-				return;
-			}
 			
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
@@ -206,8 +210,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double pos_y_player = player.getPosY();
 		double pos_r_player = player.getPosR();
 		
-		double translateX = GameWindow.SCREEN_CENTER_X - pos_x_player;
-		double translateY = GameWindow.SCREEN_CENTER_Y + pos_y_player;
+		double translateX = GameWindow.SCREEN_CENTER_X - (pos_x_player + cameraOffset_x);
+		double translateY = GameWindow.SCREEN_CENTER_Y + (pos_y_player + cameraOffset_y);
 		
 		switch(camera) {
 		case FOLLOW_PLAYER:
@@ -227,6 +231,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			break;
 		}
 		
+		screenEffect.draw(g2D);
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g2D.setColor(Color.WHITE);
 		g2D.setFont(new Font("Consolas", Font.PLAIN, 18));
@@ -329,9 +334,38 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		switch(code) {
 		case KeyEvent.VK_UP:	player.setThrusting(state);		break;
 		case KeyEvent.VK_DOWN:	player.setBraking(state);		break;
-		case KeyEvent.VK_LEFT:	player.setTurningCCW(state);	break;
-		case KeyEvent.VK_RIGHT:	player.setTurningCW(state);		break;
-		case KeyEvent.VK_SHIFT:	player.setStrafing(state);		break;
+		case KeyEvent.VK_LEFT:
+			if(strafeMode) {
+				player.setStrafingLeft(state);
+			} else {
+				player.setTurningCCW(state);
+			}
+			break;
+		case KeyEvent.VK_RIGHT:
+			if(strafeMode) {
+				player.setStrafingRight(state);
+			} else {
+				player.setTurningCW(state);
+			}
+			break;
+		case KeyEvent.VK_W:
+			if(state && cameraOffset_y < GameWindow.SCREEN_CENTER_Y-200)
+				cameraOffset_y = cameraOffset_y + 50;
+			break;
+		case KeyEvent.VK_S:
+			if(state && cameraOffset_y > -GameWindow.SCREEN_CENTER_Y+200)
+				cameraOffset_y = cameraOffset_y - 50;
+			break;
+		case KeyEvent.VK_A:
+			if(state && cameraOffset_x > -GameWindow.SCREEN_CENTER_X+200)
+				cameraOffset_x = cameraOffset_x - 50;
+			break;
+		case KeyEvent.VK_D:
+			if(state && cameraOffset_x < GameWindow.SCREEN_CENTER_X-200)
+				cameraOffset_x = cameraOffset_x + 50;
+			break;
+		
+		case KeyEvent.VK_SHIFT:	strafeMode = state;		break;
 		case KeyEvent.VK_X:		player.setFiringKey(state);		break;
 		
 		case KeyEvent.VK_Z:		active = !state;				break;

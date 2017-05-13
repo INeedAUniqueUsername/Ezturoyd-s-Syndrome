@@ -2,6 +2,7 @@ package Space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Game.GamePanel;
 import Interfaces.NewtonianMotion;
 
 public class Order_AttackDirect extends Behavior {

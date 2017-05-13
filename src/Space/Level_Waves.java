@@ -3,6 +3,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import Game.GamePanel;
+import Game.GameWindow;
+
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 	public Level_Waves() {

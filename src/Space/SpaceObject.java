@@ -3,6 +3,9 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
+import Body.Body;
+import Game.GamePanel;
+import Game.GameWindow;
 import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 

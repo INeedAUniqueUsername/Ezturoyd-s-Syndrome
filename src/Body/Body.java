@@ -1,8 +1,12 @@
-package Space;
+package Body;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+
+import Game.GameWindow;
+import Space.Helper;
+import Space.IBody;
 
 public class Body implements IBody {
 	private ArrayList<Polygon> shapes;

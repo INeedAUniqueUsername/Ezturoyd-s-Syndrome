@@ -5,6 +5,8 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
+import Body.Body;
+import Body.Body_Projectile;
 import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 

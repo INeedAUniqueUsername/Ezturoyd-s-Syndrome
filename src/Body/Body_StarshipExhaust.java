@@ -1,6 +1,9 @@
-package Space;
+package Body;
 import java.awt.Color;
 import java.awt.Graphics;
+
+import Space.Projectile;
+import Space.SpaceObject;
 
 public class Body_StarshipExhaust extends Body {
 	private Projectile owner;

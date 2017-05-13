@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D.Double;
 
+import Body.Body;
 import Interfaces.GameObject;
 
 public class BackgroundStar implements GameObject {
