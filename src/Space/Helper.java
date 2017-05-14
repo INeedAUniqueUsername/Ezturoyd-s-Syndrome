@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.Collection;
+import java.util.List;
 
 import Game.GameWindow;
 
@@ -176,7 +178,10 @@ public class Helper {
 		}
 	}
 	public final static <T> T random(T[] array) {
-		return array[(int) Math.random() * array.length];
+		return array[(int) (Math.random() * array.length)];
+	}
+	public final static <T> T random(List<T> list) {
+		return list.get((int) Helper.random(list.size()));
 	}
 	public final static double random(double input)
 	{

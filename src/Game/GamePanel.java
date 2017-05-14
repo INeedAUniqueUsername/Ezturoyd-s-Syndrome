@@ -22,7 +22,8 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Display.ScreenCracking;
+import Deprecated.ScreenCracking_Deprecated;
+import Display.ScreenDamage;
 import Interfaces.NewtonianMotion;
 import Space.BackgroundStar;
 import Space.Helper;
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private Level currentLevel;
 	
 	//ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 10);
-	ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 7, 1);
+	ScreenDamage screenEffect = new ScreenDamage(new Point(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y));
 	/*
 	ArrayList<Starship> starships;
 	ArrayList<Projectile> projectiles;
@@ -132,7 +133,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
-			
 			updateUniverse();
 			updateDraw(g);
 		}
@@ -213,25 +213,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double translateX = GameWindow.SCREEN_CENTER_X - (pos_x_player + cameraOffset_x);
 		double translateY = GameWindow.SCREEN_CENTER_Y + (pos_y_player + cameraOffset_y);
 		
-		switch(camera) {
-		case FOLLOW_PLAYER:
-			g2D.translate(translateX, translateY);
-			break;
-		default:
-			break;
-		}
-		
+		g2D.translate(translateX, translateY);
 		drawUniverse(g2D);
+		g2D.translate(-translateX, -translateY);
 		
-		switch(camera) {
-		case FOLLOW_PLAYER:
-			g2D.translate(-translateX, -translateY);
-			break;
-		default:
-			break;
-		}
-		
+		g2D.translate(-cameraOffset_x, cameraOffset_y);
 		screenEffect.draw(g2D);
+		g2D.translate(cameraOffset_x, -cameraOffset_y);
+		
 		//Print all current debug messages on screen. Debug list will only clear when the game is active.
 		g2D.setColor(Color.WHITE);
 		g2D.setFont(new Font("Consolas", Font.PLAIN, 18));
@@ -284,11 +273,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void mousePressed(MouseEvent e) {
 		player.setFiringMouse(true);
 		Point2D.Double mousePosRelative = Helper.getMousePosRelativeToCenter();
-		/*
 		double angle = Helper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
-		player.setVelPolar(angle, 100);
-		*/
-		player.incPosRectangular(mousePosRelative.getX(), mousePosRelative.getY());
+		player.incVelPolar(angle, 10);
 		/*
 		enemy_test.clearOrders();
 		enemy_test.addOrder(new Order_AttackOrbit(enemy_test, player));
@@ -474,6 +460,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		asteroids.remove(asteroid);
 	}
 	*/
+	public ScreenDamage getScreenDamage() {
+		return screenEffect;
+	}
 	public Starship getPlayer() {
 		return player;
 	}
@@ -613,6 +602,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		s1.accelerateEnergy(angle_s2, impactEnergy_s1*0.01);
 		s2.accelerateEnergy(angle_s1, impactEnergy_s2*0.01);
+		s1.damage(impactEnergy_s1/s1.getMass());
+		s2.damage(impactEnergy_s1/s2.getMass());
 		//print("<-- GamePanel: Starship-Starship Collision");
 	}
 	public void collisionProjectileProjectile(Projectile p1, Projectile p2, Area intersection)

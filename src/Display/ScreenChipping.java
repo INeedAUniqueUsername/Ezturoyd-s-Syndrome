@@ -2,12 +2,14 @@ package Display;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.image.BufferedImage;
 
 import Interfaces.GameObject;
 
 public class ScreenChipping implements GameObject {
 	Polygon shape;
-	public ScreenChip() {
+	public ScreenChipping() {
 		
 	}
 	@Override
@@ -19,7 +21,7 @@ public class ScreenChipping implements GameObject {
 	@Override
 	public void draw(Graphics g) {
 		// TODO Auto-generated method stub
-		BufferedImage b = new BufferedImage(1, 2);
+		BufferedImage b = new BufferedImage(1, 2, BufferedImage.TYPE_INT_ARGB);
 	}
 
 }

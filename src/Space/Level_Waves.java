@@ -13,7 +13,7 @@ public class Level_Waves extends Level {
 		
 		Starship_NPC enemy_0 = new Starship_NPC();
 		enemy_0.setPosRectangular(500, 500);
-		enemy_0.setStructure(400);
+		enemy_0.setStructure(100000000);
 		
 		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		
@@ -51,7 +51,7 @@ public class Level_Waves extends Level {
 		enemy_2b.addOrderAttackDirect(player);
 		enemy_2c.addOrderEscort(enemy_2a);
 		
-		player.setStructure(10000);
+		player.setStructure(100000000);
 		
 		setWaves(
 				new Wave(enemy_0),

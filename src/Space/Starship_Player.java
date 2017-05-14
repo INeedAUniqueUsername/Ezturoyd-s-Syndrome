@@ -1,6 +1,8 @@
 package Space;
 import java.util.ArrayList;
 
+import Game.GamePanel;
+
 
 public class Starship_Player extends Starship {
 	private ArrayList<Weapon_Key> weapons_key = new ArrayList<Weapon_Key>();
@@ -89,5 +91,8 @@ public class Starship_Player extends Starship {
 		{
 			w.setFiring(firing);
 		}
+	}
+	public final void onDamage(double damage) {
+		GamePanel.getWorld().getScreenDamage().update();
 	}
 }
