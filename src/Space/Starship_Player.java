@@ -92,7 +92,4 @@ public class Starship_Player extends Starship {
 			w.setFiring(firing);
 		}
 	}
-	public final void onDamage(double damage) {
-		GamePanel.getWorld().getScreenDamage().update();
-	}
 }

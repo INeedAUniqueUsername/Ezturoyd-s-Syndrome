@@ -7,9 +7,11 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Behaviors.Behavior_Starship;
+import Behaviors.Default.Controller_Starship;
+
 public class Starship_NPC extends Starship {
-	private BehaviorController_Default controller;
-	private ArrayList<Behavior> orders;
+	private Controller_Starship controller;
 	
 	public Starship_NPC() {
 		initializeAI();
@@ -31,42 +33,14 @@ public class Starship_NPC extends Starship {
 			//thrust();
 		}
 	}
-	public final Behavior getOrder(int b) {
-		return orders.get(b);
-	}
-	public final void setOrder(int i, Behavior b) {
-		orders.set(i, b);
-	}
-	public final void addOrder(Behavior b) {
-		orders.add(b);
-	}
-	public final void addOrderAttackDirect(SpaceObject target) {
-		addOrder(new Order_AttackDirect(this, target));
-	}
-	public final void addOrderAttackOrbit(SpaceObject target) {
-		addOrder(new Order_AttackOrbit(this, target));
-	}
-	public final void addOrderEscort(SpaceObject target) {
-		addOrder(new Order_Escort(this, target));
-	}
-	public final void removeOrder(Behavior b) {
-		orders.remove(b);
-	}
-	public final void clearOrders() {
-		orders = new ArrayList<Behavior>();
-	}
-	public final ArrayList<Behavior> getOrders() {
-		return orders;
-	}
-	public final void setController(BehaviorController_Default c) {
+	public final void setController(Controller_Starship c) {
 		controller = c;
 	}
-	public final BehaviorController_Default getController() {
+	public final Controller_Starship getController() {
 		return controller;
 	}
 	private final void initializeAI() {
-		controller = new BehaviorController_Default(this);
-		orders = new ArrayList<Behavior>();
+		controller = new Controller_Starship(this);
 		controller.initialize();
 	}
 	/*
@@ -117,38 +91,4 @@ public class Starship_NPC extends Starship {
 		return angle_to_hit;
 	}
 */
-	public final Behavior.RotatingState calcTurnDirection(double target_angle)
-	{
-		double pos_r_future = getFutureAngleWithDeceleration();
-		double faceAngleDiffCCW = Helper.modRangeDegrees(target_angle - pos_r_future);
-		double faceAngleDiffCW = Helper.modRangeDegrees(pos_r_future - target_angle);
-		double faceAngleDiff = Helper.min(faceAngleDiffCCW, faceAngleDiffCW);
-		if(faceAngleDiff > controller.getMaxAngleDifference())
-		{
-			if(faceAngleDiffCW < faceAngleDiffCCW)
-			{
-				printToWorld("Status (Facing): CW");
-				return Behavior.RotatingState.CW;
-			}
-			else if(faceAngleDiffCCW < faceAngleDiffCW)
-			{
-				printToWorld("Status (Facing): CCW");
-				return Behavior.RotatingState.CCW;
-			}
-			else
-			{
-				printToWorld("Status (Facing): Random");
-				if(Math.random() > .5) {
-					return Behavior.RotatingState.CW;
-				} else {
-					return Behavior.RotatingState.CCW;
-				}
-			}
-		}
-		else
-		{
-			printToWorld("Status (Facing): Aligned");
-			return Behavior.RotatingState.NONE;
-		}
-	}
 }

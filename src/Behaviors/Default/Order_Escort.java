@@ -1,10 +1,19 @@
-package Space;
+package Behaviors.Default;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Behaviors.Behavior_Starship;
+import Behaviors.Behavior_Starship.AttackingState;
+import Behaviors.Behavior_Starship.RotatingState;
+import Behaviors.Behavior_Starship.StrafingState;
+import Behaviors.Behavior_Starship.ThrustingState;
 import Game.GamePanel;
+import Space.Helper;
+import Space.SpaceObject;
+import Space.Starship;
+import Space.Starship_NPC;
 
-public class Order_Escort extends Behavior{
+class Order_Escort extends Behavior_Starship{
 	private SpaceObject target;
 	private int escort_angle = 180;
 	private int escort_distance = 10;
@@ -29,6 +38,7 @@ public class Order_Escort extends Behavior{
 		escort_distance = distance;
 	}
 	public void update() {
+		Starship_NPC owner = getOwner();
 		if(!target.getActive()) {
 			setActive(false);
 			return;
@@ -56,6 +66,7 @@ public class Order_Escort extends Behavior{
 		updateEscort();
 	}
 	public ArrayList<SpaceObject> getNearbyEnemies() {
+		Starship_NPC owner = getOwner();
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
 		int range = getMaxDefendRange();
 		for(Starship s : GamePanel.getWorld().getStarships()) {
@@ -70,8 +81,9 @@ public class Order_Escort extends Behavior{
 		return 500;
 	}
 	public void updateEscort() {
+		Starship_NPC owner = getOwner();
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
-		Point2D.Double pos_destination = Behavior.getNearestPosClone(pos_owner, Helper.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
+		Point2D.Double pos_destination = Behavior_Starship.getNearestPosClone(pos_owner, Helper.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
 		ThrustingState action_thrusting = ThrustingState.NONE;
 		RotatingState action_rotation = RotatingState.NONE;
 		StrafingState action_strafing = StrafingState.NONE;

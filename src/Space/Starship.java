@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import Behaviors.Behavior_Starship;
 import Body.Body_Starship;
 import Body.Body_StarshipExhaust;
 import Game.GamePanel;
@@ -249,7 +250,7 @@ public class Starship extends SpaceObject implements IStarship {
 	 * @see IStarship#turnDirection(Behavior.RotatingState)
 	 */
 	@Override
-	public final void turnDirection(Behavior.RotatingState direction)
+	public final void turnDirection(Behavior_Starship.RotatingState direction)
 	{
 		switch(direction)
 		{
@@ -390,5 +391,33 @@ public class Starship extends SpaceObject implements IStarship {
 	@Override
 	public void setRotation_decel(double rotation_decel) {
 		this.rotation_decel = rotation_decel;
+	}
+	
+	public final Behavior_Starship.RotatingState calcTurnDirection(double target_angle)
+	{
+		double pos_r_future = getFutureAngleWithDeceleration();
+		double faceAngleDiffCCW = Helper.modRangeDegrees(target_angle - pos_r_future);
+		double faceAngleDiffCW = Helper.modRangeDegrees(pos_r_future - target_angle);
+		double faceAngleDiff = Helper.min(faceAngleDiffCCW, faceAngleDiffCW);
+		
+		if(faceAngleDiffCW < faceAngleDiffCCW)
+		{
+			printToWorld("Status (Facing): CW");
+			return Behavior_Starship.RotatingState.CW;
+		}
+		else if(faceAngleDiffCCW < faceAngleDiffCW)
+		{
+			printToWorld("Status (Facing): CCW");
+			return Behavior_Starship.RotatingState.CCW;
+		}
+		else
+		{
+			printToWorld("Status (Facing): Random");
+			if(Math.random() > .5) {
+				return Behavior_Starship.RotatingState.CW;
+			} else {
+				return Behavior_Starship.RotatingState.CCW;
+			}
+		}
 	}
 }

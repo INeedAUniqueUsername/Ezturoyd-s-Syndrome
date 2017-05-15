@@ -1,11 +1,19 @@
-package Space;
+package Behaviors.Default;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Behaviors.Behavior_Starship;
+import Behaviors.Behavior_Starship.AttackingState;
+import Behaviors.Behavior_Starship.RotatingState;
+import Behaviors.Behavior_Starship.StrafingState;
+import Behaviors.Behavior_Starship.ThrustingState;
 import Game.GamePanel;
 import Interfaces.NewtonianMotion;
+import Space.Helper;
+import Space.SpaceObject;
+import Space.Starship_NPC;
 
-public class Order_AttackDirect extends Behavior {
+class Order_AttackDirect extends Behavior_Starship {
 	private SpaceObject target;
 	public Order_AttackDirect(Starship_NPC o, SpaceObject t) {
 		super(o);
@@ -19,7 +27,7 @@ public class Order_AttackDirect extends Behavior {
 		target = t;
 	}
 	public void update() {
-		
+		Starship_NPC owner = getOwner();
 		//Problem: Target is dead
 		if(!target.getActive()) {
 			System.out.println("Attack order done");
@@ -55,6 +63,7 @@ public class Order_AttackDirect extends Behavior {
 		return false;
 	}
 	public ArrayList<SpaceObject> getObjectsTooClose() {
+		Starship_NPC owner = getOwner();
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
 		for(SpaceObject o : GamePanel.getWorld().getStarships())
 		{
@@ -72,6 +81,7 @@ public class Order_AttackDirect extends Behavior {
 		return result;
 	}
 	public void updateAttack() {
+		Starship_NPC owner = getOwner();
 		Point2D.Double pos_target = getNearestTargetClone(owner, target);
 		double target_x = pos_target.getX();
 		double target_y = pos_target.getY();

@@ -1,12 +1,17 @@
-package Space;
+package Behaviors;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Game.GameWindow;
 import Interfaces.NewtonianMotion;
+import Space.Helper;
+import Space.SpaceObject;
+import Space.Starship;
+import Space.Starship_NPC;
 
-public abstract class Behavior {
-	Starship_NPC owner;
+public abstract class Behavior_Starship {
+	private Starship_NPC owner;
 	private boolean active;
 	public static enum ThrustingState {
 		NONE, BRAKE, THRUST
@@ -24,14 +29,14 @@ public abstract class Behavior {
 	private RotatingState action_rotating = RotatingState.NONE;
 	private StrafingState action_strafing = StrafingState.NONE;
 	private AttackingState action_attacking = AttackingState.NONE;
-	public Behavior(Starship_NPC o) {
+	public Behavior_Starship(Starship_NPC o) {
 		setOwner(o);
 		setActive(true);
 	}
 	public final void setOwner(Starship_NPC o) {
 		owner = o;
 	}
-	public final NewtonianMotion getOwner() {
+	public final Starship_NPC getOwner() {
 		return owner;
 	}
 	public void update() {
@@ -49,7 +54,7 @@ public abstract class Behavior {
 		setStrafing(s);
 		setAttacking(a);
 	}
-	public final void copyActions(Behavior b) {
+	public final void copyActions(Behavior_Starship b) {
 		setActions(b.getThrusting(), b.getRotating(), b.getStrafing(), b.getAttacking());
 	}
 	public final void setThrusting(ThrustingState t) {

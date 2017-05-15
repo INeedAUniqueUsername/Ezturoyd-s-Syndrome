@@ -1,10 +1,20 @@
-package Space;
+package Behaviors.Default;
 import java.awt.geom.Point2D;
-public class Order_Hold extends Behavior {
+
+import Behaviors.Behavior_Starship;
+import Behaviors.Behavior_Starship.AttackingState;
+import Behaviors.Behavior_Starship.RotatingState;
+import Behaviors.Behavior_Starship.StrafingState;
+import Behaviors.Behavior_Starship.ThrustingState;
+import Space.SpaceObject;
+import Space.Starship;
+import Space.Starship_NPC;
+public class Order_Hold extends Behavior_Starship {
 	public Order_Hold(Starship_NPC o) {
 		super(o);
 	}
 	public void update() {
+		Starship_NPC owner = getOwner();
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.
 		SpaceObject target = owner.getClosestEnemyStarship();
 		if(target == null) {

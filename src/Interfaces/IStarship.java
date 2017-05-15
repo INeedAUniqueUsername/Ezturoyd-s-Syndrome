@@ -1,7 +1,7 @@
 package Interfaces;
 import java.awt.geom.Point2D;
 
-import Space.Behavior;
+import Behaviors.Behavior_Starship;
 
 public interface IStarship {
 
@@ -37,7 +37,7 @@ public interface IStarship {
 
 	public abstract double calcFacingDifference(double angle_target);
 
-	public abstract void turnDirection(Behavior.RotatingState direction);
+	public abstract void turnDirection(Behavior_Starship.RotatingState direction);
 
 	public abstract void setManeuverStats(double thrust, double max_speed,
 			double decel);
