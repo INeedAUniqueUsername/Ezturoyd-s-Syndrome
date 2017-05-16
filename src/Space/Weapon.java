@@ -7,6 +7,7 @@ import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
 import Body.Body_Weapon;
+import Body.IBody;
 import Interfaces.NewtonianMotion;
 
 public class Weapon {
@@ -18,13 +19,14 @@ public class Weapon {
 	private double pos_angle;
 	private double pos_radius;
 
+	private double fire_angle_offset;
 	private double fire_angle;
 
 	private double pos_x;
 	private double pos_y;
 
-	private int fire_cooldown_max = 10;
-	private int fire_cooldown_time = fire_cooldown_max;
+	private int fire_cooldown_time = 10;
+	private int fire_cooldown_left = fire_cooldown_time;
 	private int projectile_speed = 10;
 	private int projectile_damage = 5;
 	private int projectile_lifetime = 60;
@@ -35,16 +37,16 @@ public class Weapon {
 	{
 		this(0, 0, 0, 10, 10, 5, 60);
 	}
-	public Weapon(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime) {
-		setPosAngle(angle);
-		setPosRadius(radius);
+	public Weapon(double posAngle, double posRadius, double fire_angle_offset, int fire_cooldown_time, int projectile_speed, int projectile_damage, int projectile_lifetime) {
+		setPosAngle(posAngle);
+		setPosRadius(posRadius);
 		
-		setFireAngle(fire_angle);
-		setFireCooldownTime(cooldown);
-		setFireCooldownLeft(cooldown);
-		setProjectileSpeed(speed);
-		setProjectileDamage(damage);
-		setProjectileLifetime(lifetime);
+		setFireAngleOffset(fire_angle_offset);
+		setFireCooldownTime(fire_cooldown_time);
+		setFireCooldownLeft(fire_cooldown_time);
+		setProjectileSpeed(projectile_speed);
+		setProjectileDamage(projectile_damage);
+		setProjectileLifetime(projectile_lifetime);
 		setBody(new Body_Weapon(this));
 	}
 	public void update() {
@@ -52,14 +54,14 @@ public class Weapon {
 		updateCooldown();
 		double angle = pos_angle + owner.getPosR();
 		setPos(owner.polarOffset(angle, pos_radius));
-		setFireAngle(angle);
+		setFireAngle(owner.getPosR() + fire_angle_offset);
 		//System.out.println("<--- Weapon Update");
 	}
 	public void updateBody() {
 		body.updateShapes();
 	}
 	public void updateCooldown() {
-		fire_cooldown_time++;
+		fire_cooldown_left++;
 	}
 	public void draw(Graphics g) {
 		owner.printToWorld("Drawing Weapon");
@@ -88,8 +90,8 @@ public class Weapon {
 
 	public final Projectile createShot() {
 		Projectile shot = getShotType();
-		Point2D.Double pos = owner.polarOffset(fire_angle, projectile_speed);
-		shot.setPosRectangular(pos.getX(), pos.getY());
+		shot.setPosRectangular(owner.polarOffset(fire_angle, projectile_speed));
+		shot.incPosPolar(owner.getPosR() + pos_angle, pos_radius);
 		shot.setVelPolar(getFireAngle(), getProjectileSpeed());
 		shot.incVelRectangular(owner.getVelX(), owner.getVelY());
 		shot.setOwner(owner);
@@ -111,15 +113,15 @@ public class Weapon {
 	}
 
 	public final int getFireCooldownLeft() {
-		return fire_cooldown_time;
+		return fire_cooldown_left;
 	}
 
 	public final void setFireCooldownLeft(int time) {
-		fire_cooldown_time = time;
+		fire_cooldown_left = time;
 	}
 
 	public final int getFireCooldownMax() {
-		return fire_cooldown_max;
+		return fire_cooldown_time;
 	}
 	public double getFireAngle() {
 		return fire_angle;
@@ -127,6 +129,13 @@ public class Weapon {
 	public void setFireAngle(double fire_angle) {
 		this.fire_angle = fire_angle;
 	}
+	public double getFireAngleOffset() {
+		return fire_angle_offset;
+	}
+	public void setFireAngleOffset(double fire_angle_offset) {
+		this.fire_angle_offset = fire_angle_offset;
+	}
+	
 	public final int getProjectileSpeed() {
 		return projectile_speed;
 	}
@@ -178,11 +187,11 @@ public class Weapon {
 	}
 
 	public final void setFireCooldownTime(int time) {
-		fire_cooldown_max = time;
+		fire_cooldown_time = time;
 	}
 
 	public final int getFireCooldownTime() {
-		return fire_cooldown_max;
+		return fire_cooldown_time;
 	}
 
 	public final double getPosX() {

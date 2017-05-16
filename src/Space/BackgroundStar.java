@@ -7,6 +7,7 @@ import java.awt.Polygon;
 import java.awt.geom.Point2D.Double;
 
 import Body.Body;
+import Helpers.SpaceHelper;
 import Interfaces.GameObject;
 
 public class BackgroundStar implements GameObject {
@@ -40,7 +41,7 @@ public class BackgroundStar implements GameObject {
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		drawAngle = Helper.random(360);
+		drawAngle = SpaceHelper.random(360);
 	}
 
 	@Override
@@ -53,10 +54,10 @@ public class BackgroundStar implements GameObject {
 		draw.addPoint(pos_x, pos_y);
 		for(int i = 0; i < lineCount; i++) {
 			double lineAngle = i * angleInterval + drawAngle;
-			Double front = Helper.polarOffset(pos, lineAngle, 4);
+			Double front = SpaceHelper.polarOffset(pos, lineAngle, 4);
 			//Add the front point to the polygon
 			draw.addPoint((int) front.getX(), (int) front.getY());
-			Double back = Helper.polarOffset(pos, lineAngle+180, 2);
+			Double back = SpaceHelper.polarOffset(pos, lineAngle+180, 2);
 			//Add the back point to the polygon
 			draw.addPoint((int) back.getX(), (int) back.getY());
 			//Bring it back to the center

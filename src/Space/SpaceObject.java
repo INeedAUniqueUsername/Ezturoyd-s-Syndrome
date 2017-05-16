@@ -4,8 +4,10 @@ import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
 import Body.Body;
+import Body.IBody;
 import Game.GamePanel;
 import Game.GameWindow;
+import Helpers.SpaceHelper;
 import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 
@@ -69,14 +71,14 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		return new Point2D.Double(pos_x + time * vel_x, pos_y + time * vel_y);
 	}
 	public final Point2D.Double calcFireTargetPos(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
-		Point2D.Double posDiff = Helper.calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed);
+		Point2D.Double posDiff = SpaceHelper.calcFireSolutionTargetPosDiff(pos_diff, vel_diff, weapon_speed);
 		return new Point2D.Double(getPosX() + posDiff.getX(), getPosY() + posDiff.getY());
 	}
 	public final double calcFireAngle(SpaceObject target, double projectile_speed) {
 		return calcFireAngle(target.getPosX(), target.getPosY(), target.getVelX(), target.getVelY(), projectile_speed);
 	}
 	public final double calcFireAngle(double target_pos_x, double target_pos_y, double target_vel_x, double target_vel_y, double projectile_speed) {
-		return Helper.calcFireAngle(
+		return SpaceHelper.calcFireAngle(
 				new Point2D.Double(
 						target_pos_x - getPosX(),
 						target_pos_y - getPosY()
@@ -89,7 +91,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 				);
 	}
 	public final double calcFireDistance(double target_pos_x, double target_pos_y, double target_vel_x, double target_vel_y, double projectile_speed) {
-		return Helper.calcFireDistance(
+		return SpaceHelper.calcFireDistance(
 				new Point2D.Double(
 						target_pos_x - getPosX(),
 						target_pos_y - getPosY()
@@ -143,7 +145,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final void setVelPolar(double angle, double speed)
 	{
-		setVelRectangular(speed*Helper.cosDegrees(angle), speed*Helper.sinDegrees(angle));
+		setVelRectangular(speed*SpaceHelper.cosDegrees(angle), speed*SpaceHelper.sinDegrees(angle));
 	}
 	@Override
 	public final void incPosRectangular(double x, double y) {
@@ -152,8 +154,8 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	}
 	@Override
 	public final void incPosPolar(double angle, double distance) {
-		pos_x += distance * Helper.cosDegrees(angle);
-		pos_y += distance * Helper.sinDegrees(angle);
+		pos_x += distance * SpaceHelper.cosDegrees(angle);
+		pos_y += distance * SpaceHelper.sinDegrees(angle);
 	}
 	@Override
 	public final void incVelRectangular(double x, double y)
@@ -163,7 +165,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final void incVelPolar(double angle, double speed)
 	{
-		setVelRectangular(getVelX() + speed*Helper.cosDegrees(angle), getVelY() + speed*Helper.sinDegrees(angle));
+		setVelRectangular(getVelX() + speed*SpaceHelper.cosDegrees(angle), getVelY() + speed*SpaceHelper.sinDegrees(angle));
 	}
 	
 	/*	=	=	=	=		Velocity		=	=	=	=	=*/
@@ -171,8 +173,8 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final void accelerate(double angle, double speed)
 	{
-		vel_x += speed*Helper.cosDegrees(angle);
-		vel_y += speed*Helper.sinDegrees(angle);
+		vel_x += speed*SpaceHelper.cosDegrees(angle);
+		vel_y += speed*SpaceHelper.sinDegrees(angle);
 	}
 	@Override
 	public final void accelerateEnergy(double angle, double kineticEnergy) {
@@ -182,13 +184,13 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final void decelerate(double speed)
 	{
-		int velAngle = (int) Helper.arctanDegrees(vel_y, vel_x);
+		int velAngle = (int) SpaceHelper.arctanDegrees(vel_y, vel_x);
 		int decelAngle = velAngle + 180;
 		double xSpeedOriginal = vel_x;
 		double ySpeedOriginal = vel_y;
 		
-		vel_x = (vel_x + speed*Helper.cosDegrees(decelAngle));
-		vel_y = (vel_y + speed*Helper.sinDegrees(decelAngle));
+		vel_x = (vel_x + speed*SpaceHelper.cosDegrees(decelAngle));
+		vel_y = (vel_y + speed*SpaceHelper.sinDegrees(decelAngle));
 		
 		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal))
 		{
@@ -222,7 +224,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		size = 0;
 		for(Polygon part : body.getShapes())
 		{
-			size += Math.abs(Helper.polygonArea(part.xpoints, part.ypoints, part.npoints));
+			size += Math.abs(SpaceHelper.polygonArea(part.xpoints, part.ypoints, part.npoints));
 		}
 		//System.out.println("Size: " + size);
 	}
@@ -242,6 +244,10 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	public void destroy()
 	{
 		setActive(false);
+		onDestroy();
+	}
+	public void onDestroy() {
+		
 	}
 	public final boolean getActive() {
 		return active;
@@ -251,29 +257,29 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	}
 	public final double getAngleTowards(SpaceObject other)
 	{
-		return Helper.getAngleTowardsPos(getPos(), other.getPos());
+		return SpaceHelper.getAngleTowardsPos(getPos(), other.getPos());
 	}
 	public final double getAngleFrom(SpaceObject other)
 	{
-		return Helper.getAngleFromPos(getPos(), other.getPos());
+		return SpaceHelper.getAngleFromPos(getPos(), other.getPos());
 	}
 	
 	public final double getAngleTowardsPos (Point2D.Double pos)
 	{
-		return Helper.arctanDegrees(pos.getY() - getPosY(), pos.getX() - getPosX());
+		return SpaceHelper.arctanDegrees(pos.getY() - getPosY(), pos.getX() - getPosX());
 	}
 	public final double getAngleFromPos(Point2D.Double pos)
 	{
-		return Helper.arctanDegrees(getPosY() - pos.getY(), getPosX() - pos.getX());
+		return SpaceHelper.arctanDegrees(getPosY() - pos.getY(), getPosX() - pos.getX());
 	}
 	
 	public final double getDistanceBetween(SpaceObject target)
 	{
-		return Helper.getDistanceBetweenPos(getPos(), target.getPos());
+		return SpaceHelper.getDistanceBetweenPos(getPos(), target.getPos());
 	}
 	public final double getDistanceBetweenPos(Point2D.Double pos)
 	{
-		return Helper.getDistanceBetweenPos(getPos(), pos);		
+		return SpaceHelper.getDistanceBetweenPos(getPos(), pos);		
 	}
 	public final void updatePosition()
 	{
@@ -330,7 +336,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final Point2D.Double polarOffset(double angle, double distance)
 	{
-		return new Point2D.Double(pos_x + distance * Helper.cosDegrees(angle), pos_y + distance * Helper.sinDegrees(angle));
+		return new Point2D.Double(pos_x + distance * SpaceHelper.cosDegrees(angle), pos_y + distance * SpaceHelper.sinDegrees(angle));
 	}
 	
 	@Override
@@ -338,7 +344,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	{
 		if(!(vel_x == 0 && vel_y == 0))
 		{
-			return Helper.arctanDegrees(vel_y, vel_x);
+			return SpaceHelper.arctanDegrees(vel_y, vel_x);
 		}
 		else
 		{
@@ -348,7 +354,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	@Override
 	public final double getVelAtAngle(double angle)
 	{
-		return getVelSpeed()*Helper.cosDegrees(getVelAngle() - angle);
+		return getVelSpeed()*SpaceHelper.cosDegrees(getVelAngle() - angle);
 	}
 	@Override
 	public final Point2D.Double getVel() {
@@ -414,8 +420,8 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		System.out.println("Angle: " + angle);
 		System.out.println("Vel Angle: " + angle);
 		System.out.println("Kinetic Energy: " + getKineticEnergy());
-		System.out.println("Angled Kinetic Energy: " + getKineticEnergy()*Helper.cosDegrees(getVelAngle()-angle));
-		return getKineticEnergy()*Helper.cosDegrees(getVelAngle()-angle);
+		System.out.println("Angled Kinetic Energy: " + getKineticEnergy()*SpaceHelper.cosDegrees(getVelAngle()-angle));
+		return getKineticEnergy()*SpaceHelper.cosDegrees(getVelAngle()-angle);
 	}
 	
 	public final void print(String message)

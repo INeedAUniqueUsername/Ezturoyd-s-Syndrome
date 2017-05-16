@@ -93,6 +93,10 @@ public class Starship_Player extends Starship {
 		}
 	}
 	public final void onDamage(double damage) {
-		GamePanel.getWorld().getScreenDamage().update();
+		for(int i = 0; i < (damage / Math.max(1, getStructure())) * 2; i++) {
+			GamePanel.getWorld().getScreenDamage().update();
+		}
+	}
+	public final void onDestroy() {
 	}
 }

@@ -3,6 +3,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Game.GamePanel;
+import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
 
 public class Order_AttackDirect extends Behavior {
@@ -94,10 +95,10 @@ public class Order_AttackDirect extends Behavior {
 		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		
 		double velAngle = owner.getVelAngle();
-		double velAngleDiffCCW = Helper.modRangeDegrees(angle_to_target - velAngle);
-		double velAngleDiffCW = Helper.modRangeDegrees(velAngle - angle_to_target);
+		double velAngleDiffCCW = SpaceHelper.modRangeDegrees(angle_to_target - velAngle);
+		double velAngleDiffCW = SpaceHelper.modRangeDegrees(velAngle - angle_to_target);
 		
-		double velAngleDiff = Helper.min(velAngleDiffCCW, velAngleDiffCW);
+		double velAngleDiff = SpaceHelper.min(velAngleDiffCCW, velAngleDiffCW);
 		
 		//double velDiff = owner.getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
 		

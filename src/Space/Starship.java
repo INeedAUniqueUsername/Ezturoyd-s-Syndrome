@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import Body.Body_Starship;
 import Body.Body_StarshipExhaust;
 import Game.GamePanel;
+import Helpers.SpaceHelper;
 
 import java.util.Set;
 
@@ -142,8 +143,8 @@ public class Starship extends SpaceObject implements IStarship {
 	}
 
 	public final void damage(double damage) {
-		structure = structure - damage;
-		if(structure < 0)
+		setStructure(getStructure() - damage);
+		if(getStructure() < 0)
 		{
 			destroy();
 		}
@@ -241,9 +242,9 @@ public class Starship extends SpaceObject implements IStarship {
 		return calcAngleDiff(pos_r, angle_target);
 	}
 	public static final double calcAngleDiff(double angle1, double angle2) {
-		double angleDiffCCW = Helper.modRangeDegrees(angle1 - angle2);
-		double angleDiffCW = Helper.modRangeDegrees(angle2 - angle1);
-		return Helper.min(angleDiffCCW, angleDiffCW);
+		double angleDiffCCW = SpaceHelper.modRangeDegrees(angle1 - angle2);
+		double angleDiffCW = SpaceHelper.modRangeDegrees(angle2 - angle1);
+		return SpaceHelper.min(angleDiffCCW, angleDiffCW);
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#turnDirection(Behavior.RotatingState)
@@ -390,5 +391,13 @@ public class Starship extends SpaceObject implements IStarship {
 	@Override
 	public void setRotation_decel(double rotation_decel) {
 		this.rotation_decel = rotation_decel;
+	}
+
+	public double getStructure() {
+		return structure;
+	}
+
+	public void setStructure(double structure) {
+		this.structure = structure;
 	}
 }

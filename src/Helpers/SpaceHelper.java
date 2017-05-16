@@ -1,4 +1,4 @@
-package Space;
+package Helpers;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
@@ -8,9 +8,10 @@ import java.util.Collection;
 import java.util.List;
 
 import Game.GameWindow;
+import Space.SpaceObject;
 
 
-public class Helper {
+public class SpaceHelper {
 
 	public static final void drawArrow(Graphics g, Point2D origin, Point2D dest)
 	{
@@ -22,28 +23,28 @@ public class Helper {
 		double x2 = dest.getX();
 		double y2 = dest.getY();
 		
-		double angle = Helper.arctanDegrees(y2 - y1, x2 - x1);
+		double angle = SpaceHelper.arctanDegrees(y2 - y1, x2 - x1);
 		
 		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
 		
-		Point2D.Double arrow_left = Helper.polarOffset(dest, angle + 120, 10);
+		Point2D.Double arrow_left = SpaceHelper.polarOffset(dest, angle + 120, 10);
 		g.drawLine((int) x2, (int) y2, (int) arrow_left.getX(), (int) arrow_left.getY());
 		
-		Point2D.Double arrow_right = Helper.polarOffset(dest, angle - 120, 10);
+		Point2D.Double arrow_right = SpaceHelper.polarOffset(dest, angle - 120, 10);
 		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
 	}
 
 	public static final Point2D.Double calcFuturePos(Point2D.Double origin, Point2D.Double vel, double time)
 	{
-		double angle = Helper.arctanDegrees(vel.getY(), vel.getX());
+		double angle = SpaceHelper.arctanDegrees(vel.getY(), vel.getX());
 		double speed = Math.sqrt(Math.pow(vel.getX(), 2) + Math.pow(vel.getY(), 2));
-		return Helper.polarOffset(origin, angle, speed * time);
+		return SpaceHelper.polarOffset(origin, angle, speed * time);
 	}
 
-	public static final Point2D.Double calcFireTargetPosDiff(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
+	public static final Point2D.Double calcFireSolutionTargetPosDiff(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
 		Point2D.Double origin = new Point2D.Double(0, 0);
 		//Here is our initial estimate. If the target is moving, then by the time the shot reaches the target's original position, the target will be somnewhere else
-		double time_to_hit_estimate = Helper.getDistanceBetweenPos(origin, pos_diff) / weapon_speed;
+		double time_to_hit_estimate = SpaceHelper.getDistanceBetweenPos(origin, pos_diff) / weapon_speed;
 		Point2D.Double pos_diff_future = calcFuturePos(pos_diff, vel_diff, time_to_hit_estimate);
 		
 		//System.out.println("Try 0");
@@ -52,7 +53,7 @@ public class Helper {
 		double time_to_hit_old = 0;
 		for(int i = 1; i < 10; i++)
 		{
-			double time_to_hit = Helper.getDistanceBetweenPos(origin, pos_diff_future) / weapon_speed;
+			double time_to_hit = SpaceHelper.getDistanceBetweenPos(origin, pos_diff_future) / weapon_speed;
 			pos_diff_future = calcFuturePos(pos_diff, vel_diff, time_to_hit);
 			
 			//System.out.println("Try " + i);
@@ -66,10 +67,10 @@ public class Helper {
 		}
 		return pos_diff_future;
 	}
-
+	
 	public static final double calcFireAngle(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
 	{
-		return Helper.getAngleTowardsPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
+		return SpaceHelper.getAngleTowardsPos(new Point2D.Double(0, 0), calcFireSolutionTargetPosDiff(pos_diff, vel_diff, weapon_speed));
 	}
 
 	public static final Point2D.Double calcDiff(Point2D.Double origin, Point2D.Double destination) {
@@ -78,7 +79,7 @@ public class Helper {
 
 	public static final double calcFireDistance(Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed)
 	{
-		return Helper.getDistanceBetweenPos(new Point2D.Double(0, 0), calcFireTargetPosDiff(pos_diff, vel_diff, weapon_speed));
+		return SpaceHelper.getDistanceBetweenPos(new Point2D.Double(0, 0), calcFireSolutionTargetPosDiff(pos_diff, vel_diff, weapon_speed));
 	}
 
 	/*
@@ -89,7 +90,7 @@ public class Helper {
 	*/
 	public static final Point2D.Double polarOffset(Point2D origin, double angle, double distance)
 	{
-		return new Point2D.Double(origin.getX() + distance * Helper.cosDegrees(angle), origin.getY() + distance * Helper.sinDegrees(angle));
+		return new Point2D.Double(origin.getX() + distance * SpaceHelper.cosDegrees(angle), origin.getY() + distance * SpaceHelper.sinDegrees(angle));
 	}
 
 	public final static double cosDegrees (double angle)
@@ -181,7 +182,7 @@ public class Helper {
 		return array[(int) (Math.random() * array.length)];
 	}
 	public final static <T> T random(List<T> list) {
-		return list.get((int) Helper.random(list.size()));
+		return list.get((int) SpaceHelper.random(list.size()));
 	}
 	public final static double random(double input)
 	{
@@ -229,7 +230,7 @@ public class Helper {
 
 	public final static double getDistanceBetweenPos(Point2D.Double origin, Point2D.Double dest)
 	{
-		return Helper.getDistanceBetweenPos(origin.getX(), origin.getY(), dest.getX(), dest.getY());
+		return SpaceHelper.getDistanceBetweenPos(origin.getX(), origin.getY(), dest.getX(), dest.getY());
 	}
 
 	public final static double getDistanceBetweenPos(double x1, double y1, double x2, double y2)

@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 
+import Helpers.SpaceHelper;
 import Interfaces.GameObject;
-import Space.Helper;
 
 public class ScreenCracking_Deprecated implements GameObject {
 	private static final TexturePaint snow;
@@ -58,7 +58,7 @@ public class ScreenCracking_Deprecated implements GameObject {
 	}
 	protected ScreenCrackingBranch createBranch() {
 		System.out.println("Creating branch from " + new Point(pos_x, pos_y));
-		Point2D next = Helper.polarOffset(new Point2D.Double(pos_x, pos_y), Helper.random(30)*12, 1);
+		Point2D next = SpaceHelper.polarOffset(new Point2D.Double(pos_x, pos_y), SpaceHelper.random(30)*12, 1);
 		return new ScreenCrackingBranch((int) next.getX(), (int) next.getY(), maxBranches-3, branchChance-0.1, pos_x, pos_y);
 	}
 	protected void addBranch(ScreenCrackingBranch scb) {
@@ -109,10 +109,10 @@ class ScreenCrackingBranch extends ScreenCracking_Deprecated {
 	}
 	public ScreenCrackingBranch createBranch() {
 		//Create a branch that points away from the origin
-		double angle = Helper.getAngleFromPos(new Point2D.Double(getPosX(), getPosY()), new Point2D.Double(origin_x, origin_y));
+		double angle = SpaceHelper.getAngleFromPos(new Point2D.Double(getPosX(), getPosY()), new Point2D.Double(origin_x, origin_y));
 		System.out.println("Creating Branch from " + new Point(origin_x, origin_y));
 		System.out.println("Creating Branch to " + new Point(getPosX(), getPosY()));
-		Point2D next = Helper.polarOffset(new Point2D.Double(getPosX(), getPosY()), angle + Helper.randomRange(-1, 1) * 15, Helper.randomRange(40, 200));
+		Point2D next = SpaceHelper.polarOffset(new Point2D.Double(getPosX(), getPosY()), angle + SpaceHelper.randomRange(-1, 1) * 15, SpaceHelper.randomRange(40, 200));
 		return new ScreenCrackingBranch((int) next.getX(), (int) next.getY(), getMaxBranches()-1, getBranchChance(), origin_x, origin_y);
 	}
 	

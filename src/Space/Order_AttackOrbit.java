@@ -1,6 +1,7 @@
 package Space;
 import java.awt.geom.Point2D;
 
+import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
 
 public class Order_AttackOrbit extends Behavior {
@@ -46,7 +47,7 @@ public class Order_AttackOrbit extends Behavior {
 		double aimingDiff = owner.calcFacingDifference(angle_to_aim);
 			
 		//We are too far away on the target, so focus on orbiting
-		if(Helper.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
+		if(SpaceHelper.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
 			if(futureFacingDiff > 30) {
 				action_rotation = owner.calcTurnDirection(angle_to_destination);
 				owner.printToWorld("AttackOrbit: Not facing " + target.getName());

@@ -7,6 +7,8 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Helpers.SpaceHelper;
+
 public class Starship_NPC extends Starship {
 	private BehaviorController_Default controller;
 	private ArrayList<Behavior> orders;
@@ -120,9 +122,9 @@ public class Starship_NPC extends Starship {
 	public final Behavior.RotatingState calcTurnDirection(double target_angle)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
-		double faceAngleDiffCCW = Helper.modRangeDegrees(target_angle - pos_r_future);
-		double faceAngleDiffCW = Helper.modRangeDegrees(pos_r_future - target_angle);
-		double faceAngleDiff = Helper.min(faceAngleDiffCCW, faceAngleDiffCW);
+		double faceAngleDiffCCW = SpaceHelper.modRangeDegrees(target_angle - pos_r_future);
+		double faceAngleDiffCW = SpaceHelper.modRangeDegrees(pos_r_future - target_angle);
+		double faceAngleDiff = SpaceHelper.min(faceAngleDiffCCW, faceAngleDiffCW);
 		if(faceAngleDiff > controller.getMaxAngleDifference())
 		{
 			if(faceAngleDiffCW < faceAngleDiffCCW)

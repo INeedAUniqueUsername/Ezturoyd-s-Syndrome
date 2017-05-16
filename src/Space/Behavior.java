@@ -3,6 +3,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Game.GameWindow;
+import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
 
 public abstract class Behavior {
@@ -109,23 +110,23 @@ public abstract class Behavior {
 		double pos_y = origin.getY();
 		double target_x_center = destination.getX();
 		double target_y_center = destination.getY();
-		double target_distance_center = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
+		double target_distance_center = SpaceHelper.getDistanceBetweenPos(pos_x, pos_y, target_x_center, target_y_center);
 		
 		double target_x_up = target_x_center;
 		double target_y_up = target_y_center - GameWindow.GAME_HEIGHT;
-		double target_distance_up = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
+		double target_distance_up = SpaceHelper.getDistanceBetweenPos(pos_x, pos_y, target_x_up, target_y_up);
 		
 		double target_x_down = target_x_center;
 		double target_y_down = target_y_center + GameWindow.GAME_HEIGHT;
-		double target_distance_down = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
+		double target_distance_down = SpaceHelper.getDistanceBetweenPos(pos_x, pos_y, target_x_down, target_y_down);
 		
 		double target_x_right = target_x_center + GameWindow.GAME_WIDTH;
 		double target_y_right = target_y_center;
-		double target_distance_right = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
+		double target_distance_right = SpaceHelper.getDistanceBetweenPos(pos_x, pos_y, target_x_right, target_y_right);
 		
 		double target_x_left = target_x_center - GameWindow.GAME_WIDTH;
 		double target_y_left = target_y_center;
-		double target_distance_left = Helper.getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
+		double target_distance_left = SpaceHelper.getDistanceBetweenPos(pos_x, pos_y, target_x_left, target_y_left);
 		
 		double target_x_focus = target_x_center;
 		double target_y_focus = target_y_center;

@@ -1,4 +1,4 @@
-package Space;
+package Body;
 
 import java.awt.Graphics;
 import java.awt.Polygon;

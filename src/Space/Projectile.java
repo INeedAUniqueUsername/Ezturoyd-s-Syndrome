@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import Body.Body;
 import Body.Body_Projectile;
+import Body.IBody;
 import Interfaces.GameObject;
 import Interfaces.NewtonianMotion;
 

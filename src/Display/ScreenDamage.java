@@ -13,17 +13,20 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 import Game.GameWindow;
+import Helpers.SpaceHelper;
 import Interfaces.GameObject;
-import Space.Helper;
+import Override.Polygon2;
 
 public class ScreenDamage implements GameObject {
-	private static ArrayList<Polygon> screenSections;
+	/*
+	private static ArrayList<Polygon2> screenSections;
 	static {
-		screenSections = new ArrayList<Polygon>();
-		Polygon screen = new Polygon();
+		screenSections = new ArrayList<Polygon2>();
+		Polygon2 screen = new Polygon2();
 		int width = GameWindow.SCREEN_WIDTH;
 		int height = GameWindow.SCREEN_HEIGHT;
 		int widthInterval = width/10;
@@ -43,12 +46,12 @@ public class ScreenDamage implements GameObject {
 			screen.addPoint(0, y);
 		}
 		screenSections.add(screen);
-		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < 10; i++) {
 			screenSections = dividePolygons(screenSections);
 		}
 	}
-	public static ArrayList<Polygon> dividePolygons(ArrayList<Polygon> polygons) {
-		ArrayList<Polygon> dividedSections = new ArrayList<Polygon>();
+	public static ArrayList<Polygon2> dividePolygons(ArrayList<Polygon2> polygons) {
+		ArrayList<Polygon2> dividedSections = new ArrayList<Polygon2>();
 		for(Polygon section : polygons) {
 			int[] xPoints = section.xpoints;
 			int[] yPoints = section.ypoints;
@@ -59,34 +62,45 @@ public class ScreenDamage implements GameObject {
 			int endIndex = (int) Helper.random(section.npoints);
 			int endX = xPoints[endIndex];
 			int endY = yPoints[endIndex];
-			Polygon left = new Polygon();
-			Polygon right = new Polygon();
+			Polygon2 left = new Polygon2();
+			Polygon2 right = new Polygon2();
 			
+			//Both sides contain the starting point
 			left.addPoint(startX, startY);
 			right.addPoint(startX, startY);
 			
+			//Begin at the point directly after the starting point and go forward
 			for(int i = 0; i < section.npoints; i++) {
-				int x = xPoints[(i + startIndex) % nPoints];
-				int y = yPoints[(i + startIndex) % nPoints];
+				int x = xPoints[(i + startIndex + 1) % nPoints];
+				int y = yPoints[(i + startIndex + 1) % nPoints];
 				double compare = (endX - startX)*(y - startY) - (endY - startY)*(x - startX);
 				if(compare > 0) {
 					right.addPoint(x, y);
 				} else if(compare < 0) {
 					left.addPoint(x, y);
 				} else {
-					System.out.println("Discard");
+					//If this point is along the line, then both sides should have it
+					right.addPoint(x, y);
+					left.addPoint(x, y);
 				}
 			}
+			//Add the end point
 			left.addPoint(endX, endY);
 			right.addPoint(endX, endY);
 			
-			left.addPoint(left.xpoints[0], left.ypoints[0]);
-			right.addPoint(right.xpoints[0], right.ypoints[0]);
+			//Close the polygons and add points along their edges
+			for(Polygon2 side : new Polygon2[] {left, right}) {
+				System.out.println("Closing polygon");
+				side.addPoint(side.getPoint(0));
+				
+				side.insertPointsAlongEdges((int) Helper.random(250) + 250);
+			}
 			dividedSections.add(left);
 			dividedSections.add(right);
 		}
 		return dividedSections;
 	}
+	*/
 	private static final TexturePaint[] snow;
 	static {
 		int count = 10;
@@ -102,10 +116,12 @@ public class ScreenDamage implements GameObject {
 		}
 	}
 	ArrayList<Point2D> points;
-	ArrayList<Shape> effect;
+	ArrayList<Shape> shapes;
+	BufferedImage effect;
 	public ScreenDamage() {
 		points = new ArrayList<Point2D>();
-		effect = new ArrayList<Shape>();
+		shapes = new ArrayList<Shape>();
+		effect = null;
 	}
 	public ScreenDamage(Point2D origin) {
 		this();
@@ -119,7 +135,7 @@ public class ScreenDamage implements GameObject {
 			points.add(new Point2D.Double(GameWindow.randomGameWidth(), GameWindow.randomGameHeight()));
 		}
 		Polygon nextEffect = new Polygon();
-		Point2D first = Helper.random(points);
+		Point2D first = SpaceHelper.random(points);
 		nextEffect.addPoint((int) first.getX(), (int) first.getY());
 		for(Point2D p : points) {
 			if(first.distance(p) < 200 && Math.random() < 1) {
@@ -128,23 +144,25 @@ public class ScreenDamage implements GameObject {
 		}
 		nextEffect.addPoint((int) first.getX(), (int) first.getY());
 		//nextEffect.addPoint(nextEffect.xpoints[0], nextEffect.ypoints[0]);
-		effect.add(nextEffect);
-		/*
-		for(int i = 0; i < 3; i++) {
-			Point2D p1 = Helper.random(points);
-			Point2D p2 = Helper.random(points);
-			effect.add(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
+		shapes.add(nextEffect);
+		for(int i = 0; i < 5; i++) {
+			Point2D p1 = SpaceHelper.random(points);
+			Point2D p2 = SpaceHelper.random(points);
+			shapes.add(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
 		}
-		*/
+		
+		effect = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2D = effect.createGraphics();
+		for(Shape s : shapes) {
+			g2D.setPaint(SpaceHelper.random(snow));
+			g2D.draw(s);
+			g2D.fill(s);
+		}
 	}
 	@Override
 	public void draw(Graphics g) {
 		// TODO Auto-generated method stub
-		Graphics2D g2D = (Graphics2D) g;
-		g2D.setPaint(snow[0]/*Helper.random(snow)*/);
-		for(Shape s : screenSections) {
-			g2D.fill(s);
-		}
+		g.drawImage(effect, 0, 0, (ImageObserver) null);
 		
 	}
 }

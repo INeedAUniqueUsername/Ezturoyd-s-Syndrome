@@ -3,6 +3,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Game.GamePanel;
+import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
 
 public class Projectile_Tracking extends Projectile {
@@ -38,8 +39,8 @@ public class Projectile_Tracking extends Projectile {
 		Point2D.Double pos = getPos();
 		Point2D.Double pos_target = Behavior.getNearestTargetClone(this, target);
 		double velAngle = getVelAngle();
-		double turnLeftDistance = Helper.getDistanceBetweenPos(Helper.polarOffset(pos, velAngle-90, 1), pos_target);
-		double turnRightDistance = Helper.getDistanceBetweenPos(Helper.polarOffset(pos, velAngle+90, 1), pos_target);
+		double turnLeftDistance = SpaceHelper.getDistanceBetweenPos(SpaceHelper.polarOffset(pos, velAngle-90, 1), pos_target);
+		double turnRightDistance = SpaceHelper.getDistanceBetweenPos(SpaceHelper.polarOffset(pos, velAngle+90, 1), pos_target);
 		if(turnLeftDistance < turnRightDistance) {
 			pos_r -= turnRate;
 		} else if(turnRightDistance < turnLeftDistance) {

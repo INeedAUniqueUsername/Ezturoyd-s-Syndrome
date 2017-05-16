@@ -5,8 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import Game.GameWindow;
-import Space.Helper;
-import Space.IBody;
+import Helpers.SpaceHelper;
 
 public class Body implements IBody {
 	private ArrayList<Polygon> shapes;
@@ -97,14 +96,22 @@ public class Body implements IBody {
 		return result;
 	}
 	public static Polygon createRectangle(Point2D.Double pos, double facingAngle, double width, double height) {
-		double angle = Helper.arctanDegrees(width, height);
+		double angle = SpaceHelper.arctanDegrees(width, height);
 		double distance = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
 		return createPolygon(
-				Helper.polarOffset(pos, facingAngle + angle, distance), //Top left
-				Helper.polarOffset(pos, facingAngle - angle, distance), //Top right
-				Helper.polarOffset(pos, facingAngle + angle + 180, distance), //Bottom right
-				Helper.polarOffset(pos, facingAngle - angle + 180, distance), //Bottom left
-				Helper.polarOffset(pos, facingAngle + angle, distance) //Top left
+				SpaceHelper.polarOffset(pos, facingAngle + angle, distance), //Top left
+				SpaceHelper.polarOffset(pos, facingAngle - angle, distance), //Top right
+				SpaceHelper.polarOffset(pos, facingAngle + angle + 180, distance), //Bottom right
+				SpaceHelper.polarOffset(pos, facingAngle - angle + 180, distance), //Bottom left
+				SpaceHelper.polarOffset(pos, facingAngle + angle, distance) //Top left
+				);
+	}
+	public static Polygon createTriangle(Point2D.Double pos, double angle, double radius) {
+		return createPolygon(
+				SpaceHelper.polarOffset(pos, angle, radius),
+				SpaceHelper.polarOffset(pos, angle+120, radius),
+				SpaceHelper.polarOffset(pos, angle-120, radius),
+				SpaceHelper.polarOffset(pos, angle, radius)
 				);
 	}
 }

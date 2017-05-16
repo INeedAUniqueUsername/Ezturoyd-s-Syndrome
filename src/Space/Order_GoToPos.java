@@ -1,6 +1,8 @@
 package Space;
 import java.awt.geom.Point2D;
 
+import Helpers.SpaceHelper;
+
 public class Order_GoToPos extends Behavior {
 	private Point2D.Double destination;
 	private int min_distance = 50;
@@ -38,7 +40,7 @@ public class Order_GoToPos extends Behavior {
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
-		double angle_to_target = Helper.calcFireAngle(
+		double angle_to_target = SpaceHelper.calcFireAngle(
 				new Point2D.Double(
 						destination_x - owner.getPosX(),
 						destination_y - owner.getPosY()
@@ -65,7 +67,7 @@ public class Order_GoToPos extends Behavior {
 			action_rotation = owner.calcTurnDirection(angle_to_target);
 		} else {
 			action_weapon = AttackingState.FIRE;
-			if(Helper.getDistanceBetweenPos(owner.getFuturePosWithDeceleration(), destination) > min_distance){
+			if(SpaceHelper.getDistanceBetweenPos(owner.getFuturePosWithDeceleration(), destination) > min_distance){
 				action_thrusting = ThrustingState.THRUST;
 			}
 		}

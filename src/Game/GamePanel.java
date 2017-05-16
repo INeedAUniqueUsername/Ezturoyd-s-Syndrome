@@ -24,9 +24,10 @@ import javax.swing.Timer;
 
 import Deprecated.ScreenCracking_Deprecated;
 import Display.ScreenDamage;
+import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
 import Space.BackgroundStar;
-import Space.Helper;
+import Space.Factory_Starship;
 import Space.Level;
 import Space.Level_Waves;
 import Space.Projectile;
@@ -90,21 +91,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		objectsDestroyed = new ArrayList<SpaceObject>(0);
 		background = new ArrayList<BackgroundStar>(0);
 		for(int i = 0; i < 100; i++) {
-			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(), Helper.random(360), 5));
+			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(), SpaceHelper.random(360), 5));
 		}
 		//starships = new ArrayList<Starship>();
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
 
-		player = new Starship_Player();
+		player = Factory_Starship.createPlayership();
 		player.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2);
 
 		universeAdd(player);
 		
-		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90));
-		//addWeapon(player, new Weapon_Mouse(0, 10, 0, 1, 30, 1, 30, Color.RED));
-		player.installWeapon(new Weapon_Key(0, 0, 0, 5, 30, 10, 90));
-		player.setName("Player");
+		
 		/*∂
 		enemy_test = new Starship_NPC();
 		addStarship(enemy_test);
@@ -272,8 +270,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.setFiringMouse(true);
-		Point2D.Double mousePosRelative = Helper.getMousePosRelativeToCenter();
-		double angle = Helper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
+		Point2D.Double mousePosRelative = SpaceHelper.getMousePosRelativeToCenter();
+		double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
 		player.incVelPolar(angle, 10);
 		/*
 		enemy_test.clearOrders();
@@ -593,12 +591,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		*/
 		double velAngle_s1 = s1.getVelAngle();
 		double velAngle_s2 = s2.getVelAngle();
-		double velAngle_diff_ccw = Helper.modRangeDegrees(velAngle_s1 - velAngle_s2);
-		double velAngle_diff_cw = Helper.modRangeDegrees(velAngle_s2 - velAngle_s1);
-		double velAngle_diff = Helper.min(velAngle_diff_ccw, velAngle_diff_cw);
+		double velAngle_diff_ccw = SpaceHelper.modRangeDegrees(velAngle_s1 - velAngle_s2);
+		double velAngle_diff_cw = SpaceHelper.modRangeDegrees(velAngle_s2 - velAngle_s1);
+		double velAngle_diff = SpaceHelper.min(velAngle_diff_ccw, velAngle_diff_cw);
 		
-		double impactEnergy_s1 = Math.abs(s1.getKineticEnergy() - s2.getKineticEnergy() * Helper.cosDegrees(velAngle_diff));
-		double impactEnergy_s2 = Math.abs(s2.getKineticEnergy() - s1.getKineticEnergy() * Helper.cosDegrees(velAngle_diff));
+		double impactEnergy_s1 = Math.abs(s1.getKineticEnergy() - s2.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
+		double impactEnergy_s2 = Math.abs(s2.getKineticEnergy() - s1.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
 		
 		s1.accelerateEnergy(angle_s2, impactEnergy_s1*0.01);
 		s2.accelerateEnergy(angle_s1, impactEnergy_s2*0.01);

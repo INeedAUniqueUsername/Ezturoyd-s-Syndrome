@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import Game.GamePanel;
+import Helpers.SpaceHelper;
 
 public class Weapon_Mouse extends Weapon{
 	public Weapon_Mouse(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime)
@@ -42,11 +43,11 @@ public class Weapon_Mouse extends Weapon{
 		double fireAngle;
 		switch(GamePanel.getCameraMode()) {
 		case FOLLOW_PLAYER:
-			fireAngle = Helper.calcFireAngle(Helper.getMousePosRelativeToCenter(), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToCenter(), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 			break;
 		case FIXED:
 		default:
-			fireAngle = Helper.calcFireAngle(Helper.getMousePosRelativeToObject(owner), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToObject(owner), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
 			break;
 		}
 		setFireAngle(fireAngle);

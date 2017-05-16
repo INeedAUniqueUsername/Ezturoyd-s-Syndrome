@@ -16,8 +16,8 @@ public class Weapon_Key extends Weapon {
 		this.color = color;
 	}
 	*/
-	public Weapon_Key(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime)
+	public Weapon_Key(double posAngle, double posRadius, double fire_angle, int cooldown, int speed, int damage, int lifetime)
 	{
-		super(angle, radius, fire_angle, cooldown, speed, damage, lifetime);
+		super(posAngle, posRadius, fire_angle, cooldown, speed, damage, lifetime);
 	}
 }
