@@ -1,4 +1,4 @@
-package Space;
+package space;
 
 import java.awt.Color;
 

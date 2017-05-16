@@ -1,4 +1,4 @@
-package Game;
+package game;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -22,21 +22,21 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Deprecated.ScreenCracking_Deprecated;
-import Display.ScreenDamage;
-import Helpers.SpaceHelper;
-import Interfaces.NewtonianMotion;
-import Space.BackgroundStar;
-import Space.Factory_Starship;
-import Space.Level;
-import Space.Level_Waves;
-import Space.Projectile;
-import Space.SpaceObject;
-import Space.Starship;
-import Space.Starship_Player;
-import Space.Weapon;
-import Space.Weapon_Key;
-import Space.Weapon_Mouse;
+import deprecated.ScreenCracking_Deprecated;
+import display.ScreenDamage;
+import helpers.SpaceHelper;
+import interfaces.NewtonianMotion;
+import space.BackgroundStar;
+import space.Factory_Starship;
+import space.Level;
+import space.Level_Waves;
+import space.Projectile;
+import space.SpaceObject;
+import space.Starship;
+import space.Starship_Player;
+import space.Weapon;
+import space.Weapon_Key;
+import space.Weapon_Mouse;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
 	private boolean active = true;

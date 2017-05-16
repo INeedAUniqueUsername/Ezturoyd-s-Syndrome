@@ -1,4 +1,4 @@
-package Space;
+package space;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D.Double;
 
-import Body.Body;
-import Helpers.SpaceHelper;
-import Interfaces.GameObject;
+import body.Body;
+import helpers.SpaceHelper;
+import interfaces.GameObject;
 
 public class BackgroundStar implements GameObject {
 	int pos_x, pos_y;

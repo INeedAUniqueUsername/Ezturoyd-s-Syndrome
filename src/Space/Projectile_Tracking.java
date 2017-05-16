@@ -1,12 +1,12 @@
-package Space;
+package space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import Behavior.Behavior_Starship;
-import Game.GamePanel;
-import Helpers.SpaceHelper;
-import Interfaces.NewtonianMotion;
-
+import behavior.Behavior_Starship;
+import game.GamePanel;
+import helpers.SpaceHelper;
+import interfaces.NewtonianMotion;
+import space.SpaceObject;
 public class Projectile_Tracking extends Projectile {
 	SpaceObject target;
 	public Projectile_Tracking(double posX, double posY, double posR, int damage, int life) {

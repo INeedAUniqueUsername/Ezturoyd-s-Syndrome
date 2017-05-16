@@ -1,12 +1,12 @@
-package Space;
+package space;
 
 import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
-import Game.GamePanel;
-import Helpers.SpaceHelper;
+import game.GamePanel;
+import helpers.SpaceHelper;
 
 public class Weapon_Mouse extends Weapon{
 	public Weapon_Mouse(double angle, double radius, double fire_angle, int cooldown, int speed, int damage, int lifetime)

@@ -1,4 +1,4 @@
-package Space;
+package space;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -11,17 +11,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import Behavior.Behavior_Starship;
-import Body.Body_Starship;
-import Body.Body_StarshipExhaust;
-import Game.GamePanel;
-import Helpers.SpaceHelper;
+import behavior.Behavior_Starship;
+import body.Body_Starship;
+import body.Body_StarshipExhaust;
+import game.GamePanel;
+import helpers.SpaceHelper;
 
 import java.util.Set;
 
-import Interfaces.GameObject;
-import Interfaces.IStarship;
-import Interfaces.NewtonianMotion;
+import interfaces.GameObject;
+import interfaces.IStarship;
+import interfaces.NewtonianMotion;
 
 public class Starship extends SpaceObject implements IStarship {
 

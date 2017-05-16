@@ -1,11 +1,11 @@
-package Space;
+package space;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
-import Body.Body;
-import Body.Body_Starship;
-import Override.Polygon2;
+import body.Body;
+import body.Body_Starship;
+import override.Polygon2;
 
 //Please do not call our establishment a "factory." Unlike "factories," we don't just mass produce bunches of triangles and call them starships; we manufacture premium-quality vehicles for noble travellers of space.
 public final class Factory_Starship {

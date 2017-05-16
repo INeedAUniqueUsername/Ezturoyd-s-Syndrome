@@ -1,4 +1,4 @@
-package Space;
+package space;
 
 public abstract class Level {
 	public abstract void start();

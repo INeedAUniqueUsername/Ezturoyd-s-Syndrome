@@ -1,12 +1,12 @@
-package Space;
+package space;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Behavior.Orders.Order_Escort;
-import Game.GamePanel;
-import Game.GameWindow;
-import Space.Starship.Sovereign;
+import behavior.orders.Order_Escort;
+import game.GamePanel;
+import game.GameWindow;
+import space.Starship.Sovereign;
 
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;

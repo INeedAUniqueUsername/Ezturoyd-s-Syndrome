@@ -1,4 +1,4 @@
-package Deprecated;
+package deprecated;
 /*
 import GamePanel;
 import GameWindow;

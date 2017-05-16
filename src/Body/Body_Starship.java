@@ -1,9 +1,9 @@
-package Body;
+package body;
 import java.awt.Polygon;
 import java.util.ArrayList;
 
-import Helpers.SpaceHelper;
-import Space.Starship;
+import helpers.SpaceHelper;
+import space.Starship;
 
 public class Body_Starship extends Body {
 	private Starship owner;

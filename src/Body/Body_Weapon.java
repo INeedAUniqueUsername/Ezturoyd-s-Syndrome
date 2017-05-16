@@ -1,10 +1,10 @@
-package Body;
+package body;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
-import Helpers.SpaceHelper;
-import Space.Weapon;
+import helpers.SpaceHelper;
+import space.Weapon;
 
 public class Body_Weapon extends Body {
 	private Weapon owner;

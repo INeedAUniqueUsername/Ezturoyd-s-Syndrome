@@ -1,15 +1,15 @@
-package Behavior.Orders;
+package behavior.orders;
 import java.awt.geom.Point2D;
 
-import Behavior.Behavior_Starship;
-import Behavior.Behavior_Starship.AttackingState;
-import Behavior.Behavior_Starship.RotatingState;
-import Behavior.Behavior_Starship.StrafingState;
-import Behavior.Behavior_Starship.ThrustingState;
-import Helpers.SpaceHelper;
-import Interfaces.NewtonianMotion;
-import Space.SpaceObject;
-import Space.Starship_NPC;
+import behavior.Behavior_Starship;
+import behavior.Behavior_Starship.AttackingState;
+import behavior.Behavior_Starship.RotatingState;
+import behavior.Behavior_Starship.StrafingState;
+import behavior.Behavior_Starship.ThrustingState;
+import helpers.SpaceHelper;
+import interfaces.NewtonianMotion;
+import space.SpaceObject;
+import space.Starship_NPC;
 
 public class Order_AttackOrbit extends Behavior_Starship {
 	private SpaceObject target;

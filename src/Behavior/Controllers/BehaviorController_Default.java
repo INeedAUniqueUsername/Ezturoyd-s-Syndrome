@@ -1,10 +1,10 @@
-package Behavior.Controllers;
+package behavior.controllers;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import Behavior.Behavior_Starship;
-import Behavior.Orders.Order_Hold;
-import Space.Starship_NPC;
+import behavior.Behavior_Starship;
+import behavior.orders.Order_Hold;
+import space.Starship_NPC;
 
 public class BehaviorController_Default extends Behavior_Starship {
 

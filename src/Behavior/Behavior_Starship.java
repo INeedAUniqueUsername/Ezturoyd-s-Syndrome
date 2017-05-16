@@ -1,12 +1,12 @@
-package Behavior;
+package behavior;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import Game.GameWindow;
-import Helpers.SpaceHelper;
-import Interfaces.NewtonianMotion;
-import Space.SpaceObject;
-import Space.Starship_NPC;
+import game.GameWindow;
+import helpers.SpaceHelper;
+import interfaces.NewtonianMotion;
+import space.SpaceObject;
+import space.Starship_NPC;
 
 public abstract class Behavior_Starship {
 	Starship_NPC owner;

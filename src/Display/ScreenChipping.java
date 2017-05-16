@@ -1,11 +1,11 @@
-package Display;
+package display;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
-import Interfaces.GameObject;
+import interfaces.GameObject;
 
 public class ScreenChipping implements GameObject {
 	Polygon shape;

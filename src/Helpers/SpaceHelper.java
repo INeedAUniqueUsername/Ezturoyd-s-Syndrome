@@ -1,4 +1,4 @@
-package Helpers;
+package helpers;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
@@ -7,8 +7,8 @@ import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
 
-import Game.GameWindow;
-import Space.SpaceObject;
+import game.GameWindow;
+import space.SpaceObject;
 
 
 public class SpaceHelper {

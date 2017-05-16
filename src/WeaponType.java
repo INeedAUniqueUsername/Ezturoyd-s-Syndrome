@@ -1,4 +1,5 @@
-import Space.Projectile;
+import interfaces.IWeaponType;
+import space.Projectile;
 
 public class WeaponType implements IWeaponType {
 	private int fire_cooldown_time = 10;

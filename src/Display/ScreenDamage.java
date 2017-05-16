@@ -1,4 +1,4 @@
-package Display;
+package display;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,10 +16,10 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
-import Game.GameWindow;
-import Helpers.SpaceHelper;
-import Interfaces.GameObject;
-import Override.Polygon2;
+import game.GameWindow;
+import helpers.SpaceHelper;
+import interfaces.GameObject;
+import override.Polygon2;
 
 public class ScreenDamage implements GameObject {
 	/*

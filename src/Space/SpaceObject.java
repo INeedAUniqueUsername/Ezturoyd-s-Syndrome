@@ -1,15 +1,15 @@
-package Space;
+package space;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
-import Body.Body;
-import Body.IBody;
-import Game.GamePanel;
-import Game.GameWindow;
-import Helpers.SpaceHelper;
-import Interfaces.GameObject;
-import Interfaces.NewtonianMotion;
+import body.Body;
+import body.IBody;
+import game.GamePanel;
+import game.GameWindow;
+import helpers.SpaceHelper;
+import interfaces.GameObject;
+import interfaces.NewtonianMotion;
 
 public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	private String name = "";

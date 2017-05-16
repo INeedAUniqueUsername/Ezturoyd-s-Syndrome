@@ -1,4 +1,4 @@
-package Space;
+package space;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
@@ -7,12 +7,12 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import Behavior.Behavior_Starship;
-import Behavior.Controllers.BehaviorController_Default;
-import Behavior.Orders.Order_AttackDirect;
-import Behavior.Orders.Order_AttackOrbit;
-import Behavior.Orders.Order_Escort;
-import Helpers.SpaceHelper;
+import behavior.Behavior_Starship;
+import behavior.controllers.BehaviorController_Default;
+import behavior.orders.Order_AttackDirect;
+import behavior.orders.Order_AttackOrbit;
+import behavior.orders.Order_Escort;
+import helpers.SpaceHelper;
 
 public class Starship_NPC extends Starship {
 	private BehaviorController_Default controller;

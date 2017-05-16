@@ -1,4 +1,4 @@
-package Deprecated;
+package deprecated;
 /*
 import java.awt.Color;
 import java.awt.Graphics;

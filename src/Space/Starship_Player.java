@@ -1,7 +1,7 @@
-package Space;
+package space;
 import java.util.ArrayList;
 
-import Game.GamePanel;
+import game.GamePanel;
 
 
 public class Starship_Player extends Starship {

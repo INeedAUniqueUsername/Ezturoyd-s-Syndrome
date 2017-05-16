@@ -1,15 +1,15 @@
-package Space;
+package space;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
-import Body.Body;
-import Body.Body_Projectile;
-import Body.IBody;
-import Interfaces.GameObject;
-import Interfaces.NewtonianMotion;
+import body.Body;
+import body.Body_Projectile;
+import body.IBody;
+import interfaces.GameObject;
+import interfaces.NewtonianMotion;
 
 public class Projectile extends SpaceObject {
 

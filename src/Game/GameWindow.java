@@ -1,4 +1,4 @@
-package Game;
+package game;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -7,7 +7,7 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-import Helpers.SpaceHelper;
+import helpers.SpaceHelper;
 
 public class GameWindow {
 	public static final int SCREEN_WIDTH;

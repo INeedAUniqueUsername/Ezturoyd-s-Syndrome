@@ -1,4 +1,4 @@
-package Space;
+package space;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 
-import Body.Body_Weapon;
-import Body.IBody;
-import Interfaces.NewtonianMotion;
+import body.Body_Weapon;
+import body.IBody;
+import interfaces.NewtonianMotion;
 
 public class Weapon {
 

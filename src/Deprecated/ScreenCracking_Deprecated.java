@@ -1,4 +1,4 @@
-package Deprecated;
+package deprecated;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 
-import Helpers.SpaceHelper;
-import Interfaces.GameObject;
+import helpers.SpaceHelper;
+import interfaces.GameObject;
 
 public class ScreenCracking_Deprecated implements GameObject {
 	private static final TexturePaint snow;

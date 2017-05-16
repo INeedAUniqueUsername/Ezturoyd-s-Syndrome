@@ -1,7 +1,7 @@
-package Interfaces;
+package interfaces;
 import java.awt.geom.Point2D;
 
-import Behavior.Behavior_Starship;
+import behavior.Behavior_Starship;
 
 public interface IStarship {
 
