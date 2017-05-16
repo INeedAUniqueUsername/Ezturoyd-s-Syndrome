@@ -1,34 +1,59 @@
-package Space;
+package Behavior.Controllers;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class BehaviorController_Default extends Behavior {
+import Behavior.Behavior_Starship;
+import Behavior.Orders.Order_Hold;
+import Space.Starship_NPC;
 
+public class BehaviorController_Default extends Behavior_Starship {
+
+	ArrayList<Behavior_Starship> orders;
 	public BehaviorController_Default(Starship_NPC o) {
 		super(o);
+		initialize();
 	}
 	public void initialize() {
+		orders = new ArrayList<Behavior_Starship>();
+	}
+	public final Behavior_Starship getOrder(int b) {
+		return orders.get(b);
+	}
+	public final void setOrder(int i, Behavior_Starship b) {
+		orders.set(i, b);
+	}
+	public final void addOrder(Behavior_Starship b) {
+		orders.add(b);
+	}
+	public final void removeOrder(Behavior_Starship b) {
+		orders.remove(b);
+	}
+	public final void clearOrders() {
+		orders = new ArrayList<Behavior_Starship>();
+	}
+	public final ArrayList<Behavior_Starship> getOrders() {
+		return orders;
 	}
 	public void update() {
 		//System.out.println("Updating Controller");
 		
-		if(owner.getOrders().size() > 0) {
+		if(orders.size() > 0) {
 			updateCurrentOrder();
 		} else {
 			onOrdersCompleted();
 		}
 	}
 	public void updateCurrentOrder() {
-		Behavior behavior_current = owner.getOrder(0);
+		Behavior_Starship behavior_current = orders.get(0);
 		
 		behavior_current.update();
 		copyActions(behavior_current);
 		if(!behavior_current.getActive()) {
-			owner.removeOrder(behavior_current);
+			orders.remove(behavior_current);
 		}
 	}
 	public void onOrdersCompleted() {
-		owner.addOrder(new Order_Hold(owner));
+		orders.add(new Order_Hold(getOwner()));
 		/*
 		ArrayList<Starship> ships = GamePanel.world.getStarships();
 		SpaceObject target = null;

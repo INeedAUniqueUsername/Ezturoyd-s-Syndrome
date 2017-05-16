@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import Behavior.Behavior_Starship;
 import Body.Body_Starship;
 import Body.Body_StarshipExhaust;
 import Game.GamePanel;
@@ -250,7 +251,7 @@ public class Starship extends SpaceObject implements IStarship {
 	 * @see IStarship#turnDirection(Behavior.RotatingState)
 	 */
 	@Override
-	public final void turnDirection(Behavior.RotatingState direction)
+	public final void turnDirection(Behavior_Starship.RotatingState direction)
 	{
 		switch(direction)
 		{

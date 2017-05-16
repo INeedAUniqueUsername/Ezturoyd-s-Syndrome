@@ -7,11 +7,15 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Behavior.Behavior_Starship;
+import Behavior.Controllers.BehaviorController_Default;
+import Behavior.Orders.Order_AttackDirect;
+import Behavior.Orders.Order_AttackOrbit;
+import Behavior.Orders.Order_Escort;
 import Helpers.SpaceHelper;
 
 public class Starship_NPC extends Starship {
 	private BehaviorController_Default controller;
-	private ArrayList<Behavior> orders;
 	
 	public Starship_NPC() {
 		initializeAI();
@@ -33,33 +37,6 @@ public class Starship_NPC extends Starship {
 			//thrust();
 		}
 	}
-	public final Behavior getOrder(int b) {
-		return orders.get(b);
-	}
-	public final void setOrder(int i, Behavior b) {
-		orders.set(i, b);
-	}
-	public final void addOrder(Behavior b) {
-		orders.add(b);
-	}
-	public final void addOrderAttackDirect(SpaceObject target) {
-		addOrder(new Order_AttackDirect(this, target));
-	}
-	public final void addOrderAttackOrbit(SpaceObject target) {
-		addOrder(new Order_AttackOrbit(this, target));
-	}
-	public final void addOrderEscort(SpaceObject target) {
-		addOrder(new Order_Escort(this, target));
-	}
-	public final void removeOrder(Behavior b) {
-		orders.remove(b);
-	}
-	public final void clearOrders() {
-		orders = new ArrayList<Behavior>();
-	}
-	public final ArrayList<Behavior> getOrders() {
-		return orders;
-	}
 	public final void setController(BehaviorController_Default c) {
 		controller = c;
 	}
@@ -68,7 +45,6 @@ public class Starship_NPC extends Starship {
 	}
 	private final void initializeAI() {
 		controller = new BehaviorController_Default(this);
-		orders = new ArrayList<Behavior>();
 		controller.initialize();
 	}
 	/*
@@ -119,7 +95,7 @@ public class Starship_NPC extends Starship {
 		return angle_to_hit;
 	}
 */
-	public final Behavior.RotatingState calcTurnDirection(double target_angle)
+	public final Behavior_Starship.RotatingState calcTurnDirection(double target_angle)
 	{
 		double pos_r_future = getFutureAngleWithDeceleration();
 		double faceAngleDiffCCW = SpaceHelper.modRangeDegrees(target_angle - pos_r_future);
@@ -130,27 +106,27 @@ public class Starship_NPC extends Starship {
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
 				printToWorld("Status (Facing): CW");
-				return Behavior.RotatingState.CW;
+				return Behavior_Starship.RotatingState.CW;
 			}
 			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
 				printToWorld("Status (Facing): CCW");
-				return Behavior.RotatingState.CCW;
+				return Behavior_Starship.RotatingState.CCW;
 			}
 			else
 			{
 				printToWorld("Status (Facing): Random");
 				if(Math.random() > .5) {
-					return Behavior.RotatingState.CW;
+					return Behavior_Starship.RotatingState.CW;
 				} else {
-					return Behavior.RotatingState.CCW;
+					return Behavior_Starship.RotatingState.CCW;
 				}
 			}
 		}
 		else
 		{
 			printToWorld("Status (Facing): Aligned");
-			return Behavior.RotatingState.NONE;
+			return Behavior_Starship.RotatingState.NONE;
 		}
 	}
 }

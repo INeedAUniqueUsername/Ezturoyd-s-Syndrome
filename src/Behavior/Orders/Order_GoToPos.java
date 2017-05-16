@@ -1,14 +1,20 @@
-package Space;
+package Behavior.Orders;
 import java.awt.geom.Point2D;
 
+import Behavior.Behavior_Starship;
+import Behavior.Behavior_Starship.AttackingState;
+import Behavior.Behavior_Starship.RotatingState;
+import Behavior.Behavior_Starship.StrafingState;
+import Behavior.Behavior_Starship.ThrustingState;
 import Helpers.SpaceHelper;
+import Space.Starship_NPC;
 
-public class Order_GoToPos extends Behavior {
+public class Order_GoToPos extends Behavior_Starship {
 	private Point2D.Double destination;
 	private int min_distance = 50;
 	public Order_GoToPos(Starship_NPC o) {
 		super(o);
-		setDestination(owner.getPos());
+		setDestination(o.getPos());
 		// TODO Auto-generated constructor stub
 	}
 	public Order_GoToPos(Starship_NPC o, Point2D.Double dest) {
@@ -22,6 +28,7 @@ public class Order_GoToPos extends Behavior {
 		return destination;
 	}
 	public void update() {
+		Starship_NPC owner = getOwner();
 		//To allow the AI to take advantage of wraparound, we make four clones of the destination, one for each side of the screen.
 		if(owner.getDistanceBetweenPos(destination) < min_distance) {
 			System.out.println("GoToPos order done");

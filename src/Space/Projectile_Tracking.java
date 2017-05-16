@@ -2,6 +2,7 @@ package Space;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import Behavior.Behavior_Starship;
 import Game.GamePanel;
 import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
@@ -37,7 +38,7 @@ public class Projectile_Tracking extends Projectile {
 		}
 		int turnRate = 3;
 		Point2D.Double pos = getPos();
-		Point2D.Double pos_target = Behavior.getNearestTargetClone(this, target);
+		Point2D.Double pos_target = Behavior_Starship.getNearestTargetClone(this, target);
 		double velAngle = getVelAngle();
 		double turnLeftDistance = SpaceHelper.getDistanceBetweenPos(SpaceHelper.polarOffset(pos, velAngle-90, 1), pos_target);
 		double turnRightDistance = SpaceHelper.getDistanceBetweenPos(SpaceHelper.polarOffset(pos, velAngle+90, 1), pos_target);

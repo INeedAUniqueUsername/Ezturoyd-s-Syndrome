@@ -1,10 +1,17 @@
-package Space;
+package Behavior.Orders;
 import java.awt.geom.Point2D;
 
+import Behavior.Behavior_Starship;
+import Behavior.Behavior_Starship.AttackingState;
+import Behavior.Behavior_Starship.RotatingState;
+import Behavior.Behavior_Starship.StrafingState;
+import Behavior.Behavior_Starship.ThrustingState;
 import Helpers.SpaceHelper;
 import Interfaces.NewtonianMotion;
+import Space.SpaceObject;
+import Space.Starship_NPC;
 
-public class Order_AttackOrbit extends Behavior {
+public class Order_AttackOrbit extends Behavior_Starship {
 	private SpaceObject target;
 	private int distance = 300;
 	public Order_AttackOrbit(Starship_NPC o, SpaceObject t) {
@@ -22,6 +29,7 @@ public class Order_AttackOrbit extends Behavior {
 		updateAttackOrbit();
 	}
 	public void updateAttackOrbit() {
+		Starship_NPC owner = getOwner();
 		owner.printToWorld("AttackOrbit active");
 		//Problem: Target is dead
 		if(!target.getActive()) {

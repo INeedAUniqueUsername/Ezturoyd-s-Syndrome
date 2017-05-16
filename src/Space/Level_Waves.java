@@ -3,8 +3,10 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import Behavior.Orders.Order_Escort;
 import Game.GamePanel;
 import Game.GameWindow;
+import Space.Starship.Sovereign;
 
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
@@ -13,6 +15,8 @@ public class Level_Waves extends Level {
 		
 		Starship_NPC enemy_0 = Factory_Starship.createEnemy2();
 		enemy_0.setPosRectangular(GameWindow.SCREEN_CENTER_X/2, GameWindow.SCREEN_CENTER_Y/2);
+		enemy_0.getController().addOrder(new Order_Escort(enemy_0, player));
+		enemy_0.setAlignment(Sovereign.PLAYER);
 		
 		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		
@@ -23,14 +27,14 @@ public class Level_Waves extends Level {
 		enemy_1b.setThrust(2);
 		enemy_1b.setMax_speed(5);
 		
-		enemy_1a.addOrderAttackDirect(player);
-		enemy_1b.addOrderAttackDirect(player);
-		enemy_1c.addOrderAttackDirect(player);
+		//enemy_1a.addOrderAttackDirect(player);
+		//enemy_1b.addOrderAttackDirect(player);
+		//enemy_1c.addOrderAttackDirect(player);
 		
 		Starship_NPC enemy_2a = createEnemyStarship(), enemy_2b = createEnemyStarship(), enemy_2c = createEnemyStarship();
 		
 		
-		enemy_2a.addOrderAttackOrbit(player);
+		//enemy_2a.addOrderAttackOrbit(player);
 		enemy_2a.setMax_speed(12);
 		enemy_2a.setRotation_max(24);
 		enemy_2b.setMax_speed(4);
@@ -46,9 +50,9 @@ public class Level_Waves extends Level {
 		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 30, 30));
 		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50));
 		
-		enemy_2a.addOrderAttackOrbit(player);
-		enemy_2b.addOrderAttackDirect(player);
-		enemy_2c.addOrderEscort(enemy_2a);
+		//enemy_2a.addOrderAttackOrbit(player);
+		//enemy_2b.addOrderAttackDirect(player);
+		//enemy_2c.addOrderEscort(enemy_2a);
 		
 		player.setStructure(100);
 		
