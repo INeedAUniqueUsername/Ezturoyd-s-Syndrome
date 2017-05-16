@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -63,7 +64,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	ArrayList<Projectile> projectiles;
 	ArrayList<Asteroid> asteroids;
 	*/
-	private ArrayList<String> debugQueue = new ArrayList<String>(0);
+	private ArrayList<String> debugPrint = new ArrayList<String>(0);
+	private ArrayList<Consumer<Graphics>> debugDraw = new ArrayList<Consumer<Graphics>>(0);
 
 	// counter for hits
 	//private int hits = 0;
@@ -224,17 +226,23 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		g2D.setFont(new Font("Consolas", Font.PLAIN, 18));
 		final int line_height = 18;
 		int print_y = line_height;
-		for(String s: debugQueue)
+		for(String s: debugPrint)
 		{
 			g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
-		debugQueue.clear();
+		debugPrint.clear();
 		
 		g2D.dispose();
 	}
 	public void drawUniverse(Graphics2D g2D) {
 		g2D.scale(1, -1);
+		
+		for(Consumer<Graphics> c : debugDraw) {
+			c.accept(g2D);
+		}
+		debugDraw.clear();
+		
 		for(BackgroundStar b : background) {
 			b.draw(g2D);
 		}
@@ -252,7 +260,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public void printToScreen(String text)
 	{
-		debugQueue.add(text);
+		debugPrint.add(text);
+	}
+	public void drawToScreen(Consumer<Graphics> c)
+	{
+		debugDraw.add(c);
 	}
 	
 	@Override

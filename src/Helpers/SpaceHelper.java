@@ -157,7 +157,9 @@ public class SpaceHelper {
 	{
 		return modRange(input, 360);
 	}
-
+	public final static double getAngleDiff(double angle1, double angle2) {
+		return Math.min(modRangeDegrees(angle1 - angle2), modRangeDegrees(angle2 - angle1));
+	}
 	public final static double min(double number1, double number2)
 	{
 		return (number1 < number2 ? number1 : number2);

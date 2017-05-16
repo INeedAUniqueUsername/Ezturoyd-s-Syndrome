@@ -1,6 +1,9 @@
 package behavior.orders;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+
 
 import behavior.Behavior_Starship;
 import behavior.Behavior_Starship.AttackingState;
@@ -21,7 +24,7 @@ public class Order_Escort extends Behavior_Starship{
 	Order_AttackDirect attackMode;
 	
 	public Order_Escort(Starship_NPC owner, SpaceObject target) {
-		this(owner, target, 180, 200);
+		this(owner, target, 180, 300);
 		// TODO Auto-generated constructor stub
 	}
 	public Order_Escort(Starship_NPC owner, SpaceObject target, int angle, int distance) {
@@ -86,7 +89,15 @@ public class Order_Escort extends Behavior_Starship{
 	public void updateEscort() {
 		Starship_NPC owner = getOwner();
 		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
-		Point2D.Double pos_destination = Behavior_Starship.getNearestPosClone(pos_owner, SpaceHelper.polarOffset(target.getPos(), target.getPosR() + escort_angle, escort_distance));
+		Point2D.Double pos_destination = getNearestPosClone(pos_owner, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
+		GamePanel.getWorld().drawToScreen((Graphics g) -> {
+			g.setColor(Color.WHITE);
+			g.drawOval((int) pos_owner.getX(), (int) pos_owner.getY(), 5, 5);
+		});
+		GamePanel.getWorld().drawToScreen((Graphics g) -> {
+			g.setColor(Color.WHITE);
+			g.drawOval((int) pos_destination.getX(), (int) pos_destination.getY(), 5, 5);
+		});
 		ThrustingState action_thrusting = ThrustingState.NONE;
 		RotatingState action_rotation = RotatingState.NONE;
 		StrafingState action_strafing = StrafingState.NONE;
@@ -94,36 +105,42 @@ public class Order_Escort extends Behavior_Starship{
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
+		printToWorld("Owner thrust: " + owner.getThrust());
 		double angle_to_destination = SpaceHelper.calcFireAngle(
 				SpaceHelper.calcDiff(owner.getPos(), pos_destination),
 				SpaceHelper.calcDiff(owner.getVel(), target.getVel()),
-				owner.getThrust() / owner.getMass()
+				Math.max(1, owner.getThrust() * 4)
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);
 		printToWorld("Angle to Escort Position: " + angle_to_destination);
 		printToWorld("Distance to Escort Position: " + distance_to_destination);
 		//Move towards the escort position
-		if(Math.abs(distance_to_destination - escort_distance) > 10) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
+		if(distance_to_destination > 10) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
 			owner.printToWorld("Approaching Escort Position");
 			double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_destination);
-			if(faceAngleDiff > 6)
-			{
-				owner.printToWorld("Facing Towards Position");
-				action_rotation = owner.calcTurnDirection(angle_to_destination);
-			} else {
+			
+			owner.printToWorld("Facing Towards Position");
+			action_rotation = owner.calcTurnDirection(angle_to_destination);
+			
+			if(faceAngleDiff < 15) {
 				owner.printToWorld("Moving Towards Position");
 				action_thrusting = ThrustingState.THRUST;
 			}
 		} else {
 			owner.printToWorld("Adjusting Velocity");
 			//We are in escort position, so adjust our velocity to match
-			//double velAngle_owner = owner.getVelAngle();
+			double velAngle_owner = owner.getVelAngle();
 			double velAngle_target = target.getVelAngle();
 			double velSpeed_owner = owner.getVelSpeed();
 			double velSpeed_target = target.getVelSpeed();
 			action_rotation = owner.calcTurnDirection(velAngle_target);
-			if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
+			if(SpaceHelper.getAngleDiff(velAngle_owner, velAngle_target) > 0) {
+				action_thrusting = ThrustingState.BRAKE;
+				printToWorld("STOP NOW");
+				
+			}
+			else if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
 				owner.printToWorld("Adjusting Velocity Speed");
 				if(velSpeed_owner < velSpeed_target - 5) {
 					owner.printToWorld("Increasing Velocity");
