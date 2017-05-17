@@ -1,11 +1,13 @@
 package body;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import game.GameWindow;
 import helpers.SpaceHelper;
+import override.Polygon2;
 
 public class Body implements IBody {
 	private ArrayList<Polygon> shapes;
@@ -56,6 +58,9 @@ public class Body implements IBody {
 	 */
 	@Override
 	public void draw(Graphics g) {
+		drawDefault(g);
+	}
+	public void drawDefault(Graphics g) {
 		for(Polygon p : shapes) {
 			g.drawPolygon(p);
 			drawWrapClones(g, p);
@@ -106,12 +111,27 @@ public class Body implements IBody {
 				SpaceHelper.polarOffset(pos, facingAngle + angle, distance) //Top left
 				);
 	}
-	public static Polygon createTriangle(Point2D.Double pos, double angle, double radius) {
+	public static Polygon createTriangle(Point2D pos, double angle, double radius) {
 		return createPolygon(
 				SpaceHelper.polarOffset(pos, angle, radius),
 				SpaceHelper.polarOffset(pos, angle+120, radius),
 				SpaceHelper.polarOffset(pos, angle-120, radius),
 				SpaceHelper.polarOffset(pos, angle, radius)
 				);
+	}
+	public static Polygon createEllipse(Point2D pos, double angle, double width, double height) {
+		Polygon2 result = new Polygon2();
+		for(int i = 0; i <= 24; i++) {
+			double rotation = i*15;
+			result.addPoint(SpaceHelper.polarOffset(
+					pos,
+					rotation + angle,
+					(width * height) / Math.sqrt(
+							Math.pow(height, 2) * Math.pow(SpaceHelper.sinDegrees(rotation), 2) +
+							Math.pow(width, 2) * Math.pow(SpaceHelper.cosDegrees(rotation), 2)
+							)
+					));
+		}
+		return result;
 	}
 }

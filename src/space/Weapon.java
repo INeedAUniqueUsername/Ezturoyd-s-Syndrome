@@ -65,7 +65,6 @@ public class Weapon {
 	}
 	public void draw(Graphics g) {
 		owner.printToWorld("Drawing Weapon");
-		g.setColor(Color.WHITE);
 		body.updateShapes();
 		drawBody(g);
 		
@@ -194,6 +193,9 @@ public class Weapon {
 		return fire_cooldown_time;
 	}
 
+	public final Point2D getPos() {
+		return new Point2D.Double(pos_x, pos_y);
+	}
 	public final double getPosX() {
 		return pos_x;
 	}

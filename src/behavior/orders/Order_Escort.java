@@ -21,7 +21,7 @@ public class Order_Escort extends Behavior_Starship{
 	private int escort_angle = 180;
 	private int escort_distance = 200;
 	
-	Order_AttackDirect attackMode;
+	Order_AttackOrbit attackMode;
 	
 	public Order_Escort(Starship_NPC owner, SpaceObject target) {
 		this(owner, target, 180, 300);
@@ -32,7 +32,7 @@ public class Order_Escort extends Behavior_Starship{
 		setOwner(owner);
 		setParameters(target, angle, distance);
 		
-		attackMode = new Order_AttackDirect(owner, null);
+		attackMode = new Order_AttackOrbit(owner, null);
 		attackMode.setActive(false);
 	}
 	public void setParameters(SpaceObject target, int angle, int distance) {
@@ -50,12 +50,15 @@ public class Order_Escort extends Behavior_Starship{
 		if(attackMode.getActive() && owner.getDistanceBetween(attackMode.getTarget()) < getMaxDefendRange()) {
 			printToWorld("Attack Mode active");
 			attackMode.update();
+			copyActions(attackMode);
 			return;
 		}
 		//If there is an enemy nearby, go into attack mode
 		ArrayList<SpaceObject> nearbyEnemies = getNearbyEnemies();
 		if(nearbyEnemies.size() > 0) {
 			printToWorld("Attacking nearby enemies");
+			
+			//Find closest enemy
 			SpaceObject closest = null;
 			double closestDistance = Integer.MAX_VALUE;
 			for(SpaceObject o : nearbyEnemies) {
@@ -65,8 +68,9 @@ public class Order_Escort extends Behavior_Starship{
 					closestDistance = distance;
 				}
 			}
-			attackMode = new Order_AttackDirect(owner, closest);
+			attackMode = new Order_AttackOrbit(owner, closest);
 			attackMode.update();
+			copyActions(attackMode);
 			return;
 		}
 		updateEscort();
@@ -84,7 +88,7 @@ public class Order_Escort extends Behavior_Starship{
 	}
 	//The maximum range from the target at which the owner is willing to attack an enemy
 	public int getMaxDefendRange() {
-		return 100;
+		return 10000;
 	}
 	public void updateEscort() {
 		Starship_NPC owner = getOwner();
@@ -105,11 +109,12 @@ public class Order_Escort extends Behavior_Starship{
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
+		Point2D.Double velDiff = SpaceHelper.calcDiff(owner.getVel(), target.getVel());
 		printToWorld("Owner thrust: " + owner.getThrust());
 		double angle_to_destination = SpaceHelper.calcFireAngle(
 				SpaceHelper.calcDiff(owner.getPos(), pos_destination),
-				SpaceHelper.calcDiff(owner.getVel(), target.getVel()),
-				Math.max(1, owner.getThrust() * 4)
+				velDiff,
+				10 - velDiff.distance(0, 0)
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);

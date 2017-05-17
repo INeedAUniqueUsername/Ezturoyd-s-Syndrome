@@ -19,7 +19,7 @@ public class Order_AttackOrbit extends Behavior_Starship {
 		setTarget(t);
 	}
 	
-	public NewtonianMotion getTarget() {
+	public SpaceObject getTarget() {
 		return target;
 	}
 	public void setTarget(SpaceObject t) {
@@ -30,13 +30,15 @@ public class Order_AttackOrbit extends Behavior_Starship {
 	}
 	public void updateAttackOrbit() {
 		Starship_NPC owner = getOwner();
-		owner.printToWorld("AttackOrbit active");
+		printToWorld("AttackOrbit active");
 		//Problem: Target is dead
 		if(!target.getActive()) {
+			printToWorld("Target dead");
 			setActive(false);
 			return; //Done
 		}
 		if(!owner.hasWeapon()) {
+			printToWorld("No weapon");
 			setActive(false);
 			return;
 		}

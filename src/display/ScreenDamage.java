@@ -116,12 +116,12 @@ public class ScreenDamage implements GameObject {
 		}
 	}
 	ArrayList<Point2D> points;
-	ArrayList<Shape> shapes;
+	//ArrayList<Shape> shapes;
 	BufferedImage effect;
 	public ScreenDamage() {
 		points = new ArrayList<Point2D>();
-		shapes = new ArrayList<Shape>();
-		effect = null;
+		//shapes = new ArrayList<Shape>();
+		effect = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	}
 	public ScreenDamage(Point2D origin) {
 		this();
@@ -134,30 +134,42 @@ public class ScreenDamage implements GameObject {
 		for(int i = 0; i < 10; i++) {
 			points.add(new Point2D.Double(GameWindow.randomGameWidth(), GameWindow.randomGameHeight()));
 		}
-		Polygon nextEffect = new Polygon();
-		Point2D first = SpaceHelper.random(points);
-		nextEffect.addPoint((int) first.getX(), (int) first.getY());
-		for(Point2D p : points) {
-			if(first.distance(p) < 200 && Math.random() < 1) {
-				nextEffect.addPoint((int) p.getX(), (int) p.getY());
-			}
-		}
-		nextEffect.addPoint((int) first.getX(), (int) first.getY());
+		/*
 		//nextEffect.addPoint(nextEffect.xpoints[0], nextEffect.ypoints[0]);
 		shapes.add(nextEffect);
-		for(int i = 0; i < 5; i++) {
-			Point2D p1 = SpaceHelper.random(points);
-			Point2D p2 = SpaceHelper.random(points);
-			shapes.add(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
-		}
+		*/
 		
-		effect = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = effect.createGraphics();
+		g2D.setPaint(SpaceHelper.random(snow));
+		/*
 		for(Shape s : shapes) {
 			g2D.setPaint(SpaceHelper.random(snow));
 			g2D.draw(s);
 			g2D.fill(s);
 		}
+		*/
+		for(int i = 0; i < 3; i++) {
+			Point2D p1 = SpaceHelper.random(points);
+			Point2D p2 = SpaceHelper.random(points);
+			//shapes.add(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
+			g2D.draw(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
+		}
+		
+		int pointCount = 0;
+		Polygon nextEffect = new Polygon();
+		Point2D first = SpaceHelper.random(points);
+		nextEffect.addPoint((int) first.getX(), (int) first.getY());
+		for(Point2D p : points) {
+			if(pointCount > 3) {
+				break;
+			}
+			if(first.distance(p) < 200 && Math.random() < 0.5) {
+				nextEffect.addPoint((int) p.getX(), (int) p.getY());
+				pointCount++;
+			}
+		}
+		nextEffect.addPoint((int) first.getX(), (int) first.getY());
+		g2D.fill(nextEffect);
 	}
 	@Override
 	public void draw(Graphics g) {

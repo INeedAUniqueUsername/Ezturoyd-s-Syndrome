@@ -2,6 +2,7 @@ package body;
 
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.awt.Shape;
 import java.util.ArrayList;
 
 public interface IBody {

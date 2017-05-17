@@ -93,8 +93,19 @@ public class Starship_Player extends Starship {
 		}
 	}
 	public final void onDamage(double damage) {
-		for(int i = 0; i < (damage / Math.max(1, getStructure())) * 2; i++) {
-			GamePanel.getWorld().getScreenDamage().update();
+		double structure = getStructure();
+		int[] damageLevels = new int[] {100, 75, 50, 40, 30, 25, 20, 16, 12, 9, 6, 4, 2, 1};
+		for(int i = 0; i < damageLevels.length; i++) {
+			int level = damageLevels[i];
+			if(structure < level) {
+				if(structure + damage > level) {
+					for(int j = 0; j < Math.min(i*5, 50); j++) {
+						GamePanel.getWorld().getScreenDamage().update();
+					}
+				}
+			} else {
+				break;
+			}
 		}
 	}
 	public final void onDestroy() {

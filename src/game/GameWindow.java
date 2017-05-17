@@ -21,8 +21,8 @@ public class GameWindow {
 		SCREEN_WIDTH = (int) screenSize.getWidth();
 		SCREEN_HEIGHT = (int) screenSize.getHeight();
 		
-		GAME_WIDTH = SCREEN_WIDTH;
-		GAME_HEIGHT = SCREEN_HEIGHT;
+		GAME_WIDTH = SCREEN_WIDTH*5;
+		GAME_HEIGHT = SCREEN_HEIGHT*5;
 	}
 	
 	public static final int SCREEN_CENTER_X = SCREEN_WIDTH/2;
