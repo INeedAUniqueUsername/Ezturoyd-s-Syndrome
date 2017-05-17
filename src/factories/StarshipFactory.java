@@ -1,4 +1,4 @@
-package space;
+package factories;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,10 +9,16 @@ import body.Body;
 import body.Body_Starship;
 import body.Body_Weapon;
 import override.Polygon2;
+import space.Starship;
+import space.Starship_NPC;
+import space.Starship_Player;
+import space.Weapon;
+import space.Weapon_Key;
+import space.Weapon_Mouse;
 
 //Please do not call our establishment a "factory." Unlike "factories," we don't just mass produce bunches of triangles and call them starships; we manufacture premium-quality vehicles for noble travellers of space.
-public final class Factory_Starship {
-	private Factory_Starship() {}
+public final class StarshipFactory {
+	private StarshipFactory() {}
 	public static final Starship_Player createPlayership() {
 		Starship_Player player = new Starship_Player();
 		player.setBody(new Body_Starship(player) {
@@ -26,6 +32,7 @@ public final class Factory_Starship {
 		player.setName("Player");
 		return player;
 	}
+	/*
 	public static final Starship_NPC createEnemy() {
 		Starship_NPC result = new Starship_NPC();
 		Weapon weapon = new Weapon(0, 0, 0, 5, 60, 10, 90);
@@ -62,4 +69,5 @@ public final class Factory_Starship {
 		});
 		return result;
 	}
+	*/
 }

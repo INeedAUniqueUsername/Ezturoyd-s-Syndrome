@@ -18,8 +18,8 @@ public class GameWindow {
 	
 	static {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		SCREEN_WIDTH = (int) screenSize.getWidth();
-		SCREEN_HEIGHT = (int) screenSize.getHeight();
+		SCREEN_WIDTH = 1000;//(int) screenSize.getWidth();
+		SCREEN_HEIGHT = 1000;//(int) screenSize.getHeight();
 		
 		GAME_WIDTH = SCREEN_WIDTH*5;
 		GAME_HEIGHT = SCREEN_HEIGHT*5;
@@ -76,7 +76,7 @@ public class GameWindow {
 	{
 		frame = new JFrame();
 		frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		//frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		panel = new GamePanel();
 		frame.add(panel);
 		frame.addMouseListener(panel);

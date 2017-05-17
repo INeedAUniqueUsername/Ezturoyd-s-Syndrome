@@ -25,10 +25,10 @@ import javax.swing.Timer;
 
 import deprecated.ScreenCracking_Deprecated;
 import display.ScreenDamage;
+import factories.StarshipFactory;
 import helpers.SpaceHelper;
 import interfaces.NewtonianMotion;
 import space.BackgroundStar;
-import space.Factory_Starship;
 import space.Level;
 import space.Level_Waves;
 import space.Projectile;
@@ -99,7 +99,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//projectiles = new ArrayList<Projectile>();
 		//asteroids = new ArrayList<Asteroid>();
 
-		player = Factory_Starship.createPlayership();
+		player = StarshipFactory.createPlayership();
 		player.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2);
 
 		universeAdd(player);

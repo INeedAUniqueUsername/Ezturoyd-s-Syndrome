@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import behavior.orders.Order_Escort;
+import factories.StarshipFactory;
 import game.GamePanel;
 import game.GameWindow;
 import space.Starship.Sovereign;
@@ -13,7 +14,8 @@ public class Level_Waves extends Level {
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
 		
-		Starship_NPC enemy_0 = Factory_Starship.createEnemy();
+		Starship_NPC enemy_0 = new Starship_NPC();
+		enemy_0.setAlignment(Sovereign.PLAYER);
 		enemy_0.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2 - 200);
 		enemy_0.getController().addOrder(new Order_Escort(enemy_0, player));
 		

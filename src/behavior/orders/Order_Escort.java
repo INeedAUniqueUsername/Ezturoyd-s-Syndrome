@@ -18,13 +18,13 @@ import space.Starship_NPC;
 
 public class Order_Escort extends Behavior_Starship{
 	private SpaceObject target;
-	private int escort_angle = 180;
-	private int escort_distance = 200;
+	private int escort_angle;
+	private int escort_distance;
 	
-	Order_AttackOrbit attackMode;
+	Order_AttackDirect attackMode;
 	
 	public Order_Escort(Starship_NPC owner, SpaceObject target) {
-		this(owner, target, 180, 300);
+		this(owner, target, 90, 200);
 		// TODO Auto-generated constructor stub
 	}
 	public Order_Escort(Starship_NPC owner, SpaceObject target, int angle, int distance) {
@@ -32,7 +32,7 @@ public class Order_Escort extends Behavior_Starship{
 		setOwner(owner);
 		setParameters(target, angle, distance);
 		
-		attackMode = new Order_AttackOrbit(owner, null);
+		attackMode = new Order_AttackDirect(owner, null);
 		attackMode.setActive(false);
 	}
 	public void setParameters(SpaceObject target, int angle, int distance) {
@@ -68,7 +68,7 @@ public class Order_Escort extends Behavior_Starship{
 					closestDistance = distance;
 				}
 			}
-			attackMode = new Order_AttackOrbit(owner, closest);
+			attackMode = new Order_AttackDirect(owner, closest);
 			attackMode.update();
 			copyActions(attackMode);
 			return;
@@ -114,7 +114,8 @@ public class Order_Escort extends Behavior_Starship{
 		double angle_to_destination = SpaceHelper.calcFireAngle(
 				SpaceHelper.calcDiff(owner.getPos(), pos_destination),
 				velDiff,
-				10 - velDiff.distance(0, 0)
+				/*10 - velDiff.distance(0, 0)*/
+				owner.getAcceleration(owner.getThrust())*30
 				);
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);
@@ -140,14 +141,13 @@ public class Order_Escort extends Behavior_Starship{
 			double velSpeed_owner = owner.getVelSpeed();
 			double velSpeed_target = target.getVelSpeed();
 			action_rotation = owner.calcTurnDirection(velAngle_target);
-			if(SpaceHelper.getAngleDiff(velAngle_owner, velAngle_target) > 0) {
+			if(SpaceHelper.getAngleDiff(velAngle_owner, velAngle_target) > 10) {
 				action_thrusting = ThrustingState.BRAKE;
-				printToWorld("STOP NOW");
-				
+				printToWorld("Braking");
 			}
 			else if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
 				owner.printToWorld("Adjusting Velocity Speed");
-				if(velSpeed_owner < velSpeed_target - 5) {
+				if(velSpeed_owner < velSpeed_target) {
 					owner.printToWorld("Increasing Velocity");
 					action_thrusting = ThrustingState.THRUST;
 				} else if(velSpeed_owner > velSpeed_target) {
