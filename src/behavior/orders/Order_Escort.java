@@ -92,11 +92,12 @@ public class Order_Escort extends Behavior_Starship{
 	}
 	public void updateEscort() {
 		Starship_NPC owner = getOwner();
-		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
-		Point2D.Double pos_destination = getNearestPosClone(pos_owner, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
+		Point2D.Double pos_owner = owner.getPos();
+		Point2D.Double pos_owner_future = owner.getFuturePosWithDeceleration();
+		Point2D.Double pos_destination = getNearestPosClone(pos_owner_future, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
 		GamePanel.getWorld().drawToScreen((Graphics g) -> {
 			g.setColor(Color.WHITE);
-			g.drawOval((int) pos_owner.getX(), (int) pos_owner.getY(), 5, 5);
+			g.drawOval((int) pos_owner_future.getX(), (int) pos_owner_future.getY(), 5, 5);
 		});
 		GamePanel.getWorld().drawToScreen((Graphics g) -> {
 			g.setColor(Color.WHITE);
@@ -111,25 +112,33 @@ public class Order_Escort extends Behavior_Starship{
 		
 		Point2D.Double velDiff = SpaceHelper.calcDiff(owner.getVel(), target.getVel());
 		printToWorld("Owner thrust: " + owner.getThrust());
-		double angle_to_destination = SpaceHelper.calcFireAngle(
+		double thrustAngle = SpaceHelper.calcFireAngle(
 				SpaceHelper.calcDiff(owner.getPos(), pos_destination),
 				velDiff,
 				/*10 - velDiff.distance(0, 0)*/
-				owner.getAcceleration(owner.getThrust())*30
+				//owner.getAcceleration(owner.getThrust())*(30 + SpaceHelper.scaleLinearUp(pos_owner.distance(pos_destination), 0, 500, 0, 30))
+				velDiff.distance(0, 0)/2 + 1
+				//Math.min(pos_owner.distance(pos_destination)/50, )
 				);
+		GamePanel.getWorld().drawToScreen(g -> {
+			Point2D offset = owner.polarOffset(thrustAngle, 10);
+			g.setColor(Color.RED);
+			g.drawLine((int) pos_owner_future.getX(), (int) pos_owner_future.getY(), (int) offset.getX(), (int) offset.getY());
+		});
 		double angle_current = owner.getAngleTowards(target);
-		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);
-		printToWorld("Angle to Escort Position: " + angle_to_destination);
+		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner_future);
+		printToWorld("Angle to Escort Position: " + thrustAngle);
 		printToWorld("Distance to Escort Position: " + distance_to_destination);
 		//Move towards the escort position
-		if(distance_to_destination > 10) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
+		if(distance_to_destination > 20) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
 			owner.printToWorld("Approaching Escort Position");
-			double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_destination);
-			
+			double faceAngleDiff = owner.calcFutureFacingDifference(thrustAngle);
+			double velAngleDiff = Starship.calcAngleDiff(owner.getVelAngle(), thrustAngle);
+			//If we should adjust our velocity angle
 			owner.printToWorld("Facing Towards Position");
-			action_rotation = owner.calcTurnDirection(angle_to_destination);
-			
-			if(faceAngleDiff < 15) {
+			action_rotation = owner.calcTurnDirection(thrustAngle);
+			//If we are near the thrust angle
+			if(faceAngleDiff < 30) {
 				owner.printToWorld("Moving Towards Position");
 				action_thrusting = ThrustingState.THRUST;
 			}
