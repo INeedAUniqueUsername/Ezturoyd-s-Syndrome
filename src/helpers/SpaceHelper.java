@@ -72,6 +72,10 @@ public class SpaceHelper {
 	{
 		return SpaceHelper.getAngleTowardsPos(new Point2D.Double(0, 0), calcFireSolutionTargetPosDiff(pos_diff, vel_diff, weapon_speed));
 	}
+	public static final Point2D.Double calcFireSolutionTargetPos(Point2D.Double pos_target, Point2D.Double pos_diff, Point2D.Double vel_diff, double weapon_speed) {
+		Point2D.Double futureDiff = calcFireSolutionTargetPosDiff(pos_diff, vel_diff, weapon_speed);
+		return new Point2D.Double(pos_target.getX() + futureDiff.getX(), pos_target.getY() + futureDiff.getY());
+	}
 
 	public static final Point2D.Double calcDiff(Point2D.Double origin, Point2D.Double destination) {
 		return new Point2D.Double(destination.getX() - origin.getX(), destination.getY() - origin.getY());
