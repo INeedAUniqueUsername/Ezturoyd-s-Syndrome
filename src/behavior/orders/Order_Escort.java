@@ -91,38 +91,35 @@ public class Order_Escort extends Behavior_Starship{
 		return 10000;
 	}
 	public void updateEscort() {
-		Starship_NPC owner = getOwner();
-		Point2D.Double pos_owner = owner.getFuturePosWithDeceleration();
-		Point2D.Double pos_destination = getNearestPosClone(pos_owner, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
-		GamePanel.getWorld().drawToScreen((Graphics g) -> {
-			g.setColor(Color.WHITE);
-			g.drawOval((int) pos_owner.getX(), (int) pos_owner.getY(), 5, 5);
-		});
-		GamePanel.getWorld().drawToScreen((Graphics g) -> {
-			g.setColor(Color.WHITE);
-			g.drawOval((int) pos_destination.getX(), (int) pos_destination.getY(), 5, 5);
-		});
 		ThrustingState action_thrusting = ThrustingState.NONE;
 		RotatingState action_rotation = RotatingState.NONE;
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;
+		
+		Starship_NPC owner = getOwner();
+		double speedDiff = target.getVelSpeed() * SpaceHelper.cosDegrees(SpaceHelper.getAngleDiff(owner.getVelAngle(), target.getVelAngle()));
+		Point2D.Double pos_owner = SpaceHelper.calcFuturePos(owner.getPos(), owner.getVel(), speedDiff);
+		Point2D.Double pos_destination = getNearestPosClone(pos_owner, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
 		
 		Point2D.Double velDiff = SpaceHelper.calcDiff(owner.getVel(), target.getVel());
 		printToWorld("Owner thrust: " + owner.getThrust());
-		double angle_to_destination = SpaceHelper.calcFireAngle(
-				SpaceHelper.calcDiff(owner.getPos(), pos_destination),
-				velDiff,
-				/*10 - velDiff.distance(0, 0)*/
-				owner.getAcceleration(owner.getThrust())*30
-				);
+		
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);
-		printToWorld("Angle to Escort Position: " + angle_to_destination);
-		printToWorld("Distance to Escort Position: " + distance_to_destination);
 		//Move towards the escort position
-		if(distance_to_destination > 10) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
+		if(distance_to_destination > 20) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
+			double angle_to_destination = SpaceHelper.calcFireAngle(
+					SpaceHelper.calcDiff(owner.getPos(), pos_destination),
+					velDiff,
+					/*10 - velDiff.distance(0, 0)*/
+					owner.getAcceleration(owner.getThrust())*30
+					);
+			
+			printToWorld("Angle to Escort Position: " + angle_to_destination);
+			printToWorld("Distance to Escort Position: " + distance_to_destination);
+			
 			owner.printToWorld("Approaching Escort Position");
 			double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_destination);
 			
@@ -140,12 +137,15 @@ public class Order_Escort extends Behavior_Starship{
 			double velAngle_target = target.getVelAngle();
 			double velSpeed_owner = owner.getVelSpeed();
 			double velSpeed_target = target.getVelSpeed();
-			action_rotation = owner.calcTurnDirection(velAngle_target);
+			double thrustAngle = SpaceHelper.arctanDegrees(velDiff.getY(), velDiff.getX());
+			action_rotation = owner.calcTurnDirection(thrustAngle);
+			/*
 			if(SpaceHelper.getAngleDiff(velAngle_owner, velAngle_target) > 10) {
 				action_thrusting = ThrustingState.BRAKE;
 				printToWorld("Braking");
 			}
-			else if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
+			*/
+			if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
 				owner.printToWorld("Adjusting Velocity Speed");
 				if(velSpeed_owner < velSpeed_target) {
 					owner.printToWorld("Increasing Velocity");
@@ -157,5 +157,13 @@ public class Order_Escort extends Behavior_Starship{
 			}
 		}
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
+		GamePanel.getWorld().drawToScreen((Graphics g) -> {
+			g.setColor(Color.WHITE);
+			g.drawOval((int) pos_owner.getX(), (int) pos_owner.getY(), 5, 5);
+		});
+		GamePanel.getWorld().drawToScreen((Graphics g) -> {
+			g.setColor(Color.WHITE);
+			g.drawOval((int) pos_destination.getX(), (int) pos_destination.getY(), 5, 5);
+		});
 	}
 }

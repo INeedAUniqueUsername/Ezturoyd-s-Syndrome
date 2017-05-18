@@ -13,9 +13,9 @@ import space.SpaceObject;
 
 public class SpaceHelper {
 
-	public static final void drawArrow(Graphics g, Point2D origin, Point2D dest)
+	public static final void drawArrow(Graphics g, Point2D origin, Point2D dest, Color color)
 	{
-		g.setColor(Color.GREEN);
+		g.setColor(color);
 		
 		double x1 = origin.getX();
 		double y1 = origin.getY();
@@ -101,7 +101,12 @@ public class SpaceHelper {
 	{
 		return Math.cos(Math.toRadians(angle));
 	}
-
+	public final static double magnitude(Point2D vector) {
+		return Math.sqrt(Math.pow(vector.getX(), 2) + Math.pow(vector.getY(), 2));
+	}
+	public final static double arctanDegrees(Point2D point) {
+		return arctanDegrees(point.getY(), point.getX());
+	}
 	public final static double arctanDegrees(double y, double x)
 	{
 		/*

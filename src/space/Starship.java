@@ -105,7 +105,7 @@ public class Starship extends SpaceObject implements IStarship {
 		//exhaust.incVelPolar(exhaustAngle + (vel_r > 0 ? 90 : -90), vel_r*2);
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
-		accelerateEnergy(pos_r, thrust);
+		accelerateEnergy(pos_r, thrust*5);
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#turnCCW()
@@ -199,16 +199,18 @@ public class Starship extends SpaceObject implements IStarship {
 	 */
 	@Override
 	public final Point2D.Double getFuturePosWithDeceleration() {
-		double x_decel_time = Math.abs(vel_x/decel);
-		double y_decel_time = Math.abs(vel_y/decel);
+		double decelTime = getVelSpeed()/decel;
 		return new Point2D.Double(
 				pos_x +
-				vel_x * x_decel_time +
-				((vel_x > 0) ? -1 : 1) * 0.5 * decel * Math.pow(x_decel_time, 2),
+				vel_x * decelTime +
+				((vel_x > 0) ? -1 : 1) * 0.5 * decel * Math.pow(decelTime, 2),
 				pos_y +
-				vel_y * y_decel_time+
-				((vel_y > 0) ? -1 : 1) * 0.5 * decel * Math.pow(y_decel_time, 2)
+				vel_y * decelTime +
+				((vel_y > 0) ? -1 : 1) * 0.5 * decel * Math.pow(decelTime, 2)
 				);
+	}
+	public final double getTimeNeededToDecel(double targetSpeed) {
+		return (getVelSpeed() - targetSpeed)/decel;
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#getFutureAngleWithDeceleration()

@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import behavior.orders.Order_AttackDirect;
+import behavior.orders.Order_AttackOrbit;
 import behavior.orders.Order_Escort;
 import factories.StarshipFactory;
 import game.GamePanel;
@@ -14,23 +16,26 @@ public class Level_Waves extends Level {
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
 		
-		Starship_NPC enemy_0 = new Starship_NPC();
-		enemy_0.setAlignment(Sovereign.PLAYER);
-		enemy_0.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2 - 200);
-		enemy_0.getController().addOrder(new Order_Escort(enemy_0, player));
+		Starship_NPC enemy_0 = createEnemyStarship();
+		enemy_0.getController().addOrder(new Order_AttackDirect(enemy_0, player));
+		Weapon weapon_01 = new Weapon();
+		weapon_01.setProjectileSpeed(30);
+		weapon_01.setProjectileDamage(1);
+		enemy_0.installWeapon(weapon_01);
 		
 		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		
-		enemy_1a.installWeapon(new Weapon());
-		enemy_1b.installWeapon(new Weapon());
-		enemy_1c.installWeapon(new Weapon());
+		enemy_1a.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
+		enemy_1b.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
+		enemy_1c.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
 		
 		enemy_1b.setThrust(2);
 		enemy_1b.setMax_speed(5);
 		
-		//enemy_1a.addOrderAttackDirect(player);
-		//enemy_1b.addOrderAttackDirect(player);
-		//enemy_1c.addOrderAttackDirect(player);
+		enemy_1a.getController().addOrder(new Order_AttackOrbit(enemy_1a, player));
+		enemy_1b.getController().addOrder(new Order_AttackOrbit(enemy_1b, player));
+		enemy_1c.getController().addOrder(new Order_Escort(enemy_1c, enemy_1b));
+		enemy_1c.getController().addOrder(new Order_AttackOrbit(enemy_1c, player));
 		
 		Starship_NPC enemy_2a = createEnemyStarship(), enemy_2b = createEnemyStarship(), enemy_2c = createEnemyStarship();
 		
@@ -47,14 +52,14 @@ public class Level_Waves extends Level {
 		
 		
 		
-		enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50));
-		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 30, 30));
-		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 12, 50));
+		enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50));
+		enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 3, 30));
+		enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50));
 		
-		//enemy_2a.addOrderAttackOrbit(player);
-		//enemy_2b.addOrderAttackDirect(player);
-		//enemy_2c.addOrderEscort(enemy_2a);
-		
+		enemy_2a.getController().addOrder(new Order_AttackDirect(enemy_2a, player));
+		enemy_2b.getController().addOrder(new Order_AttackDirect(enemy_2b, player));
+		enemy_2c.getController().addOrder(new Order_AttackOrbit(enemy_2c, player));
+
 		player.setStructure(100);
 		
 		setWaves(

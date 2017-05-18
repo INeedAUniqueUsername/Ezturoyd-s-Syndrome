@@ -1,7 +1,11 @@
 package space;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import game.GamePanel;
+import helpers.SpaceHelper;
 
 
 public class Starship_Player extends Starship {
@@ -33,6 +37,19 @@ public class Starship_Player extends Starship {
 			if(strafingRight)
 				strafeRight();
 		}
+	}
+	public void draw(Graphics g) {
+		for(SpaceObject so : GamePanel.getWorld().getStarships()) {
+			double angle = getAngleTowards(so);
+			Point2D.Double velDiff = SpaceHelper.calcDiff(getVel(), so.getVel());
+			double velAngle = SpaceHelper.arctanDegrees(velDiff);
+			double velSpeed = SpaceHelper.magnitude(velDiff);
+			double distance = getDistanceBetween(so);
+			Point2D.Double arrowStart = polarOffset(angle, 200);
+			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, angle, (distance - 200)/10), Color.RED);
+			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, velAngle, velSpeed), Color.YELLOW);
+		}
+		super.draw(g);
 	}
 	public final void setThrusting(boolean b) {
 		thrusting = b;
@@ -94,12 +111,12 @@ public class Starship_Player extends Starship {
 	}
 	public final void onDamage(double damage) {
 		double structure = getStructure();
-		int[] damageLevels = new int[] {100, 75, 50, 40, 30, 25, 20, 16, 12, 9, 6, 4, 2, 1};
+		int[] damageLevels = new int[] {100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34, 32, 30, 29, 28, 27, 26, 25};
 		for(int i = 0; i < damageLevels.length; i++) {
 			int level = damageLevels[i];
 			if(structure < level) {
 				if(structure + damage > level) {
-					for(int j = 0; j < Math.min(i*5, 50); j++) {
+					for(int j = 0; j < Math.min(i*5, 100); j++) {
 						GamePanel.getWorld().getScreenDamage().update();
 					}
 				}

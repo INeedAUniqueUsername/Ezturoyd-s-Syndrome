@@ -43,11 +43,13 @@ public class Weapon_Mouse extends Weapon{
 		double fireAngle;
 		switch(GamePanel.getCameraMode()) {
 		case FOLLOW_PLAYER:
-			fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToCenter(), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			//fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToCenter(), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = SpaceHelper.arctanDegrees(SpaceHelper.getMousePosRelativeToCenter());
 			break;
 		case FIXED:
 		default:
-			fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToObject(owner), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			//fireAngle = SpaceHelper.calcFireAngle(SpaceHelper.getMousePosRelativeToObject(owner), new Point2D.Double(-owner.getVelX(), -owner.getVelY()), getProjectileSpeed());
+			fireAngle = SpaceHelper.arctanDegrees(SpaceHelper.getMousePosRelativeToObject(owner));
 			break;
 		}
 		setFireAngle(fireAngle);

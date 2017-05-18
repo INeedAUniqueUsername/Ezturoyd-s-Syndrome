@@ -249,6 +249,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		for(SpaceObject o: universe)
 		{
 			o.draw(g2D);
+			
 			if(o instanceof Starship) {
 				for(Weapon w : ((Starship) o).getWeapon()) {
 					w.draw(g2D);
@@ -282,9 +283,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.setFiringMouse(true);
-		Point2D.Double mousePosRelative = SpaceHelper.getMousePosRelativeToCenter();
-		double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
-		player.incVelPolar(angle, 10);
+		//Point2D.Double mousePosRelative = SpaceHelper.getMousePosRelativeToCenter();
+		//double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
+		//player.incVelPolar(angle, 10);
 		/*
 		enemy_test.clearOrders();
 		enemy_test.addOrder(new Order_AttackOrbit(enemy_test, player));

@@ -27,7 +27,7 @@ public final class StarshipFactory {
 				super.draw(g);
 			}
 		});
-		player.installWeapon(new Weapon_Mouse(0, 0, 0, 5, 30, 10, 90));
+		player.installWeapon(new Weapon_Mouse(0, 0, 0, 10, 50, 20, 120));
 		player.installWeapon(new Weapon_Key(0, 25, 0, 5, 30, 10, 90));
 		player.setName("Player");
 		return player;
