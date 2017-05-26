@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import behavior.Behavior_Starship;
 import body.Body_Starship;
 import body.Body_StarshipExhaust;
+import factories.ExplosionFactory;
 import game.GamePanel;
 import helpers.SpaceHelper;
 
@@ -148,6 +149,7 @@ public class Starship extends SpaceObject implements IStarship {
 		if(getStructure() < 0)
 		{
 			destroy();
+			ExplosionFactory.createExplosion(getPos());
 		}
 		onDamage(damage);
 	}

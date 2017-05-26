@@ -40,6 +40,9 @@ public class Starship_Player extends Starship {
 	}
 	public void draw(Graphics g) {
 		for(SpaceObject so : GamePanel.getWorld().getStarships()) {
+			if(so.equals(this)) {
+				continue;
+			}
 			double angle = getAngleTowards(so);
 			Point2D.Double velDiff = SpaceHelper.calcDiff(getVel(), so.getVel());
 			double velAngle = SpaceHelper.arctanDegrees(velDiff);
@@ -48,6 +51,7 @@ public class Starship_Player extends Starship {
 			Point2D.Double arrowStart = polarOffset(angle, 200);
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, angle, (distance - 200)/10), Color.RED);
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, velAngle, velSpeed), Color.YELLOW);
+			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, so.getPosR(), 10), Color.WHITE);
 		}
 		super.draw(g);
 	}
@@ -114,11 +118,9 @@ public class Starship_Player extends Starship {
 		int[] damageLevels = new int[] {100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34, 32, 30, 29, 28, 27, 26, 25};
 		for(int i = 0; i < damageLevels.length; i++) {
 			int level = damageLevels[i];
-			if(structure < level) {
-				if(structure + damage > level) {
-					for(int j = 0; j < Math.min(i*5, 100); j++) {
-						GamePanel.getWorld().getScreenDamage().update();
-					}
+			if(structure < level && structure + damage > level) {
+				for(int j = 0; j < Math.min(i*5, 100); j++) {
+					GamePanel.getWorld().getScreenDamage().damageDisplay();
 				}
 			} else {
 				break;
@@ -126,5 +128,6 @@ public class Starship_Player extends Starship {
 		}
 	}
 	public final void onDestroy() {
+		GamePanel.getWorld().getScreenDamage().blind();
 	}
 }

@@ -2,10 +2,17 @@ package override;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Polygon2 extends Polygon {
-	public Polygon2(Point2D... points) {
-		setPoints(points);
+	public Polygon2() {
+		super();
+	}
+	public Polygon2(ArrayList<Point2D> points) {
+		super();
+		for(Point2D p : points) {
+			addPoint(p);
+		}
 	}
 	public void addPoint(Point2D point) {
 		addPoint((int) point.getX(), (int) point.getY());

@@ -110,7 +110,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		pos_y = y;
 	}
 	@Override
-	public final void setPosRectangular(Point2D.Double pos) {
+	public final void setPosRectangular(Point2D pos) {
 		pos_x = pos.getX();
 		pos_y = pos.getY();
 	}
@@ -132,11 +132,14 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		vel_y = y;
 	}
 	@Override
-	public final void setVelRectangular(Point2D.Double vel) {
+	public final void setVelRectangular(Point2D vel) {
 		vel_x = vel.getX();
 		vel_y = vel.getY();
 	}
 	@Override
+	public final void setVelR(double r) {
+		vel_r = r;
+	}
 	public final void setVel(double x, double y, double r) {
 		vel_x = x;
 		vel_y = y;
@@ -433,5 +436,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 	public final boolean exists(Object o)
 	{
 		return o != null;
+	}
+	public void onCollision(SpaceObject other) {
 	}
 }

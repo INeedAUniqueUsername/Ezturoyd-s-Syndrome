@@ -183,7 +183,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 							collisionStarshipProjectile(s, p, intersection);
 						}
 					} else if(o1 instanceof Projectile && o2 instanceof Projectile) {
-						collisionProjectileProjectile((Projectile) o1, (Projectile) o2, intersection);
+						//collisionProjectileProjectile((Projectile) o1, (Projectile) o2, intersection);
 					}
 				}
 			}

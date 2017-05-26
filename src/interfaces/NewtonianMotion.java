@@ -6,7 +6,7 @@ public interface NewtonianMotion {
 
 	public abstract void setPosRectangular(double x, double y);
 
-	public abstract void setPosRectangular(Point2D.Double pos);
+	public abstract void setPosRectangular(Point2D pos);
 
 	public abstract void setPosR(double posR);
 
@@ -14,8 +14,10 @@ public interface NewtonianMotion {
 
 	public abstract void setVelRectangular(double x, double y);
 
-	public abstract void setVelRectangular(Point2D.Double vel);
+	public abstract void setVelRectangular(Point2D vel);
 
+	public abstract void setVelR(double r);
+	
 	public abstract void setVel(double x, double y, double r);
 
 	public abstract void setVelPolar(double angle, double speed);

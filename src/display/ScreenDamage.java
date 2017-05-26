@@ -21,7 +21,7 @@ import helpers.SpaceHelper;
 import interfaces.GameObject;
 import override.Polygon2;
 
-public class ScreenDamage implements GameObject {
+public class ScreenDamage {
 	/*
 	private static ArrayList<Polygon2> screenSections;
 	static {
@@ -115,6 +115,15 @@ public class ScreenDamage implements GameObject {
 			snow[i] = new TexturePaint(image, new Rectangle(0, 0, 16, 16));
 		}
 	}
+	private static final TexturePaint dead;
+	static {
+		BufferedImage image = new BufferedImage(GameWindow.GAME_WIDTH, GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		int[] pixels = ( (DataBufferInt) image.getRaster().getDataBuffer() ).getData();
+		for(int j = 0; j < pixels.length; j++) {
+			pixels[j] = new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256), 255).getRGB();
+		}
+		dead = new TexturePaint(image, new Rectangle(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT));
+	}
 	ArrayList<Point2D> points;
 	//ArrayList<Shape> shapes;
 	BufferedImage effect;
@@ -127,8 +136,7 @@ public class ScreenDamage implements GameObject {
 		this();
 		points.add(origin);
 	}
-	@Override
-	public void update() {
+	public void damageDisplay() {
 		// TODO Auto-generated method stub
 		
 		for(int i = 0; i < 10; i++) {
@@ -171,7 +179,22 @@ public class ScreenDamage implements GameObject {
 		nextEffect.addPoint((int) first.getX(), (int) first.getY());
 		g2D.fill(nextEffect);
 	}
-	@Override
+	public void blind() {
+		Graphics2D g2D = effect.createGraphics();
+		g2D.setPaint(dead);
+		g2D.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
+		/*
+		for(int i = 0; i < 20; i++) {
+			ArrayList<Point2D> points = new ArrayList<>(4);
+			points.add(0, new Point2D.Double(GameWindow.randomGameWidth(), GameWindow.randomScreenHeight()));
+			g2D.setColor(new Color((int) SpaceHelper.random(255), (int) SpaceHelper.random(255), (int) SpaceHelper.random(255)));
+			for(int j = 1; j < 5; j++) {
+				points.add(SpaceHelper.polarOffset(points.get(j-1), SpaceHelper.random(360), SpaceHelper.random(20)));
+			}
+			g2D.fillPolygon(new Polygon2(points));
+		}
+		*/
+	}
 	public void draw(Graphics g) {
 		// TODO Auto-generated method stub
 		g.drawImage(effect, 0, 0, (ImageObserver) null);

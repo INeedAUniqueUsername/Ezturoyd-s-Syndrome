@@ -16,12 +16,12 @@ public class Level_Waves extends Level {
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
 		
-		Starship_NPC enemy_0 = createEnemyStarship();
+		Starship_NPC enemy_0 = StarshipFactory.createBasicEnemy2();
 		enemy_0.getController().addOrder(new Order_AttackDirect(enemy_0, player));
 		Weapon weapon_01 = new Weapon();
 		weapon_01.setProjectileSpeed(30);
 		weapon_01.setProjectileDamage(1);
-		enemy_0.installWeapon(weapon_01);
+		//enemy_0.installWeapon(weapon_01);
 		
 		Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c = createEnemyStarship();
 		

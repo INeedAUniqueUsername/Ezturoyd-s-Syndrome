@@ -71,7 +71,12 @@ public class GameWindow {
 	public static int randomGameHeight() {
 		return (int) SpaceHelper.random(GAME_HEIGHT);
 	}
-	
+	public static double randomScreenWidth() {
+		return (int) SpaceHelper.random(SCREEN_WIDTH);
+	}
+	public static double randomScreenHeight() {
+		return (int) SpaceHelper.random(SCREEN_HEIGHT);
+	}
 	public GameWindow()
 	{
 		frame = new JFrame();
