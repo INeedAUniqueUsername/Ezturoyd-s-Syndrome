@@ -184,7 +184,14 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		accelerate(kineticEnergy > 0 ? angle : angle + 180, getAcceleration(kineticEnergy));
 	}
 	public final double getAcceleration(double kineticEnergy) {
-		return Math.sqrt((2*Math.abs(kineticEnergy)/size));
+		return Math.sqrt((2*Math.abs(kineticEnergy)/getRelativisticMass()));
+	}
+	public final double getRelativisticMass() {
+		double ratio = 1 - (Math.pow(getVelSpeed(), 2)/Math.pow(GamePanel.LIGHT_SPEED, 2));
+		if(ratio < GamePanel.epsilon) {
+			ratio = GamePanel.epsilon;
+		}
+		return size / Math.sqrt(ratio);
 	}
 	@Override
 	public final void decelerate(double speed)
@@ -232,6 +239,9 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 			size += Math.abs(SpaceHelper.polygonArea(part.xpoints, part.ypoints, part.npoints));
 		}
 		//System.out.println("Size: " + size);
+	}
+	public final void setSize(int size) {
+		this.size = size;
 	}
 	
 	public abstract void update();

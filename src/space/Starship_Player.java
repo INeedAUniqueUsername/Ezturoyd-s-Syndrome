@@ -22,6 +22,7 @@ public class Starship_Player extends Starship {
 	private boolean strafingRight;
 	private boolean braking;
 	public void update() {
+		damage(3);
 		if(getActive()) {
 			updateActive();
 			if(thrusting)
@@ -119,7 +120,7 @@ public class Starship_Player extends Starship {
 		for(int i = 0; i < damageLevels.length; i++) {
 			int level = damageLevels[i];
 			if(structure < level && structure + damage > level) {
-				for(int j = 0; j < Math.min(i*5, 100); j++) {
+				for(int j = 0; j < i; j++) {
 					GamePanel.getWorld().getScreenDamage().damageDisplay();
 				}
 			} else {

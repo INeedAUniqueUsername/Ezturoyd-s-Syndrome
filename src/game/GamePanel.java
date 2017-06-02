@@ -47,6 +47,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		FIXED, FOLLOW_PLAYER
 	}
 	private static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
+	public static final double epsilon = .000000000000000000000000000000000000001;
+	public static final double LIGHT_SPEED = 30;
 	private int cameraOffset_x, cameraOffset_y;
 	final int INTERVAL = 10;
 	private Starship_Player player;
@@ -575,6 +577,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		s1.damage(p1.getDamage());
 		s1.onAttacked(p1.getOwner());
+		s1.accelerateEnergy(p1.getVelAngle(), p1.getKineticEnergy());
 		p1.destroy();
 	}
 	public void collisionStarshipStarship(Starship s1, Starship s2, Area intersection)
@@ -621,6 +624,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	{
 		p1.damage(p2.getDamage());
 		p2.damage(p1.getDamage());
+		
+		p1.accelerateEnergy(p2.getVelAngle(), p2.getKineticEnergy());
+		p2.accelerateEnergy(p1.getVelAngle(), p1.getKineticEnergy());
 		
 		p1.destroy();
 		p2.destroy();

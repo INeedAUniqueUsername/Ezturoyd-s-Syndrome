@@ -13,6 +13,7 @@ public class ExplosionFactory {
 		double interval = 360 / count;
 		for(int i = 0; i < count; i++) {
 			Projectile result = new Projectile();
+			result.setSize(20);
 			result.setPosRectangular(pos);
 			double angle = i * interval + SpaceHelper.random(interval * 2) - interval;
 			double speed = (SpaceHelper.random(30) + 20);

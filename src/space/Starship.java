@@ -98,7 +98,7 @@ public class Starship extends SpaceObject implements IStarship {
 		//Add rectangular exhaust effects
 		double exhaustAngle = pos_r + 180;
 		Point2D.Double exhaustPos = polarOffset(exhaustAngle, 10);
-		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 10, 10);
+		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 5, 10);
 		exhaust.setOwner(this);
 		exhaust.setBody(new Body_StarshipExhaust(exhaust));
 		//exhaust.setVelPolar(velAngle, getVelSpeed());
@@ -107,6 +107,9 @@ public class Starship extends SpaceObject implements IStarship {
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
 		accelerateEnergy(pos_r, thrust*5);
+		printToWorld("Thrust Energy: " + thrust*5);
+		printToWorld("Thrust Acceleration: " + getAcceleration(thrust * 5));
+		printToWorld("Relativistic Mass: " + getRelativisticMass());
 	}
 	/* (non-Javadoc)
 	 * @see IStarship#turnCCW()
@@ -145,13 +148,13 @@ public class Starship extends SpaceObject implements IStarship {
 	}
 
 	public final void damage(double damage) {
+		onDamage(damage);
 		setStructure(getStructure() - damage);
 		if(getStructure() < 0)
 		{
 			destroy();
 			ExplosionFactory.createExplosion(getPos());
 		}
-		onDamage(damage);
 	}
 	public void onDamage(double damage) {
 		

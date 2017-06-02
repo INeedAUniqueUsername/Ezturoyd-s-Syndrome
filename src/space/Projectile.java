@@ -24,6 +24,7 @@ public class Projectile extends SpaceObject {
 	public Projectile(double posX, double posY, double posR, int damage, int life) {
 		this(posX, posY, posR, damage, life, new Body());
 		setBody(new Body_Projectile(this));
+		updateBody();
 	}
 	public Projectile(double posX, double posY, double posR, int damage, int life, IBody body) {
 		setPosRectangular(posX, posY);

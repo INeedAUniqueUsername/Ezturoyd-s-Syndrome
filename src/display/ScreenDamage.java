@@ -140,7 +140,7 @@ public class ScreenDamage {
 		// TODO Auto-generated method stub
 		
 		for(int i = 0; i < 10; i++) {
-			points.add(new Point2D.Double(GameWindow.randomGameWidth(), GameWindow.randomGameHeight()));
+			points.add(new Point2D.Double(Math.random() * effect.getWidth(), Math.random() * effect.getHeight()));
 		}
 		/*
 		//nextEffect.addPoint(nextEffect.xpoints[0], nextEffect.ypoints[0]);
@@ -148,6 +148,7 @@ public class ScreenDamage {
 		*/
 		
 		Graphics2D g2D = effect.createGraphics();
+		
 		g2D.setPaint(SpaceHelper.random(snow));
 		/*
 		for(Shape s : shapes) {
@@ -156,28 +157,29 @@ public class ScreenDamage {
 			g2D.fill(s);
 		}
 		*/
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 2; i++) {
 			Point2D p1 = SpaceHelper.random(points);
 			Point2D p2 = SpaceHelper.random(points);
 			//shapes.add(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
 			g2D.draw(new Line2D.Double(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
 		}
-		
-		int pointCount = 0;
-		Polygon nextEffect = new Polygon();
-		Point2D first = SpaceHelper.random(points);
-		nextEffect.addPoint((int) first.getX(), (int) first.getY());
-		for(Point2D p : points) {
-			if(pointCount > 3) {
-				break;
+		for(int i = 0; i < 2; i++) {
+			int pointCount = 0;
+			Polygon nextEffect = new Polygon();
+			Point2D first = SpaceHelper.random(points);
+			nextEffect.addPoint((int) first.getX(), (int) first.getY());
+			for(Point2D p : points) {
+				if(pointCount > 3) {
+					break;
+				}
+				if(first.distance(p) < 200 && Math.random() < 0.5) {
+					nextEffect.addPoint((int) p.getX(), (int) p.getY());
+					pointCount++;
+				}
 			}
-			if(first.distance(p) < 200 && Math.random() < 0.5) {
-				nextEffect.addPoint((int) p.getX(), (int) p.getY());
-				pointCount++;
-			}
+			nextEffect.addPoint((int) first.getX(), (int) first.getY());
+			g2D.fill(nextEffect);
 		}
-		nextEffect.addPoint((int) first.getX(), (int) first.getY());
-		g2D.fill(nextEffect);
 	}
 	public void blind() {
 		Graphics2D g2D = effect.createGraphics();
