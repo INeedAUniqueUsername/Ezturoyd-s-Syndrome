@@ -56,7 +56,7 @@ public class GameWindow {
 		
 		Starship ship = StarshipFactory.createPlayership();
 		
-		for(int i = 0; i < 360; i++) {
+		for(int i = 0; i < 1; i++) {
 			ship.setPos(0,0,i);
 			ship.updateBody();
 			Area area = new Area();
@@ -76,14 +76,24 @@ public class GameWindow {
 			System.out.println("Y: " + bounds.getY());
 			System.out.println("W: " + bounds.getWidth());
 			System.out.println("H: " + bounds.getHeight());
-			BufferedImage result = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+			int scale = 200;
+			int width = bounds.width * scale;
+			int height = bounds.height * scale;
+			BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2D = (Graphics2D) result.getGraphics();
 			g2D.setColor(Color.BLACK);
-			g2D.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-			g2D.translate(-bounds.x, -bounds.y);
+			g2D.fillRect(0, 0, width, height);
+			g2D.translate(-bounds.x*scale, -bounds.y*scale);
+			g2D.scale(scale, scale);
 			ship.draw(g2D);
-			for(Weapon w : ship.getWeapon()) {
+			for(Weapon w : ship.getWeapon().subList(0, 1)) {
 				w.draw(g2D);
+			}
+			try {
+				ImageIO.write(result, "png", new File("./Output.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
