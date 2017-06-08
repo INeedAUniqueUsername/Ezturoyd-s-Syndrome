@@ -9,10 +9,18 @@ import java.awt.Toolkit;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.ImageOutputStreamImpl;
 import javax.swing.JFrame;
 
 import space.Starship;
@@ -45,46 +53,48 @@ public class GameWindow {
 	public static void main(String[] args) {
 		new GamePanel().newGame();
 		
+		
 		Starship ship = StarshipFactory.createPlayership();
-		ship.setPos(0,0,90);
-		ship.updateBody();
-		Area area = new Area();
-		for(Polygon p : ship.getBody().getShapes()) {
-			area.add(new Area(p.getBounds()));
-		}
-		for(Weapon w : ship.getWeapon()) {
-			w.setFireAngle(0);
-			w.update();
-			w.updateBody();
-			for(Polygon p : w.getBody().getShapes()) {
+		
+		for(int i = 0; i < 360; i++) {
+			ship.setPos(0,0,i);
+			ship.updateBody();
+			Area area = new Area();
+			for(Polygon p : ship.getBody().getShapes()) {
 				area.add(new Area(p.getBounds()));
 			}
+			for(Weapon w : ship.getWeapon()) {
+				w.setFireAngle(0);
+				w.update();
+				w.updateBody();
+				for(Polygon p : w.getBody().getShapes()) {
+					area.add(new Area(p.getBounds()));
+				}
+			}
+			Rectangle bounds = area.getBounds();
+			System.out.println("X: " + bounds.getX());
+			System.out.println("Y: " + bounds.getY());
+			System.out.println("W: " + bounds.getWidth());
+			System.out.println("H: " + bounds.getHeight());
+			BufferedImage result = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2D = (Graphics2D) result.getGraphics();
+			g2D.setColor(Color.BLACK);
+			g2D.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			g2D.translate(-bounds.x, -bounds.y);
+			ship.draw(g2D);
+			for(Weapon w : ship.getWeapon()) {
+				w.draw(g2D);
+			}
 		}
-		Rectangle bounds = area.getBounds();
-		System.out.println("X: " + bounds.getX());
-		System.out.println("Y: " + bounds.getY());
-		System.out.println("W: " + bounds.getWidth());
-		System.out.println("H: " + bounds.getHeight());
-		BufferedImage result = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2D = (Graphics2D) result.getGraphics();
-		g2D.setColor(Color.BLACK);
-		g2D.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-		g2D.translate(-bounds.x, -bounds.y);
-		g2D.scale(1, 1);
 		
-		
-		ship.draw(g2D);
-		for(Weapon w : ship.getWeapon()) {
-			w.draw(g2D);
-		}
-		
-		
+		/*
 		try {
 			ImageIO.write(result, "png", new File("./Output.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		System.exit(0);
 		
 		
