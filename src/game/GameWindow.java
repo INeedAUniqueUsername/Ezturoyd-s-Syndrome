@@ -1,12 +1,23 @@
 package game;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.geom.Area;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import space.Starship;
+import space.Weapon;
+import factories.StarshipFactory;
 import helpers.SpaceHelper;
 
 public class GameWindow {
@@ -32,6 +43,52 @@ public class GameWindow {
 	private GamePanel panel;
 	private JFrame frame;
 	public static void main(String[] args) {
+		new GamePanel().newGame();
+		
+		Starship ship = StarshipFactory.createPlayership();
+		ship.setPos(0,0,90);
+		ship.updateBody();
+		Area area = new Area();
+		for(Polygon p : ship.getBody().getShapes()) {
+			area.add(new Area(p.getBounds()));
+		}
+		for(Weapon w : ship.getWeapon()) {
+			w.setFireAngle(0);
+			w.update();
+			w.updateBody();
+			for(Polygon p : w.getBody().getShapes()) {
+				area.add(new Area(p.getBounds()));
+			}
+		}
+		Rectangle bounds = area.getBounds();
+		System.out.println("X: " + bounds.getX());
+		System.out.println("Y: " + bounds.getY());
+		System.out.println("W: " + bounds.getWidth());
+		System.out.println("H: " + bounds.getHeight());
+		BufferedImage result = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2D = (Graphics2D) result.getGraphics();
+		g2D.setColor(Color.BLACK);
+		g2D.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		g2D.translate(-bounds.x, -bounds.y);
+		g2D.scale(1, 1);
+		
+		
+		ship.draw(g2D);
+		for(Weapon w : ship.getWeapon()) {
+			w.draw(g2D);
+		}
+		
+		
+		try {
+			ImageIO.write(result, "png", new File("./Output.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.exit(0);
+		
+		
+		
 		// TODO Auto-generated method stub
 		 /* Total number of processors or cores available to the JVM */
 	    System.out.println("Available processors (cores): " + 
