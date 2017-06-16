@@ -53,7 +53,7 @@ public class GameWindow {
 	public static void main(String[] args) {
 		new GamePanel().newGame();
 		
-		
+		/*
 		Starship ship = StarshipFactory.createPlayership();
 		
 		for(int i = 0; i < 1; i++) {
@@ -96,6 +96,7 @@ public class GameWindow {
 				e.printStackTrace();
 			}
 		}
+		*/
 		
 		/*
 		try {
@@ -105,7 +106,7 @@ public class GameWindow {
 			e.printStackTrace();
 		}
 		*/
-		System.exit(0);
+		//System.exit(0);
 		
 		
 		

@@ -14,10 +14,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import javax.swing.JPanel;
@@ -75,6 +77,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private int tick;
 	private static GamePanel world;
 
+	//private LinkedList<BufferedImage> video = new LinkedList<BufferedImage>();
+	
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
@@ -132,16 +136,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
 		if(active) {
-			
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 			updateUniverse();
 			updateDraw(g);
+			/*
+			BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			updateDraw(b.getGraphics());
+			video.add(b);
+			*/
 		}
 	}
 	public void updateUniverse() {
 		//Update everything
-		setTick(getTick() + 1);
+		tick++;
 		
 		currentLevel.update();
 		
@@ -206,6 +212,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		objectsDestroyed.clear();
 	}
 	public void updateDraw(Graphics g) {
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
+		
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
 		double pos_x_player = player.getPosX();

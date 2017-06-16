@@ -2,6 +2,8 @@ package space;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import behavior.orders.Order_AttackDirect;
 import behavior.orders.Order_AttackOrbit;
@@ -59,20 +61,30 @@ public class Level_Waves extends Level {
 		enemy_2a.getController().addOrder(new Order_AttackDirect(enemy_2a, player));
 		enemy_2b.getController().addOrder(new Order_AttackDirect(enemy_2b, player));
 		enemy_2c.getController().addOrder(new Order_AttackOrbit(enemy_2c, player));
-
-		player.setStructure(100);
 		
 		setWaves(
 				new Wave(enemy_0),
 				new Wave(enemy_1a, enemy_1b, enemy_1c),
 				new Wave(enemy_2a, enemy_2b, enemy_2c));
+		
+		LinkedList<Wave> waves = new LinkedList<>();
+		for(int i = 4; i < 20; i++) {
+			LinkedList<Starship_NPC> enemies = new LinkedList<>();
+			for(int j = 0; j < 2 + i/2; j++) {
+				Starship_NPC enemy = createEnemyStarship();
+				enemy.getController().addOrder(new Order_AttackDirect(enemy, player));
+				enemies.add(enemy);
+			}
+			waves.add(new Wave(enemies.toArray(new Starship_NPC[0])));
+		}
+		addWaves(waves);
 	}
 	public void setWaves(Wave... w) {
 		this.waves = new ArrayList<>();
 		this.waves.addAll(Arrays.asList(w));
 	}
-	public void addWave(Wave w) {
-		waves.add(w);
+	public void addWaves(Collection<Wave> waves) {
+		waves.addAll(waves);
 	}
 	public void setPosOffscreen(Starship s) {
 		int x = 0;

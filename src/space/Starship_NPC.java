@@ -34,7 +34,6 @@ public class Starship_NPC extends Starship {
 			super.update();
 			controller.update();
 			controller.updateActions();
-			//thrust();
 		}
 	}
 	public final void setController(BehaviorController_Default c) {

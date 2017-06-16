@@ -157,7 +157,6 @@ public class Starship extends SpaceObject implements IStarship {
 		}
 	}
 	public void onDamage(double damage) {
-		
 	}
 	
 	public final ArrayList<Weapon> getWeapon()

@@ -14,6 +14,7 @@ import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.ImageObserver;
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 
 import game.GameWindow;
@@ -136,9 +137,14 @@ public class ScreenDamage {
 		this();
 		points.add(origin);
 	}
+	//Clear it so that the player can see again
+	public void healDisplay() {
+		Graphics2D g2D = effect.createGraphics();
+		g2D.setBackground(new Color(0, 0, 0, 0));
+		g2D.clearRect((int) GameWindow.randomScreenWidth(), (int) GameWindow.randomScreenHeight(), (int) SpaceHelper.random(50)+10, (int) SpaceHelper.random(50)+10);
+	}
 	public void damageDisplay() {
-		// TODO Auto-generated method stub
-		
+		//Add points so that we can make lines across the screen
 		for(int i = 0; i < 10; i++) {
 			points.add(new Point2D.Double(Math.random() * effect.getWidth(), Math.random() * effect.getHeight()));
 		}
@@ -149,7 +155,8 @@ public class ScreenDamage {
 		
 		Graphics2D g2D = effect.createGraphics();
 		
-		g2D.setPaint(SpaceHelper.random(snow));
+		//g2D.setPaint(SpaceHelper.random(snow));
+		g2D.setColor(Color.BLACK);
 		/*
 		for(Shape s : shapes) {
 			g2D.setPaint(SpaceHelper.random(snow));
@@ -183,8 +190,8 @@ public class ScreenDamage {
 	}
 	public void blind() {
 		Graphics2D g2D = effect.createGraphics();
-		g2D.setPaint(dead);
-		g2D.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
+		//g2D.setPaint(dead);
+		g2D.clearRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 		/*
 		for(int i = 0; i < 20; i++) {
 			ArrayList<Point2D> points = new ArrayList<>(4);
@@ -198,8 +205,6 @@ public class ScreenDamage {
 		*/
 	}
 	public void draw(Graphics g) {
-		// TODO Auto-generated method stub
 		g.drawImage(effect, 0, 0, (ImageObserver) null);
-		
 	}
 }

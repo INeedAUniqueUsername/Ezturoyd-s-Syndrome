@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import javax.swing.Timer;
+
 import game.GamePanel;
 import helpers.SpaceHelper;
 
@@ -22,7 +24,7 @@ public class Starship_Player extends Starship {
 	private boolean strafingRight;
 	private boolean braking;
 	public void update() {
-		damage(3);
+		GamePanel.getWorld().getScreenDamage().healDisplay();
 		if(getActive()) {
 			updateActive();
 			if(thrusting)
@@ -119,9 +121,12 @@ public class Starship_Player extends Starship {
 		int[] damageLevels = new int[] {100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34, 32, 30, 29, 28, 27, 26, 25};
 		for(int i = 0; i < damageLevels.length; i++) {
 			int level = damageLevels[i];
-			if(structure < level && structure + damage > level) {
-				for(int j = 0; j < i; j++) {
-					GamePanel.getWorld().getScreenDamage().damageDisplay();
+			//If we are looking at a damage level that we have not yet reached, then stop looking
+			if(structure < level) {
+				if(structure + damage > level) {
+					for(int j = 0; j < i; j++) {
+						GamePanel.getWorld().getScreenDamage().damageDisplay();
+					}
 				}
 			} else {
 				break;
