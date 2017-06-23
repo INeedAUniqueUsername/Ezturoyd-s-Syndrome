@@ -33,7 +33,7 @@ public class Starship extends SpaceObject implements IStarship {
 
 	private ArrayList<Weapon> weapons = new ArrayList<Weapon>();
 
-	enum Sovereign {
+	public enum Sovereign {
 		PLAYER, ENEMY
 	}
 	Sovereign alignment;

@@ -12,13 +12,16 @@ import factories.StarshipFactory;
 import game.GamePanel;
 import game.GameWindow;
 import space.Starship.Sovereign;
+import static helpers.SpaceHelper.*;
+import static java.lang.Math.*;
 
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
-		
+		/*
 		Starship_NPC enemy_0 = StarshipFactory.createBasicEnemy2();
+		enemy_0.setPosRectangular(player.polarOffset(9, 200));
 		enemy_0.getController().addOrder(new Order_AttackDirect(enemy_0, player));
 		Weapon weapon_01 = new Weapon();
 		weapon_01.setProjectileSpeed(30);
@@ -34,8 +37,11 @@ public class Level_Waves extends Level {
 		enemy_1b.setThrust(2);
 		enemy_1b.setMax_speed(5);
 		
+		enemy_1a.getController().addOrder(new Order_Escort(enemy_1a, enemy_1b));
 		enemy_1a.getController().addOrder(new Order_AttackOrbit(enemy_1a, player));
+		
 		enemy_1b.getController().addOrder(new Order_AttackOrbit(enemy_1b, player));
+		
 		enemy_1c.getController().addOrder(new Order_Escort(enemy_1c, enemy_1b));
 		enemy_1c.getController().addOrder(new Order_AttackOrbit(enemy_1c, player));
 		
@@ -66,16 +72,27 @@ public class Level_Waves extends Level {
 				new Wave(enemy_0),
 				new Wave(enemy_1a, enemy_1b, enemy_1c),
 				new Wave(enemy_2a, enemy_2b, enemy_2c));
-		
-		LinkedList<Wave> waves = new LinkedList<>();
-		for(int i = 4; i < 20; i++) {
-			LinkedList<Starship_NPC> enemies = new LinkedList<>();
-			for(int j = 0; j < 2 + i/2; j++) {
+		*/
+		setWaves();
+		int count_waves = 20;
+		Wave[] waves = new Wave[count_waves];
+		for(int i = 0; i < count_waves; i++) {
+			int count_enemies = 2 * 2 + i/2;
+			Starship_NPC[] enemies = new Starship_NPC[count_enemies];
+			int count_leaders = count_enemies / 4;
+			for(int j = 0; j < count_enemies; j++) {
 				Starship_NPC enemy = createEnemyStarship();
-				enemy.getController().addOrder(new Order_AttackDirect(enemy, player));
-				enemies.add(enemy);
+				enemy.getController().addOrder(
+						j > count_leaders ?
+							new Order_Escort(enemy, enemies[(int) (random() * count_leaders)]) :
+						//random() * j < count_enemies/4 ?
+							new Order_AttackDirect(enemy, player)
+						);
+				
+				enemy.installWeapon(new Weapon(0, 0, 0, (int) (5 + random() * 10), (int) (10 + random() * 20), (int) (random() * 4 + 1), (int) (random() * 50 + 20)));
+				enemies[j] = enemy;
 			}
-			waves.add(new Wave(enemies.toArray(new Starship_NPC[0])));
+			waves[i] = new Wave(enemies);
 		}
 		addWaves(waves);
 	}
@@ -83,27 +100,27 @@ public class Level_Waves extends Level {
 		this.waves = new ArrayList<>();
 		this.waves.addAll(Arrays.asList(w));
 	}
-	public void addWaves(Collection<Wave> waves) {
-		waves.addAll(waves);
+	public void addWaves(Wave... waves) {
+		this.waves.addAll(Arrays.asList(waves));
 	}
 	public void setPosOffscreen(Starship s) {
 		int x = 0;
 		int y = 0;
 		int borderDistance = 100;
-		double roll = Math.random() * 3;
+		double roll = random() * 3;
 		if(roll < 1) {
 			//Spawn somewhere past the left or right border
-			x = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
-			y = (int) (Math.random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
+			x = random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			y = (int) (random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
 		}
 		else if(roll < 2) {
 			//Spawn somewhere past the left or right border
-			x = (int) (Math.random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
-			y = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			x = (int) (random() * (GameWindow.GAME_HEIGHT + (2 * borderDistance) - borderDistance));
+			y = random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
 		} else {
 			//On one of the corners
-			x = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
-			y = Math.random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			x = random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
+			y = random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
 		}
 		s.setPosRectangular(x, y);
 	}

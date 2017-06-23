@@ -53,6 +53,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public static final double LIGHT_SPEED = 30;
 	private int cameraOffset_x, cameraOffset_y;
 	final int INTERVAL = 10;
+	private SpaceObject pov;
 	private Starship_Player player;
 	//private Starship_NPC enemy_test;
 	private ArrayList<SpaceObject> universe;
@@ -107,6 +108,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		player = StarshipFactory.createPlayership();
 		player.setPosRectangular(GameWindow.GAME_WIDTH/2, GameWindow.GAME_HEIGHT/2);
+		pov = player;
 
 		universeAdd(player);
 		
@@ -144,6 +146,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			video.add(b);
 			*/
 		}
+		
 	}
 	public void updateUniverse() {
 		//Update everything
@@ -152,7 +155,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		currentLevel.update();
 		
 		for(BackgroundStar b : background) {
-			b.update();
+			//b.update();
 		}
 		for(int i1 = 0; i1 < universe.size(); i1++) {
 			SpaceObject o1 = universe.get(i1);
@@ -218,12 +221,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		Graphics2D g2D = ((Graphics2D) g);
 		//g2D.rotate(-Math.toRadians(pos_r_player));
-		double pos_x_player = player.getPosX();
-		double pos_y_player = player.getPosY();
-		double pos_r_player = player.getPosR();
+		double pos_x_pov = pov.getPosX();
+		double pos_y_pov = pov.getPosY();
+		double pos_r_pov = pov.getPosR();
 		
-		double translateX = GameWindow.SCREEN_CENTER_X - (pos_x_player + cameraOffset_x);
-		double translateY = GameWindow.SCREEN_CENTER_Y + (pos_y_player + cameraOffset_y);
+		double translateX = GameWindow.SCREEN_CENTER_X - (pos_x_pov + cameraOffset_x);
+		double translateY = GameWindow.SCREEN_CENTER_Y + (pos_y_pov + cameraOffset_y);
 		
 		g2D.translate(translateX, translateY);
 		drawUniverse(g2D);
@@ -244,7 +247,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			print_y += line_height;
 		}
 		debugPrint.clear();
-		
 		g2D.dispose();
 	}
 	public void drawUniverse(Graphics2D g2D) {
@@ -358,22 +360,43 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			break;
 		case KeyEvent.VK_W:
-			if(state && cameraOffset_y < GameWindow.SCREEN_CENTER_Y-200)
-				cameraOffset_y = cameraOffset_y + 50;
+			if(state)// && cameraOffset_y < GameWindow.SCREEN_CENTER_Y-200)
+				cameraOffset_y += 50*5;
 			break;
 		case KeyEvent.VK_S:
-			if(state && cameraOffset_y > -GameWindow.SCREEN_CENTER_Y+200)
-				cameraOffset_y = cameraOffset_y - 50;
+			if(state)// && cameraOffset_y > 200-GameWindow.SCREEN_CENTER_Y)
+				cameraOffset_y -= 50*5;
 			break;
 		case KeyEvent.VK_A:
-			if(state && cameraOffset_x > -GameWindow.SCREEN_CENTER_X+200)
-				cameraOffset_x = cameraOffset_x - 50;
+			if(state)// && cameraOffset_x > 200-GameWindow.SCREEN_CENTER_X)
+				cameraOffset_x -= 50*5;
 			break;
 		case KeyEvent.VK_D:
-			if(state && cameraOffset_x < GameWindow.SCREEN_CENTER_X-200)
-				cameraOffset_x = cameraOffset_x + 50;
+			if(state)// && cameraOffset_x < GameWindow.SCREEN_CENTER_X-200)
+				cameraOffset_x += 50*5;
 			break;
-		
+		case KeyEvent.VK_E:
+			if(state) {
+				for(int i = 0; i < universe.size(); i++) {
+					SpaceObject o = universe.get(i);
+					if(o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY) && i > universe.indexOf(pov)) {
+						pov = o;
+						break;
+					}
+				}
+			}
+			break;
+		case KeyEvent.VK_Q:
+			if(state) {
+				for(int i = 0; i < universe.size(); i++) {
+					SpaceObject o = universe.get(i);
+					if(o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY) && i < universe.indexOf(pov)) {
+						pov = o;
+						break;
+					}
+				}
+			}
+			break;
 		case KeyEvent.VK_SHIFT:	strafeMode = state;		break;
 		case KeyEvent.VK_X:		player.setFiringKey(state);		break;
 		

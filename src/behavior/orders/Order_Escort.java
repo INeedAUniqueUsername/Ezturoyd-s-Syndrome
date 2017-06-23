@@ -24,7 +24,7 @@ public class Order_Escort extends Behavior_Starship{
 	Order_AttackDirect attackMode;
 	
 	public Order_Escort(Starship_NPC owner, SpaceObject target) {
-		this(owner, target, 90, 200);
+		this(owner, target, (int) (Math.random() * 360), 200 + (int) (Math.random() * 300));
 		// TODO Auto-generated constructor stub
 	}
 	public Order_Escort(Starship_NPC owner, SpaceObject target, int angle, int distance) {
@@ -80,7 +80,7 @@ public class Order_Escort extends Behavior_Starship{
 		ArrayList<SpaceObject> result = new ArrayList<SpaceObject>();
 		int range = getMaxDefendRange();
 		for(Starship s : GamePanel.getWorld().getStarships()) {
-			if(s.targetIsEnemy(owner) && owner.getDistanceBetween(s) < getMaxDefendRange()) {
+			if(s.targetIsEnemy(owner) && s != target && owner.getDistanceBetween(s) < getMaxDefendRange()) {
 				result.add(s);
 			}
 		}
@@ -97,8 +97,9 @@ public class Order_Escort extends Behavior_Starship{
 		AttackingState action_weapon = AttackingState.NONE;
 		
 		Starship_NPC owner = getOwner();
-		double speedDiff = target.getVelSpeed() * SpaceHelper.cosDegrees(SpaceHelper.getAngleDiff(owner.getVelAngle(), target.getVelAngle()));
-		Point2D.Double pos_owner = SpaceHelper.calcFuturePos(owner.getPos(), owner.getVel(), speedDiff);
+		//double speedDiff = target.getVelSpeed() * SpaceHelper.cosDegrees(SpaceHelper.getAngleDiff(owner.getVelAngle(), target.getVelAngle()));
+		//Point2D.Double pos_owner = SpaceHelper.calcFuturePos(owner.getPos(), owner.getVel(), speedDiff);
+		Point2D.Double pos_owner = owner.getPos();
 		Point2D.Double pos_destination = getNearestPosClone(pos_owner, target.polarOffset(target.getPosR() + escort_angle, escort_distance));
 		//double angle_to_destination = getAngleTowardsPos(destination_x_focus, destination_y_focus);
 		//double distance_to_destination = destination_distance_focus;
@@ -111,10 +112,10 @@ public class Order_Escort extends Behavior_Starship{
 		//Move towards the escort position
 		if(distance_to_destination > 20) { // || Starship_NPC.calcAngleDiff(angle_to_destination, escort_angle) < 10
 			double angle_to_destination = SpaceHelper.calcFireAngle(
-					SpaceHelper.calcDiff(owner.getPos(), pos_destination),
+					SpaceHelper.calcDiff(pos_owner, pos_destination),
 					velDiff,
 					/*10 - velDiff.distance(0, 0)*/
-					owner.getAcceleration(owner.getThrust())*30
+					owner.getAcceleration(20 * owner.getDecel() * owner.getThrust()) * Math.max(5, (GamePanel.LIGHT_SPEED - owner.getVelSpeed()))
 					);
 			
 			printToWorld("Angle to Escort Position: " + angle_to_destination);
@@ -154,6 +155,8 @@ public class Order_Escort extends Behavior_Starship{
 					owner.printToWorld("Decreasing Velocity");
 					action_thrusting = ThrustingState.BRAKE;
 				}
+			} else {
+				action_rotation = owner.calcTurnDirection(target.getPosR());
 			}
 		}
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
