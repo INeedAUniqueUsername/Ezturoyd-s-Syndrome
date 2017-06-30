@@ -128,25 +128,23 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-		tick++;
-		if (!player.getActive()) {
-			g.setColor(Color.BLACK);
-			g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
-			System.out.println("Dead");
-
-			if (tick % 480 < 240) {
-				drawStringCentered(g, "Final Score: " + score, 48, Color.red);
-			}
-			return;
-		}
 
 		if (active) {
+			tick++;
 			updateUniverse();
 			updateDraw(g);
 			/*
 			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT,
 			 * BufferedImage.TYPE_INT_ARGB); updateDraw(b.getGraphics()); video.add(b);
 			 */
+
+			player.setActive(false);
+			if (!player.getActive()) {
+				System.out.println("Dead: " + tick);
+				if (tick % 480 < 240) {
+					drawStringCentered(g, "Final Score: " + score, 48, Color.red);
+				}
+			}
 		}
 
 	}
