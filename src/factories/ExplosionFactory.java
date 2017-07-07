@@ -9,7 +9,7 @@ import space.Projectile;
 
 public class ExplosionFactory {
 	public static final void createExplosion(Point2D pos) {
-		int count = 18;
+		int count = 36;
 		double interval = 360 / count;
 		for(int i = 0; i < count; i++) {
 			Projectile result = new Projectile();

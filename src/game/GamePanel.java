@@ -440,12 +440,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			strafeMode = state;
 			break;
 		case KeyEvent.VK_C:
-			BufferedImage previewImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			int scale = 2;
+			BufferedImage previewImage = new BufferedImage(SCREEN_WIDTH*scale, SCREEN_HEIGHT*scale, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D previewG = (Graphics2D) previewImage.getGraphics();
 			previewG.setColor(Color.BLACK);
-			previewG.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-			previewG.scale(2, 2);
-			previewG.translate(-SCREEN_WIDTH / 4, -SCREEN_HEIGHT / 4);
+			previewG.fillRect(0, 0, SCREEN_WIDTH*scale, SCREEN_HEIGHT*scale);
+			previewG.scale(scale, scale);
+			//previewG.translate(-SCREEN_WIDTH * 2.5, -SCREEN_HEIGHT * 2.5);
 			updateDraw(previewG);
 			GameWindow.writeImage(previewImage, "Preview2");
 			break;
