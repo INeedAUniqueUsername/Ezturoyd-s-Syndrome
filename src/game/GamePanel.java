@@ -1,5 +1,8 @@
 package game;
 
+import static game.GameWindow.SCREEN_HEIGHT;
+import static game.GameWindow.SCREEN_WIDTH;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,6 +17,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -58,10 +62,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	private long score = 0;
 
-	// ScreenCracking screenEffect = new ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y, 10);
+	// ScreenCracking screenEffect = new
+	// ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y,
+	// 10);
 	ScreenDamage screenEffect = new ScreenDamage(new Point(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y));
 	/*
-	 * ArrayList<Starship> starships; ArrayList<Projectile> projectiles; ArrayList<Asteroid> asteroids;
+	 * ArrayList<Starship> starships; ArrayList<Projectile> projectiles;
+	 * ArrayList<Asteroid> asteroids;
 	 */
 	private ArrayList<String> debugPrint = new ArrayList<String>(0);
 	private ArrayList<Consumer<Graphics>> debugDraw = new ArrayList<Consumer<Graphics>>(0);
@@ -72,7 +79,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private long tick;
 	private static GamePanel world;
 
-	// private LinkedList<BufferedImage> video = new LinkedList<BufferedImage>();
+	// private LinkedList<BufferedImage> video = new
+	// LinkedList<BufferedImage>();
 
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
@@ -96,9 +104,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		objectsCreated = new ArrayList<SpaceObject>(0);
 		objectsDestroyed = new ArrayList<SpaceObject>(0);
 		background = new ArrayList<BackgroundStar>(0);
-		for (int i = 0; i < 100; i++) {
-			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(), SpaceHelper.random(360), 5));
+		for (int i = 0; i < 400; i++) {
+			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(),
+					SpaceHelper.random(360), 5));
 		}
+
+		BufferedImage backgroundImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics backgroundG = backgroundImage.getGraphics();
+		backgroundG.setColor(Color.BLACK);
+		backgroundG.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		for (BackgroundStar o : background) {
+			o.draw(backgroundG);
+		}
+		GameWindow.writeImage(backgroundImage, "Background");
+
 		// starships = new ArrayList<Starship>();
 		// projectiles = new ArrayList<Projectile>();
 		// asteroids = new ArrayList<Asteroid>();
@@ -110,8 +129,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		universeAdd(player);
 
 		/*
-		 * ∂ enemy_test = new Starship_NPC(); addStarship(enemy_test); enemy_test.setPosRectangular(400, 225);
-		 * enemy_test.setName("Enemy"); addWeapon(enemy_test, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
+		 * ∂ enemy_test = new Starship_NPC(); addStarship(enemy_test);
+		 * enemy_test.setPosRectangular(400, 225); enemy_test.setName("Enemy");
+		 * addWeapon(enemy_test, new Weapon(0, 10, 0, 5, 15, 1, 90, Color.RED));
 		 * enemy_test.addOrder(new Order_Escort(enemy_test, player));
 		 */
 		currentLevel = new Level_Waves();
@@ -121,10 +141,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void paintComponent(Graphics g) {
 		// g.clearRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
-		 * Starship player = ships.get(0); Asteroid rock = asteroids.get(0); double angle =
-		 * player.getAngleTowards(rock); int playerY = (int) player.getPosY(); int x = (int) player.getPosX(); int y =
-		 * (int) (GameWindow.HEIGHT - playerY); int x2 = (int) (x + 50 * player.cosDegrees(angle)); int y2 = (int)
-		 * (GameWindow.HEIGHT - (playerY + 50 * player.sinDegrees(angle)));
+		 * Starship player = ships.get(0); Asteroid rock = asteroids.get(0);
+		 * double angle = player.getAngleTowards(rock); int playerY = (int)
+		 * player.getPosY(); int x = (int) player.getPosX(); int y = (int)
+		 * (GameWindow.HEIGHT - playerY); int x2 = (int) (x + 50 *
+		 * player.cosDegrees(angle)); int y2 = (int) (GameWindow.HEIGHT -
+		 * (playerY + 50 * player.sinDegrees(angle)));
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
@@ -134,17 +156,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			updateUniverse();
 			updateDraw(g);
 			/*
-			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT,
-			 * BufferedImage.TYPE_INT_ARGB); updateDraw(b.getGraphics()); video.add(b);
+			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH,
+			 * GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			 * updateDraw(b.getGraphics()); video.add(b);
 			 */
 
-			player.setActive(false);
-			if (!player.getActive()) {
-				System.out.println("Dead: " + tick);
-				if (tick % 480 < 240) {
-					drawStringCentered(g, "Final Score: " + score, 48, Color.red);
-				}
-			}
+			/*
+			 * player.setActive(false); if (!player.getActive()) {
+			 * System.out.println("Dead: " + tick); if (tick % 480 < 240) {
+			 * drawStringCentered(g, "Final Score: " + score, 48, Color.red); }
+			 * }
+			 */
 		}
 
 	}
@@ -194,8 +216,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 						}
 					}
 					/*
-					 * else if (o1 instanceof Projectile && o2 instanceof Projectile) {
-					 * collisionProjectileProjectile((Projectile) o1, (Projectile) o2, intersection); }
+					 * else if (o1 instanceof Projectile && o2 instanceof
+					 * Projectile) { collisionProjectileProjectile((Projectile)
+					 * o1, (Projectile) o2, intersection); }
 					 */
 				}
 			}
@@ -238,7 +261,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		screenEffect.draw(g2D);
 		g2D.translate(cameraOffset_x, -cameraOffset_y);
 
-		// Print all current debug messages on screen. Debug list will only clear when the game is active.
+		// Print all current debug messages on screen. Debug list will only
+		// clear when the game is active.
 		g2D.setColor(Color.WHITE);
 		g2D.setFont(new Font("Consolas", Font.PLAIN, 18));
 		final int line_height = 18;
@@ -303,11 +327,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.setFiringMouse(true);
-		// Point2D.Double mousePosRelative = SpaceHelper.getMousePosRelativeToCenter();
-		// double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(), mousePosRelative.getX());
+		// Point2D.Double mousePosRelative =
+		// SpaceHelper.getMousePosRelativeToCenter();
+		// double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(),
+		// mousePosRelative.getX());
 		// player.incVelPolar(angle, 10);
 		/*
-		 * enemy_test.clearOrders(); enemy_test.addOrder(new Order_AttackOrbit(enemy_test, player));
+		 * enemy_test.clearOrders(); enemy_test.addOrder(new
+		 * Order_AttackOrbit(enemy_test, player));
 		 */
 	}
 
@@ -389,7 +416,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			if (state) {
 				for (int i = 0; i < universe.size(); i++) {
 					SpaceObject o = universe.get(i);
-					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY) && i > universe.indexOf(pov)) {
+					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY)
+							&& i > universe.indexOf(pov)) {
 						pov = o;
 						break;
 					}
@@ -400,7 +428,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			if (state) {
 				for (int i = 0; i < universe.size(); i++) {
 					SpaceObject o = universe.get(i);
-					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY) && i < universe.indexOf(pov)) {
+					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY)
+							&& i < universe.indexOf(pov)) {
 						pov = o;
 						break;
 					}
@@ -409,6 +438,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			break;
 		case KeyEvent.VK_SHIFT:
 			strafeMode = state;
+			break;
+		case KeyEvent.VK_C:
+			BufferedImage previewImage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D previewG = (Graphics2D) previewImage.getGraphics();
+			previewG.setColor(Color.BLACK);
+			previewG.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			previewG.scale(2, 2);
+			previewG.translate(-SCREEN_WIDTH / 4, -SCREEN_HEIGHT / 4);
+			updateDraw(previewG);
+			GameWindow.writeImage(previewImage, "Preview2");
 			break;
 		case KeyEvent.VK_X:
 			player.setFiringKey(state);
@@ -477,14 +516,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	/*
-	 * public void addWeapon(Starship ship, Weapon item) { ship.installWeapon(item); }
+	 * public void addWeapon(Starship ship, Weapon item) {
+	 * ship.installWeapon(item); }
 	 * 
-	 * public void addStarship(Starship ship) { //starships.add(ship); universe.add(ship); }
+	 * public void addStarship(Starship ship) { //starships.add(ship);
+	 * universe.add(ship); }
 	 * 
-	 * public void addProjectile(Projectile projectile) { //projectiles.add(projectile); universe.add(projectile); }
+	 * public void addProjectile(Projectile projectile) {
+	 * //projectiles.add(projectile); universe.add(projectile); }
 	 */
 	/*
-	 * public void addAsteroid(Asteroid asteroid) { //asteroids.add(asteroid); universe.add(asteroid); }
+	 * public void addAsteroid(Asteroid asteroid) { //asteroids.add(asteroid);
+	 * universe.add(asteroid); }
 	 */
 	// Warning: Do not use during universe iteration
 	private void universeAdd(SpaceObject so) {
@@ -499,14 +542,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		universe.remove(i);
 	}
 	/*
-	 * public void removeStarship(Starship ship) { universe.remove(ship); starships.remove(ship); }
+	 * public void removeStarship(Starship ship) { universe.remove(ship);
+	 * starships.remove(ship); }
 	 * 
-	 * public void removeProjectile(Projectile projectile) { universe.remove(projectile);
-	 * projectiles.remove(projectile); }
+	 * public void removeProjectile(Projectile projectile) {
+	 * universe.remove(projectile); projectiles.remove(projectile); }
 	 */
 
 	/*
-	 * public void removeAsteroid(Asteroid asteroid) { universe.remove(asteroid); asteroids.remove(asteroid); }
+	 * public void removeAsteroid(Asteroid asteroid) {
+	 * universe.remove(asteroid); asteroids.remove(asteroid); }
 	 */
 	public ScreenDamage getScreenDamage() {
 		return screenEffect;
@@ -559,7 +604,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			result = getStarships().contains(what);
 		}
 		/*
-		 * else if(what instanceof Asteroid) { result = asteroids.contains(what); }
+		 * else if(what instanceof Asteroid) { result =
+		 * asteroids.contains(what); }
 		 */
 		else if (what instanceof Projectile) {
 			result = getProjectiles().contains(what);
@@ -572,23 +618,31 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	/*
-	 * public void collisionAsteroidStarship(Asteroid_Deprecated_2 a, Starship s) { //print("--> Collision (Starship)");
-	 * double angle_asteroid_to_ship = a.getAngleTowards(s); double angle_ship_to_asteroid = a.getAngleFrom(s); double
-	 * asteroidKineticEnergy = a.getKineticEnergyAngled(angle_asteroid_to_ship); double shipKineticEnergy =
-	 * s.getKineticEnergyAngled(angle_ship_to_asteroid); double totalKineticEnergy = asteroidKineticEnergy +
-	 * shipKineticEnergy; double halfKineticEnergy = totalKineticEnergy / 2; s.impulse(angle_ship_to_asteroid,
-	 * halfKineticEnergy); a.impulse(angle_asteroid_to_ship, halfKineticEnergy);
+	 * public void collisionAsteroidStarship(Asteroid_Deprecated_2 a, Starship
+	 * s) { //print("--> Collision (Starship)"); double angle_asteroid_to_ship =
+	 * a.getAngleTowards(s); double angle_ship_to_asteroid = a.getAngleFrom(s);
+	 * double asteroidKineticEnergy =
+	 * a.getKineticEnergyAngled(angle_asteroid_to_ship); double
+	 * shipKineticEnergy = s.getKineticEnergyAngled(angle_ship_to_asteroid);
+	 * double totalKineticEnergy = asteroidKineticEnergy + shipKineticEnergy;
+	 * double halfKineticEnergy = totalKineticEnergy / 2;
+	 * s.impulse(angle_ship_to_asteroid, halfKineticEnergy);
+	 * a.impulse(angle_asteroid_to_ship, halfKineticEnergy);
 	 * 
 	 * s.damage(halfKineticEnergy / 100);
 	 * 
-	 * //print("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship); //print("Angle (Asteroid <-- Ship): " +
-	 * angle_ship_to_asteroid); //print("Momentum (Asteroid) " + asteroidMomentum); //print("Momentum (Ship): " +
-	 * shipMomentum); //print("<-- Collision (Starship)"); } public void collisionAsteroidAsteroid(Asteroid_Deprecated_2
-	 * a1, Asteroid_Deprecated_2 a2) { double angle_a1_to_a2 = a1.getAngleTowards(a2); double angle_a2_to_a1 =
-	 * a2.getAngleTowards(a1); double halfKineticEnergy = a1.getKineticEnergyAngled(angle_a1_to_a2) +
-	 * a2.getKineticEnergyAngled(angle_a2_to_a1); a1.impulse(angle_a2_to_a1, halfKineticEnergy);
-	 * a2.impulse(angle_a1_to_a2, halfKineticEnergy); a1.damage((int) halfKineticEnergy/1000, a2.getPosX(),
-	 * a2.getPosY()); a2.damage((int) halfKineticEnergy/1000, a1.getPosX(), a1.getPosY()); }
+	 * //print("Angle (Asteroid --> Ship): " + angle_asteroid_to_ship); //print(
+	 * "Angle (Asteroid <-- Ship): " + angle_ship_to_asteroid); //print(
+	 * "Momentum (Asteroid) " + asteroidMomentum); //print("Momentum (Ship): " +
+	 * shipMomentum); //print("<-- Collision (Starship)"); } public void
+	 * collisionAsteroidAsteroid(Asteroid_Deprecated_2 a1, Asteroid_Deprecated_2
+	 * a2) { double angle_a1_to_a2 = a1.getAngleTowards(a2); double
+	 * angle_a2_to_a1 = a2.getAngleTowards(a1); double halfKineticEnergy =
+	 * a1.getKineticEnergyAngled(angle_a1_to_a2) +
+	 * a2.getKineticEnergyAngled(angle_a2_to_a1); a1.impulse(angle_a2_to_a1,
+	 * halfKineticEnergy); a2.impulse(angle_a1_to_a2, halfKineticEnergy);
+	 * a1.damage((int) halfKineticEnergy/1000, a2.getPosX(), a2.getPosY());
+	 * a2.damage((int) halfKineticEnergy/1000, a1.getPosX(), a1.getPosY()); }
 	 */
 	public void collisionStarshipProjectile(Starship s1, Projectile p1, Area intersection) {
 		s1.damage(p1.getDamage());
@@ -614,14 +668,17 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		// Old collision model
 		/*
-		 * double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) + s2.getKineticEnergyAngled(angle_s2);
-		 * double kinetic_energy_half = kinetic_energy_total / 2; s1.accelerateEnergy(angle_s2, kinetic_energy_half);
-		 * s2.accelerateEnergy(angle_s1, kinetic_energy_half);
+		 * double kinetic_energy_total = s1.getKineticEnergyAngled(angle_s1) +
+		 * s2.getKineticEnergyAngled(angle_s2); double kinetic_energy_half =
+		 * kinetic_energy_total / 2; s1.accelerateEnergy(angle_s2,
+		 * kinetic_energy_half); s2.accelerateEnergy(angle_s1,
+		 * kinetic_energy_half);
 		 */
 
 		/*
-		 * double angle_diff_ccw = Helper.modRangeDegrees(angle_s1 - angle_s2); double angle_diff_cw =
-		 * Helper.modRangeDegrees(angle_s2 - angle_s1); double angle_diff = Helper.min(angle_diff_ccw, angle_diff_cw);
+		 * double angle_diff_ccw = Helper.modRangeDegrees(angle_s1 - angle_s2);
+		 * double angle_diff_cw = Helper.modRangeDegrees(angle_s2 - angle_s1);
+		 * double angle_diff = Helper.min(angle_diff_ccw, angle_diff_cw);
 		 */
 		double velAngle_s1 = s1.getVelAngle();
 		double velAngle_s2 = s2.getVelAngle();
@@ -629,8 +686,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		double velAngle_diff_cw = SpaceHelper.modRangeDegrees(velAngle_s2 - velAngle_s1);
 		double velAngle_diff = SpaceHelper.min(velAngle_diff_ccw, velAngle_diff_cw);
 
-		double impactEnergy_s1 = Math.abs(s1.getKineticEnergy() - s2.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
-		double impactEnergy_s2 = Math.abs(s2.getKineticEnergy() - s1.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
+		double impactEnergy_s1 = Math
+				.abs(s1.getKineticEnergy() - s2.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
+		double impactEnergy_s2 = Math
+				.abs(s2.getKineticEnergy() - s1.getKineticEnergy() * SpaceHelper.cosDegrees(velAngle_diff));
 
 		s1.accelerateEnergy(angle_s2, impactEnergy_s1 * 0.01);
 		s2.accelerateEnergy(angle_s1, impactEnergy_s2 * 0.01);
@@ -661,7 +720,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void drawStringCentered(Graphics g, String s, int size, Color color) {
 		g.setFont(new Font("Consolas", Font.BOLD, size));
 		g.setColor(color);
-		g.drawString(s, GameWindow.SCREEN_WIDTH / 2 - g.getFontMetrics().stringWidth(s) / 2, GameWindow.SCREEN_HEIGHT / 2 - size / 2);
+		g.drawString(s, GameWindow.SCREEN_WIDTH / 2 - g.getFontMetrics().stringWidth(s) / 2,
+				GameWindow.SCREEN_HEIGHT / 2 - size / 2);
 	}
 
 }
