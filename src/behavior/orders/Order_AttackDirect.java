@@ -27,6 +27,10 @@ public class Order_AttackDirect extends Behavior_Starship {
 		target = t;
 	}
 	public void update() {
+		super.update();
+		if(tick % UPDATE_INTERVAL != 0) {
+			return;
+		}
 		Starship_NPC owner = getOwner();
 		//Problem: Target is dead
 		if(!target.getActive()) {

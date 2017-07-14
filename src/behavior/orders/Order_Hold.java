@@ -13,6 +13,10 @@ public class Order_Hold extends Behavior_Starship {
 		super(o);
 	}
 	public void update() {
+		super.update();
+		if(tick % UPDATE_INTERVAL != 0) {
+			return;
+		}
 		Starship_NPC owner = getOwner();
 		
 		//To allow the AI to take advantage of wraparound, we make four clones of the target, one for each side of the screen.

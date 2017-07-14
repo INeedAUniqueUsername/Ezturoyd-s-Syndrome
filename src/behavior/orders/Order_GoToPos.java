@@ -28,6 +28,10 @@ public class Order_GoToPos extends Behavior_Starship {
 		return destination;
 	}
 	public void update() {
+		super.update();
+		if(tick % UPDATE_INTERVAL != 0) {
+			return;
+		}
 		Starship_NPC owner = getOwner();
 		//To allow the AI to take advantage of wraparound, we make four clones of the destination, one for each side of the screen.
 		if(owner.getDistanceBetweenPos(destination) < min_distance) {

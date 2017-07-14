@@ -26,6 +26,10 @@ public class Order_AttackOrbit extends Behavior_Starship {
 		target = t;
 	}
 	public void update() {
+		super.update();
+		if(tick % UPDATE_INTERVAL != 0) {
+			return;
+		}
 		updateAttackOrbit();
 	}
 	public void updateAttackOrbit() {

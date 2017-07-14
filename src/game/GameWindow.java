@@ -73,8 +73,8 @@ public class GameWindow {
 		int height = bounds.height * scale;
 		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = (Graphics2D) result.getGraphics();
-		g2D.setColor(Color.BLACK);
-		g2D.fillRect(0, 0, width, height);
+		g2D.setBackground(new Color(0, 0, 0, 0));
+		g2D.clearRect(0, 0, width, height);
 		g2D.translate(-bounds.x * scale, -bounds.y * scale);
 		g2D.scale(scale, scale);
 		o.draw(g2D);
@@ -97,8 +97,14 @@ public class GameWindow {
 
 	public static void main(String[] args) {
 		new GamePanel().newGame();
-		generateSprite(StarshipFactory.createPlayership(), "Player");
-		generateSprite(StarshipFactory.createPlayership().getWeapon().get(0).getShotType(), "Player Laser");
+		SpaceObject player = StarshipFactory.createPlayership();
+		player.setPosR(-30);
+		generateSprite(player, "Player");
+		
+		SpaceObject laser = StarshipFactory.createPlayership().getWeapon().get(0).getShotType();
+		laser.setPosR(-30);
+		generateSprite(laser, "Player Laser");
+		/*
 		Starship_NPC enemy = new Starship_NPC();
 		enemy.setPos(0, 0, 45);
 		enemy.installWeapon(new Weapon(0, 0, 0, 0, 0, 0, 0));
@@ -110,6 +116,7 @@ public class GameWindow {
 		Projectile exhaust2 = new Projectile(0, 0, 45, 5, 10);
 		exhaust2.setBody(new Body_StarshipExhaust(exhaust2));
 		generateSprite(exhaust2, "Exhaust Enemy");
+		*/
 		/*
 		 * Starship ship = StarshipFactory.createPlayership();
 		 * 
@@ -139,7 +146,7 @@ public class GameWindow {
 		 * (IOException e) { // TODO Auto-generated catch block
 		 * e.printStackTrace(); }
 		 */
-		// System.exit(0);
+		//System.exit(0);
 
 		// TODO Auto-generated method stub
 		/* Total number of processors or cores available to the JVM */

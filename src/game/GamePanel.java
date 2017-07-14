@@ -45,12 +45,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public enum CameraMode {
 		FIXED, FOLLOW_PLAYER
 	}
+	
+	public enum VerticalDirection {
+		UP, DOWN, NONE;
+	}
+	public enum HorizontalDirection {
+		RIGHT, LEFT, NONE;
+	}
+	
+	public VerticalDirection verticalScroll = VerticalDirection.NONE;
+	public HorizontalDirection horizontalScroll = HorizontalDirection.NONE;
 
 	private static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
 	public static final double epsilon = .000000000000000000000000000000000000001;
 	public static final double LIGHT_SPEED = 30;
 	private int cameraOffset_x, cameraOffset_y;
-	final int INTERVAL = 0;
+	final int INTERVAL = 1000/30;
 	private SpaceObject pov;
 	private Starship_Player player;
 	// private Starship_NPC enemy_test;
@@ -77,6 +87,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	// private int hits = 0;
 
 	private long tick;
+	private boolean gameover = false;
+	private boolean scrollBackToPlayer = true;
 	private static GamePanel world;
 
 	// private LinkedList<BufferedImage> video = new
@@ -160,13 +172,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			 * GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 			 * updateDraw(b.getGraphics()); video.add(b);
 			 */
-
-			/*
-			 * player.setActive(false); if (!player.getActive()) {
-			 * System.out.println("Dead: " + tick); if (tick % 480 < 240) {
-			 * drawStringCentered(g, "Final Score: " + score, 48, Color.red); }
-			 * }
-			 */
+			 
 		}
 
 	}
@@ -240,7 +246,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void updateDraw(Graphics g) {
-
+		int scrollRate = 50;
+		switch(verticalScroll) {
+		case UP:
+			cameraOffset_y += scrollRate;
+			break;
+		case DOWN:
+			cameraOffset_y -= scrollRate;
+			break;
+		}
+		switch(horizontalScroll) {
+		case RIGHT:
+			cameraOffset_x += scrollRate;
+			break;
+		case LEFT:
+			cameraOffset_x -= scrollRate;
+			break;
+		}
+		if(scrollBackToPlayer) {
+			cameraOffset_x *= 0.95;
+			cameraOffset_y *= 0.88;
+		}
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 
@@ -268,17 +294,28 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		final int line_height = 18;
 		int print_y = line_height;
 
-		g2D.drawString("Score: " + score, 10, print_y);
-		print_y += line_height;
+		if(player.getActive()) {
+			g2D.drawString("Score: " + score, 10, print_y);
+			print_y += line_height;
 
-		g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
-
+			g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
+		} else {
+			if(!gameover) {
+				gameover = true;
+				tick = 0;
+				return;
+			}
+			System.out.println("Dead: " + tick);
+			if (tick % 90 > 45) {
+				drawStringCentered(g, "Final Score: " + score, 48, Color.red);
+			}
+		}
+		
 		for (String s : debugPrint) {
-			// g2D.drawString(s, 10, print_y);
+			//g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
 		debugPrint.clear();
-		g2D.dispose();
 	}
 
 	public void drawUniverse(Graphics2D g2D) {
@@ -397,20 +434,51 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			break;
 		case KeyEvent.VK_W:
-			if (state)// && cameraOffset_y < GameWindow.SCREEN_CENTER_Y-200)
-				cameraOffset_y += 50 * 5;
+			if (state){// && cameraOffset_y < GameWindow.SCREEN_CENTER_Y-200)
+				//cameraOffset_y += 50 * 5;
+				verticalScroll = VerticalDirection.UP;
+			} else {
+				if(verticalScroll == VerticalDirection.UP) {
+					verticalScroll = VerticalDirection.NONE;
+				}
+			}
 			break;
 		case KeyEvent.VK_S:
-			if (state)// && cameraOffset_y > 200-GameWindow.SCREEN_CENTER_Y)
-				cameraOffset_y -= 50 * 5;
+			if (state){// && cameraOffset_y > 200-GameWindow.SCREEN_CENTER_Y)
+				//cameraOffset_y -= 50 * 5;
+				verticalScroll = VerticalDirection.DOWN;
+			} else {
+				if(verticalScroll == VerticalDirection.DOWN) {
+					verticalScroll = VerticalDirection.NONE;
+				}
+			}
 			break;
 		case KeyEvent.VK_A:
-			if (state)// && cameraOffset_x > 200-GameWindow.SCREEN_CENTER_X)
-				cameraOffset_x -= 50 * 5;
+			if (state){// && cameraOffset_x > 200-GameWindow.SCREEN_CENTER_X)
+				//cameraOffset_x -= 50 * 5;
+				horizontalScroll = HorizontalDirection.LEFT;
+			} else {
+				if(horizontalScroll == HorizontalDirection.LEFT) {
+					horizontalScroll = HorizontalDirection.NONE;
+				}
+			}
 			break;
 		case KeyEvent.VK_D:
-			if (state)// && cameraOffset_x < GameWindow.SCREEN_CENTER_X-200)
-				cameraOffset_x += 50 * 5;
+			if (state){// && cameraOffset_x < GameWindow.SCREEN_CENTER_X-200) {
+				//cameraOffset_x += 50 * 5;
+				horizontalScroll = HorizontalDirection.RIGHT;
+			}
+			else {
+				if(horizontalScroll == HorizontalDirection.RIGHT) {
+					horizontalScroll = HorizontalDirection.NONE;
+				}
+			}
+			break;
+		case KeyEvent.VK_F:
+			if(state) {
+				scrollBackToPlayer = !scrollBackToPlayer;
+			}
+			
 			break;
 		case KeyEvent.VK_E:
 			if (state) {
@@ -721,8 +789,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void drawStringCentered(Graphics g, String s, int size, Color color) {
 		g.setFont(new Font("Consolas", Font.BOLD, size));
 		g.setColor(color);
-		g.drawString(s, GameWindow.SCREEN_WIDTH / 2 - g.getFontMetrics().stringWidth(s) / 2,
-				GameWindow.SCREEN_HEIGHT / 2 - size / 2);
+		g.drawString(s, (GameWindow.SCREEN_WIDTH / 2) - (g.getFontMetrics().stringWidth(s) / 2),
+				(GameWindow.SCREEN_HEIGHT / 2) - (size / 2)
+				);
 	}
 
 }

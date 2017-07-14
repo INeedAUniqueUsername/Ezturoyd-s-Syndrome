@@ -2,7 +2,7 @@ package behavior;
 
 import static game.GameWindow.GAME_HEIGHT;
 import static game.GameWindow.GAME_WIDTH;
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 import java.awt.geom.Point2D;
 
@@ -11,6 +11,8 @@ import space.Starship_NPC;
 
 public abstract class Behavior_Starship {
 	Starship_NPC owner;
+	protected int tick;
+	public final int UPDATE_INTERVAL = 4;
 	private boolean active;
 
 	public static enum ThrustingState {
@@ -37,6 +39,7 @@ public abstract class Behavior_Starship {
 	public Behavior_Starship(Starship_NPC o) {
 		setOwner(o);
 		setActive(true);
+		tick = (int) (random() * UPDATE_INTERVAL);
 	}
 
 	public final void setOwner(Starship_NPC o) {
@@ -48,7 +51,7 @@ public abstract class Behavior_Starship {
 	}
 
 	public void update() {
-
+		tick++;
 	}
 
 	public final void setActive(boolean a) {

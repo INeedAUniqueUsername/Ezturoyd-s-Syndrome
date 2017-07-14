@@ -41,6 +41,10 @@ public class Order_Escort extends Behavior_Starship{
 		escort_distance = distance;
 	}
 	public void update() {
+		super.update();
+		if(tick % UPDATE_INTERVAL != 0) {
+			return;
+		}
 		Starship_NPC owner = getOwner();
 		if(!target.getActive()) {
 			owner.printToWorld("Target dead");
