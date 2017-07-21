@@ -97,6 +97,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
+		addKeyListener(this);
+		addMouseListener(this);
 		world = this;
 	}
 
@@ -521,12 +523,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		case KeyEvent.VK_X:
 			player.setFiringKey(state);
 			break;
-
 		case KeyEvent.VK_Z:
 			active = !state;
 			break;
 		case KeyEvent.VK_ESCAPE:
 			System.exit(0);
+			break;
+		case KeyEvent.VK_BACK_SPACE:
+			newGame();
+			break;
 		}
 	}
 

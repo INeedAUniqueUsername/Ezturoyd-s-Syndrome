@@ -2,11 +2,17 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +20,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 import body.Body_StarshipExhaust;
 import factories.StarshipFactory;
@@ -44,7 +53,6 @@ public class GameWindow {
 	public static final int SCREEN_CENTER_Y = SCREEN_HEIGHT / 2;
 	public static final Point SCREEN_CENTER = new Point(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
-	private GamePanel panel;
 	private JFrame frame;
 
 	public static void generateSprite(SpaceObject o, String name) {
@@ -199,18 +207,14 @@ public class GameWindow {
 		frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		// frame.setExtendedState(frame.getExtendedState() |
 		// JFrame.MAXIMIZED_BOTH);
-		panel = new GamePanel();
-		frame.add(panel);
-		frame.addMouseListener(panel);
-		frame.addKeyListener(panel);
+		frame.setBackground(Color.BLACK);
+		frame.add(new InstructionPanel());
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.setTitle("Ezturoyds Syndrome");
 
 		frame.setVisible(true);
-
-		panel.newGame();
 	}
 
 	public double scaleLinear(double input, double minFrom, double maxFrom, double minTo, double maxTo) {
@@ -223,5 +227,93 @@ public class GameWindow {
 
 		return minTo + inputDiff * rangeRatio;
 	}
-
+	class InstructionPanel extends JPanel implements KeyListener, MouseListener{
+		String FORMAT = "\t\t%-24s%s";
+		int printY;
+		final int PRINT_X = 256;
+		final int FONT_SIZE = 24;
+		{
+			addMouseListener(this);
+			addKeyListener(this);
+			JTextArea text = new JTextArea();
+			text.addMouseListener(this);
+			text.addKeyListener(this);
+			text.setFont(new Font("Monospaced", Font.PLAIN, FONT_SIZE));
+			text.setText(
+					"\n\n\n" +
+					String.format(FORMAT, "\u2191", "Thrust Forward")			+ "\n" +
+					String.format(FORMAT, "\u2193", "Decelerate (Magically)")	+ "\n" + "\n" +
+					
+					String.format(FORMAT, "\u2190", "Turn Left")				+ "\n" +
+					String.format(FORMAT, "\u2192", "Turn Right")				+ "\n" + "\n" +
+					
+					String.format(FORMAT, "\u2190 + \u8679", "Strafe Left")		+ "\n" +
+					String.format(FORMAT, "\u2192 + \u8679", "Strafe Right")	+ "\n" + "\n" +
+					
+					String.format(FORMAT, "Mouse", "Aim Turret")				+ "\n" +
+					String.format(FORMAT, "Left Click", "Fire Turret")			+ "\n" + "\n" +
+					
+					String.format(FORMAT, "x", "Fire Cannon")					+ "\n" + "\n" +
+					
+					String.format(FORMAT, "Backspace", "Restart Game")			+ "\n" +
+					String.format(FORMAT, "\u9099", "End Game")					+ "\n" +
+					String.format(FORMAT, "Any Key", "Start")
+					);
+			text.setEditable(false);
+			text.setBackground(Color.BLACK);
+			text.setForeground(Color.RED);
+			text.setFocusable(false);
+			setBackground(Color.BLACK);
+			requestFocus();
+			add(text);
+		}
+		public void paintComponent(Graphics g) {
+			//printY = 128;
+			
+			super.paintComponent(g);
+		}
+		/*
+		public void drawText(Graphics g, String message) {
+			g.drawString(message, PRINT_X, printY);
+			printY += FONT_SIZE;
+		}
+		*/
+		public void beginGame() {
+			removeMouseListener(this);
+			removeKeyListener(this);
+			frame.remove(this);
+			GamePanel game = new GamePanel();
+			frame.add(game);
+			frame.addKeyListener(game);
+			frame.addMouseListener(game);
+			Dimension frameSize = frame.getSize();
+			frame.pack();
+			frame.setSize(frameSize);
+			game.requestFocus();
+			game.newGame();
+		}
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			beginGame();
+		}
+		public void mousePressed(MouseEvent e) {
+			beginGame();			
+		}
+		public void mouseReleased(MouseEvent e) {
+			beginGame();			
+		}
+		public void mouseEntered(MouseEvent e) {
+		}
+		public void mouseExited(MouseEvent e) {
+		}
+		public void keyTyped(KeyEvent e) {
+			beginGame();
+		}
+		public void keyPressed(KeyEvent e) {
+			beginGame();
+		}
+		public void keyReleased(KeyEvent e) {
+			beginGame();
+		}
+	}
 }
