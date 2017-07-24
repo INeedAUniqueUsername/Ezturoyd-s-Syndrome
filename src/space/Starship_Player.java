@@ -135,6 +135,6 @@ public class Starship_Player extends Starship {
 	}
 
 	public final void onDestroy() {
-		// GamePanel.getWorld().getScreenDamage().blind();
+		GamePanel.getWorld().getScreenDamage().clear();
 	}
 }

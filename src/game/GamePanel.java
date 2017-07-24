@@ -269,7 +269,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			cameraOffset_x *= 0.95;
 			cameraOffset_y *= 0.88;
 		}
-		g.setColor(Color.BLACK);
+		int lowerLimit = 25;
+		g.setColor(new Color(0, 0, 0, 10 + (int) (200 * Math.pow((Math.max(player.getStructure() - lowerLimit, 0) / (100.0 - lowerLimit)), 2))));
 		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 
 		Graphics2D g2D = ((Graphics2D) g);
@@ -365,36 +366,27 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		player.setFiringMouse(true);
-		// Point2D.Double mousePosRelative =
-		// SpaceHelper.getMousePosRelativeToCenter();
-		// double angle = SpaceHelper.arctanDegrees(mousePosRelative.getY(),
-		// mousePosRelative.getX());
-		// player.incVelPolar(angle, 10);
-		/*
-		 * enemy_test.clearOrders(); enemy_test.addOrder(new
-		 * Order_AttackOrbit(enemy_test, player));
-		 */
+		setMouseState(e.getButton(), true);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		player.setFiringMouse(false);
+		setMouseState(e.getButton(), false);
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
 
+	public void setMouseState(int code, boolean state) {
+		switch(code) {
+		case MouseEvent.BUTTON1:
+			player.setFiringMouse(state);
+			break;
+		case MouseEvent.BUTTON3:
+			player.damage(10);
+			break;
+		}
 	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub

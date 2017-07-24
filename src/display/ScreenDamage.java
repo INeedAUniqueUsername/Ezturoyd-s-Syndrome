@@ -150,4 +150,10 @@ public class ScreenDamage {
 	public void draw(Graphics g) {
 		g.drawImage(effect, 0, 0, (ImageObserver) null);
 	}
+
+	public void clear() {
+		Graphics2D g2D = effect.createGraphics();
+		g2D.setBackground(new Color(0, 0, 0, 0));
+		g2D.clearRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
+	}
 }
