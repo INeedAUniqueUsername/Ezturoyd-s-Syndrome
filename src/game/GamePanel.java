@@ -180,6 +180,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void updateUniverse() {
+		//Score is meaningless
+		if(player.getActive()) {
+			score += tick / 30;
+		}
 		// Update everything
 		currentLevel.update();
 
@@ -382,9 +386,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		case MouseEvent.BUTTON1:
 			player.setFiringMouse(state);
 			break;
+		/*
 		case MouseEvent.BUTTON3:
 			player.damage(10);
 			break;
+		*/
 		}
 	}
 	@Override
@@ -717,9 +723,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		p1.destroy();
 
 		if (p1.getOwner() == player) {
-			score += p1.getDamage() * (0.2 * s1.getDistanceBetween(player)) / (0.1 * p1.getLifetime());
+			//score += p1.getDamage() * (0.2 * s1.getDistanceBetween(player)) / (0.1 * p1.getLifetime());
+			score += p1.getDamage() * ((tick % 300) / 30);
 		} else if (s1 == player) {
-			score += p1.getDamage() * p1.getLifetime();
+			score += p1.getDamage() * ((200 - player.getStructure()) / 100);
 		}
 	}
 
