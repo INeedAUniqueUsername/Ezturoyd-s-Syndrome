@@ -18,7 +18,8 @@ public class Starship extends SpaceObject implements IStarship {
 
 	private double thrust, max_speed, decel, rotation_max, rotation_accel, rotation_decel;
 
-	private double structure = 100;
+	private int structure = 100;
+	private int structure_max = 100;
 	private ArrayList<String> print = new ArrayList<String>();
 
 	private ArrayList<Weapon> weapons = new ArrayList<Weapon>();
@@ -52,7 +53,7 @@ public class Starship extends SpaceObject implements IStarship {
 
 	public void updateActive() {
 
-		if (structure < 100 && Math.random() < 0.3) {
+		if (structure < structure_max && Math.random() < 0.1) {
 			structure += 1;
 		}
 		double speed_r = Math.abs(vel_r);
@@ -147,7 +148,7 @@ public class Starship extends SpaceObject implements IStarship {
 		decelerate(decel);
 	}
 
-	public final void damage(double damage) {
+	public final void damage(int damage) {
 		onDamage(damage);
 		setStructure(getStructure() - damage);
 		if (getStructure() < 0) {
@@ -303,10 +304,6 @@ public class Starship extends SpaceObject implements IStarship {
 		return result;
 	}
 
-	public void setStructure(int structure) {
-		this.structure = structure;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -445,11 +442,17 @@ public class Starship extends SpaceObject implements IStarship {
 		this.rotation_decel = rotation_decel;
 	}
 
-	public double getStructure() {
+	public int getStructureMax() {
+		return structure_max;
+	}
+	public void setStructureMax(int max) {
+		structure_max = max;
+	}
+	public int getStructure() {
 		return structure;
 	}
 
-	public void setStructure(double structure) {
+	public void setStructure(int structure) {
 		this.structure = structure;
 	}
 }

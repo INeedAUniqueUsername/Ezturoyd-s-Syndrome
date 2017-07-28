@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,7 +34,19 @@ public class SpaceHelper {
 		Point2D.Double arrow_right = SpaceHelper.polarOffset(dest, angle - 120, 10);
 		g.drawLine((int) x2, (int) y2, (int) arrow_right.getX(), (int) arrow_right.getY());
 	}
-
+	public static void drawLine(Graphics g, Point2D origin, Point2D dest, Color color) {
+		g.setColor(color);
+		
+		double x1 = origin.getX();
+		double y1 = origin.getY();
+		
+		double x2 = dest.getX();
+		double y2 = dest.getY();
+		
+		double angle = SpaceHelper.arctanDegrees(y2 - y1, x2 - x1);
+		
+		g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+	}
 	public static final Point2D.Double calcFuturePos(Point2D.Double origin, Point2D.Double vel, double time)
 	{
 		double angle = SpaceHelper.arctanDegrees(vel.getY(), vel.getX());
@@ -256,4 +269,6 @@ public class SpaceHelper {
 		Point mousePos = MouseInfo.getPointerInfo().getLocation();
 		return new Point2D.Double(mousePos.getX() - o.getPosX(), (GameWindow.SCREEN_HEIGHT - mousePos.getY() + 50) - o.getPosY());
 	}
+
+	
 }

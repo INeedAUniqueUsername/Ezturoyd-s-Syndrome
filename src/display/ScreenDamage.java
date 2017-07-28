@@ -90,7 +90,7 @@ public class ScreenDamage {
 	public void healDisplay() {
 		Graphics2D g2D = effect.createGraphics();
 		g2D.setBackground(new Color(0, 0, 0, 0));
-		g2D.clearRect((int) GameWindow.randomScreenWidth(), (int) GameWindow.randomScreenHeight(), (int) SpaceHelper.random(100) + 100, (int) SpaceHelper.random(100) + 100);
+		g2D.clearRect((int) GameWindow.randomScreenWidth(), (int) GameWindow.randomScreenHeight(), (int) SpaceHelper.random(100) + 25, (int) SpaceHelper.random(100) + 25);
 	}
 
 	public void damageDisplay() {

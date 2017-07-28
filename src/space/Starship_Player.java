@@ -56,7 +56,17 @@ public class Starship_Player extends Starship {
 			double velSpeed = SpaceHelper.magnitude(velDiff);
 			double distance = getDistanceBetweenPos(pos);
 			Point2D.Double arrowStart = polarOffset(angle, 200);
-			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, angle, (distance - 200) / 10), Color.RED);
+			double distanceScaled = (distance - 200) / 10;
+			
+			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, angle, distanceScaled), Color.RED);
+			if(so instanceof Starship) {
+				Starship s = (Starship) so;
+				double structureScaled = distanceScaled * s.getStructure() / s.getStructureMax();
+				Point2D structureArrowStart = SpaceHelper.polarOffset(arrowStart, angle + 90, 2);
+				Point2D structureArrowEnd = SpaceHelper.polarOffset(structureArrowStart, angle, structureScaled);
+				SpaceHelper.drawLine(g, structureArrowStart, structureArrowEnd, Color.GREEN);
+			}
+			
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, velAngle, velSpeed), Color.YELLOW);
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, so.getPosR(), 10), Color.WHITE);
 		}

@@ -9,7 +9,7 @@ import space.Projectile;
 
 public class ExplosionFactory {
 	public static final void createExplosion(Point2D pos) {
-		int count = 36;
+		int count = 24;
 		double interval = 360 / count;
 		for(int i = 0; i < count; i++) {
 			Projectile result = new Projectile();
@@ -20,7 +20,7 @@ public class ExplosionFactory {
 			result.setVelPolar(angle, speed);
 			result.setPosR(angle);
 			result.setVelR((SpaceHelper.random(30) - 15) * 5);
-			result.setLifetime((int) (SpaceHelper.random(120) + 60));
+			result.setLifetime((int) (SpaceHelper.random(240) + 120));
 			result.setActive(true);
 			result.setBody(new Body_Projectile(result) {
 				int maxLife = result.getLifetime();

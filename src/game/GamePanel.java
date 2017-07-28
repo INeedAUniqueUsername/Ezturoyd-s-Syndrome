@@ -90,6 +90,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private boolean gameover = false;
 	private boolean scrollBackToPlayer = true;
 	private static GamePanel world;
+	private BufferedImage lastFrame;
 
 	// private LinkedList<BufferedImage> video = new
 	// LinkedList<BufferedImage>();
@@ -131,7 +132,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			o.draw(backgroundG);
 		}
 		GameWindow.writeImage(backgroundImage, "Background");
-
+		
 		// starships = new ArrayList<Starship>();
 		// projectiles = new ArrayList<Projectile>();
 		// asteroids = new ArrayList<Asteroid>();
@@ -150,6 +151,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 */
 		currentLevel = new Level_Waves();
 		currentLevel.start();
+		lastFrame = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = lastFrame.getGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		
+		setBackground(Color.BLACK);
 	}
 
 	public void paintComponent(Graphics g) {
@@ -164,11 +171,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
-
+		super.paintComponent(g);
 		if (active) {
 			tick++;
 			updateUniverse();
-			updateDraw(g);
+			updateDraw(lastFrame.createGraphics());
+			g.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			g.drawImage(lastFrame, 0, 0, this);
 			/*
 			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH,
 			 * GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -274,7 +283,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			cameraOffset_y *= 0.88;
 		}
 		int lowerLimit = 25;
-		g.setColor(new Color(0, 0, 0, 10 + (int) (200 * Math.pow((Math.max(player.getStructure() - lowerLimit, 0) / (100.0 - lowerLimit)), 2))));
+		g.setColor(new Color(0, 0, 0, 25 + (int) (175 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax() - lowerLimit)), 2))));
 		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 
 		Graphics2D g2D = ((Graphics2D) g);
@@ -305,7 +314,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			g2D.drawString("Score: " + score, 10, print_y);
 			print_y += line_height;
 
-			g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
+			//g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
+			g2D.setColor(Color.GREEN);
+			g2D.fillRect(10, print_y, (180 * player.getStructure()) / player.getStructureMax(), line_height);
 		} else {
 			if(!gameover) {
 				gameover = true;
@@ -388,7 +399,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			break;
 		/*
 		case MouseEvent.BUTTON3:
-			player.damage(10);
+			SpaceHelper.random(getStarships()).damage(10);
 			break;
 		*/
 		}
@@ -726,7 +737,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			//score += p1.getDamage() * (0.2 * s1.getDistanceBetween(player)) / (0.1 * p1.getLifetime());
 			score += p1.getDamage() * ((tick % 300) / 30);
 		} else if (s1 == player) {
-			score += p1.getDamage() * ((200 - player.getStructure()) / 100);
+			score += p1.getDamage() * ((200 - player.getStructure()) / player.getStructureMax());
 		}
 	}
 
@@ -766,8 +777,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		s1.accelerateEnergy(angle_s2, impactEnergy_s1 * 0.01);
 		s2.accelerateEnergy(angle_s1, impactEnergy_s2 * 0.01);
-		s1.damage(impactEnergy_s1 / s1.getMass());
-		s2.damage(impactEnergy_s1 / s2.getMass());
+		s1.damage((int) (impactEnergy_s1 / s1.getMass()));
+		s2.damage((int) (impactEnergy_s1 / s2.getMass()));
 		// print("<-- GamePanel: Starship-Starship Collision");
 	}
 

@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 
 import body.Body_StarshipExhaust;
 import factories.StarshipFactory;
@@ -33,7 +34,7 @@ import space.Starship;
 import space.Starship_NPC;
 import space.Weapon;
 
-public class GameWindow {
+public class GameWindow implements Runnable {
 	public static final int SCREEN_WIDTH;
 	public static final int SCREEN_HEIGHT;
 
@@ -181,8 +182,8 @@ public class GameWindow {
 			System.out.println("Free space (mb): " + root.getFreeSpace() / 1000000);
 			System.out.println("Usable space (mb): " + root.getUsableSpace() / 1000000);
 		}
-
-		GameWindow game = new GameWindow();
+		SwingUtilities.invokeLater(new GameWindow());
+		//GameWindow game = new GameWindow();
 
 	}
 
@@ -213,7 +214,7 @@ public class GameWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.setTitle("Ezturoyds Syndrome");
-
+		frame.requestFocus();
 		frame.setVisible(true);
 	}
 
@@ -231,38 +232,48 @@ public class GameWindow {
 		String FORMAT = "\t\t%-24s%s";
 		int printY;
 		final int PRINT_X = 256;
-		final int FONT_SIZE = 24;
+		final int FONT_SIZE = 27;
 		{
-			addMouseListener(this);
-			addKeyListener(this);
+			frame.addMouseListener(this);
+			frame.addKeyListener(this);
 			JTextArea text = new JTextArea();
 			text.addMouseListener(this);
 			text.addKeyListener(this);
-			text.setFont(new Font("Monospaced", Font.PLAIN, FONT_SIZE));
+			text.setFont(new Font("Monospaced", Font.BOLD, FONT_SIZE));
 			text.setText(
-					"\n\n\n" +
+					"\t\tSuper Nostalgia Entertainment Syndrome" +
+					"\n\n" +
 					String.format(FORMAT, "\u2191", "Thrust Forward")			+ "\n" +
 					String.format(FORMAT, "\u2193", "Decelerate (Magically)")	+ "\n" + "\n" +
 					
 					String.format(FORMAT, "\u2190", "Turn Left")				+ "\n" +
 					String.format(FORMAT, "\u2192", "Turn Right")				+ "\n" + "\n" +
 					
-					String.format(FORMAT, "\u2190 + \u8679", "Strafe Left")		+ "\n" +
-					String.format(FORMAT, "\u2192 + \u8679", "Strafe Right")	+ "\n" + "\n" +
+					String.format(FORMAT, "\u2190 + \u21E7", "Strafe Left")		+ "\n" +
+					String.format(FORMAT, "\u2192 + \u21E7", "Strafe Right")	+ "\n" + "\n" +
+					
+					String.format(FORMAT, "W", "Move Camera Up")				+ "\n" +
+					String.format(FORMAT, "S", "Move Camera Down")				+ "\n" +
+					String.format(FORMAT, "A", "Move Camera Left")				+ "\n" +
+					String.format(FORMAT, "D", "Move Camera Right")				+ "\n" + "\n" +
+					
+					String.format(FORMAT, "F", "Center Camera on Player")		+ "\n" + "\n" +
 					
 					String.format(FORMAT, "Mouse", "Aim Turret")				+ "\n" +
 					String.format(FORMAT, "Left Click", "Fire Turret")			+ "\n" + "\n" +
 					
-					String.format(FORMAT, "x", "Fire Cannon")					+ "\n" + "\n" +
+					String.format(FORMAT, "X", "Fire Cannon")					+ "\n" + "\n" +
 					
-					String.format(FORMAT, "Backspace", "Restart Game")			+ "\n" +
-					String.format(FORMAT, "\u9099", "End Game")					+ "\n" +
-					String.format(FORMAT, "Any Key", "Start")
+					String.format(FORMAT, "\u232B", "Restart Game")			+ "\n" +
+					String.format(FORMAT, "\u238B", "End Game")					+ "\n" +
+					String.format(FORMAT, "Any Click", "Start")
 					);
 			text.setEditable(false);
 			text.setBackground(Color.BLACK);
 			text.setForeground(Color.RED);
 			text.setFocusable(false);
+			text.addKeyListener(this);
+			text.addMouseListener(this);
 			setBackground(Color.BLACK);
 			requestFocus();
 			add(text);
@@ -279,13 +290,13 @@ public class GameWindow {
 		}
 		*/
 		public void beginGame() {
-			removeMouseListener(this);
-			removeKeyListener(this);
+			frame.removeMouseListener(this);
+			frame.removeKeyListener(this);
 			frame.remove(this);
 			GamePanel game = new GamePanel();
 			frame.add(game);
-			frame.addKeyListener(game);
 			frame.addMouseListener(game);
+			frame.addKeyListener(game);
 			Dimension frameSize = frame.getSize();
 			frame.pack();
 			frame.setSize(frameSize);
@@ -307,13 +318,21 @@ public class GameWindow {
 		public void mouseExited(MouseEvent e) {
 		}
 		public void keyTyped(KeyEvent e) {
+			System.out.println("Type");
 			beginGame();
 		}
 		public void keyPressed(KeyEvent e) {
+			System.out.println("Pressed");
 			beginGame();
 		}
 		public void keyReleased(KeyEvent e) {
+			System.out.println("Released");
 			beginGame();
 		}
+	}
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }

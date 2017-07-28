@@ -13,6 +13,7 @@ import game.GameWindow;
 public class Level_Waves extends Level {
 	ArrayList<Wave> waves;
 
+	//Randomize maneuver
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
 		/*
