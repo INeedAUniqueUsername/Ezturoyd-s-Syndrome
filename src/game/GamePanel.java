@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -207,11 +208,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				for (Weapon w : ((Starship) o1).getWeapon()) {
 					w.update();
 					if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-						print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
+						//print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 						Projectile shot = w.createShot();
 						createSpaceObject(shot);
 						w.setFireCooldownLeft(0);
-						print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
+						//print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 					}
 				}
 			}
@@ -220,7 +221,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				Area intersection = getIntersection(o1, o2);
 				if (!intersection.isEmpty()) {
 					if (o1 instanceof Starship && o2 instanceof Starship) {
-						System.out.println("Starship Collision");
+						//System.out.println("Starship Collision");
 						collisionStarshipStarship((Starship) o1, (Starship) o2, intersection);
 					} else if (o1 instanceof Starship && o2 instanceof Projectile) {
 						Starship s = (Starship) o1;
@@ -298,7 +299,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		drawUniverse(g2D);
 		drawWraparound(g2D);
 		g2D.translate(-translateX, -translateY);
-
 		g2D.translate(-cameraOffset_x, cameraOffset_y);
 		screenEffect.draw(g2D);
 		g2D.translate(cameraOffset_x, -cameraOffset_y);
@@ -359,7 +359,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		g2D.scale(1, -1);
 	}
 	public void drawWraparound(Graphics2D g2D) {
-		g2D.scale(1, -1);
+		//g2D.scale(1, -1);
 		//Drawing an image onto itself is totally acceptable, right?
 		
 		//Corner cases
@@ -368,33 +368,44 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		//Check if the screen may be clipping past the edge
 		boolean right = x_pov + cameraOffset_x + SCREEN_WIDTH > GAME_WIDTH;
 		boolean up = y_pov + cameraOffset_y + SCREEN_HEIGHT > GAME_HEIGHT;
-		boolean left = x_pov + cameraOffset_x + SCREEN_WIDTH < 0;
-		boolean down = y_pov + cameraOffset_y + SCREEN_HEIGHT < 0;
+		boolean left = x_pov + cameraOffset_x - SCREEN_WIDTH < 0;
+		boolean down = y_pov + cameraOffset_y - SCREEN_HEIGHT < 0;
+		ImageObserver observer = null;
 		if(right) {
-			g2D.drawImage(lastFrame, GAME_WIDTH, 0, this);
+			System.out.println("Right");
+			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, observer);
 		}
 		if(left) {
-			g2D.drawImage(lastFrame, -GAME_WIDTH, 0, this);
+			System.out.println("Left");
+			g2D.drawImage(lastFrame, -GAME_WIDTH, -GAME_HEIGHT, observer);
 		}
 		if(up) {
-			g2D.drawImage(lastFrame, 0, GAME_HEIGHT, this);
+			System.out.println("Up");
+			g2D.drawImage(lastFrame, 0, -GAME_HEIGHT*2, observer);
 		}
+		
+		//Broken
 		if(down) {
-			g2D.drawImage(lastFrame, 0, -GAME_HEIGHT, this);
+			System.out.println("Down");
+			g2D.drawImage(lastFrame, 0, 0, observer);
 		}
 		if(right && up) {
-			g2D.drawImage(lastFrame, GAME_WIDTH, GAME_HEIGHT, this);
+			System.out.println("RightUp");
+			g2D.drawImage(lastFrame, GAME_WIDTH, GAME_HEIGHT*2, observer);
 		}
 		if(right && down) {
-			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, this);
+			System.out.println("RightDown");
+			g2D.drawImage(lastFrame, GAME_WIDTH, 0, observer);
 		}
 		if(left && up) {
-			g2D.drawImage(lastFrame, -GAME_WIDTH, GAME_HEIGHT, this);
+			System.out.println("LeftUp");
+			g2D.drawImage(lastFrame, -GAME_WIDTH, GAME_HEIGHT*2, observer);
 		}
 		if(left && down) {
-			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, this);
+			System.out.println("LeftDown");
+			g2D.drawImage(lastFrame, GAME_WIDTH, 0, observer);
 		}
-		g2D.scale(1, -1);
+		//g2D.scale(1, -1);
 	}
 
 	public void printToScreen(String text) {
@@ -435,11 +446,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		case MouseEvent.BUTTON1:
 			player.setFiringMouse(state);
 			break;
-		/*
 		case MouseEvent.BUTTON3:
-			SpaceHelper.random(getStarships()).damage(10);
+			player.setPos(GAME_WIDTH - 50, GAME_HEIGHT - 50, 0);
 			break;
-		*/
 		}
 	}
 	@Override
