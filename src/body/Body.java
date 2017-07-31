@@ -63,9 +63,10 @@ public class Body implements IBody {
 	public void drawDefault(Graphics g) {
 		for(Polygon p : shapes) {
 			g.drawPolygon(p);
-			drawWrapClones(g, p);
+			//drawWrapClones(g, p);
 		}
 	}
+	/*
 	public static final void drawWrapClones(Graphics g, Polygon p) {
 		//Edge cases
 		drawTranslate(g, p, GameWindow.GAME_WIDTH, 0);
@@ -82,6 +83,7 @@ public class Body implements IBody {
 		drawTranslate(g, p, -GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
 		drawTranslate(g, p, -GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
 	}
+	*/
 	public static final void drawTranslate(Graphics g, Polygon p, int x, int y) {
 		Polygon translated = new Polygon();
 		int[] xPoints = p.xpoints;

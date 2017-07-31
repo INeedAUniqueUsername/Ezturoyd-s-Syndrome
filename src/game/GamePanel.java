@@ -1,7 +1,6 @@
 package game;
 
-import static game.GameWindow.SCREEN_HEIGHT;
-import static game.GameWindow.SCREEN_WIDTH;
+import static game.GameWindow.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -297,6 +296,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		g2D.translate(translateX, translateY);
 		drawUniverse(g2D);
+		drawWraparound(g2D);
 		g2D.translate(-translateX, -translateY);
 
 		g2D.translate(-cameraOffset_x, cameraOffset_y);
@@ -355,6 +355,44 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					w.draw(g2D);
 				}
 			}
+		}
+		g2D.scale(1, -1);
+	}
+	public void drawWraparound(Graphics2D g2D) {
+		g2D.scale(1, -1);
+		//Drawing an image onto itself is totally acceptable, right?
+		
+		//Corner cases
+		double x_pov = pov.getPosX();
+		double y_pov = pov.getPosY();
+		//Check if the screen may be clipping past the edge
+		boolean right = x_pov + cameraOffset_x + SCREEN_WIDTH > GAME_WIDTH;
+		boolean up = y_pov + cameraOffset_y + SCREEN_HEIGHT > GAME_HEIGHT;
+		boolean left = x_pov + cameraOffset_x + SCREEN_WIDTH < 0;
+		boolean down = y_pov + cameraOffset_y + SCREEN_HEIGHT < 0;
+		if(right) {
+			g2D.drawImage(lastFrame, GAME_WIDTH, 0, this);
+		}
+		if(left) {
+			g2D.drawImage(lastFrame, -GAME_WIDTH, 0, this);
+		}
+		if(up) {
+			g2D.drawImage(lastFrame, 0, GAME_HEIGHT, this);
+		}
+		if(down) {
+			g2D.drawImage(lastFrame, 0, -GAME_HEIGHT, this);
+		}
+		if(right && up) {
+			g2D.drawImage(lastFrame, GAME_WIDTH, GAME_HEIGHT, this);
+		}
+		if(right && down) {
+			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, this);
+		}
+		if(left && up) {
+			g2D.drawImage(lastFrame, -GAME_WIDTH, GAME_HEIGHT, this);
+		}
+		if(left && down) {
+			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, this);
 		}
 		g2D.scale(1, -1);
 	}
