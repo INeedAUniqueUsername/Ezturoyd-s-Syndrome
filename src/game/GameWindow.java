@@ -82,7 +82,7 @@ public class GameWindow implements Runnable {
 		int height = bounds.height * scale;
 		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = (Graphics2D) result.getGraphics();
-		g2D.setBackground(new Color(0, 0, 0, 0));
+		g2D.setBackground(new Color(0, 0, 0, 255));
 		g2D.clearRect(0, 0, width, height);
 		g2D.translate(-bounds.x * scale, -bounds.y * scale);
 		g2D.scale(scale, scale);
@@ -106,13 +106,17 @@ public class GameWindow implements Runnable {
 
 	public static void main(String[] args) {
 		new GamePanel().newGame();
+		/*
 		SpaceObject player = StarshipFactory.createPlayership();
-		player.setPosR(-30);
-		generateSprite(player, "Player");
+		player.setPosR(0);
+		generateSprite(player, "Courier v3");
+		*/
 		
+		/*
 		SpaceObject laser = StarshipFactory.createPlayership().getWeapon().get(0).getShotType();
 		laser.setPosR(-30);
 		generateSprite(laser, "Player Laser");
+		*/
 		/*
 		Starship_NPC enemy = new Starship_NPC();
 		enemy.setPos(0, 0, 45);
