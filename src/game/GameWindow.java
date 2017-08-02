@@ -77,7 +77,7 @@ public class GameWindow implements Runnable {
 		System.out.println("Y: " + bounds.getY());
 		System.out.println("W: " + bounds.getWidth());
 		System.out.println("H: " + bounds.getHeight());
-		int scale = 5;
+		int scale = 25;
 		int width = bounds.width * scale;
 		int height = bounds.height * scale;
 		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -111,7 +111,6 @@ public class GameWindow implements Runnable {
 		player.setPosR(0);
 		generateSprite(player, "Courier v3");
 		*/
-		
 		/*
 		SpaceObject laser = StarshipFactory.createPlayership().getWeapon().get(0).getShotType();
 		laser.setPosR(-30);
