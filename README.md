@@ -1,6 +1,11 @@
 # Super Nostalgia Entertainment Syndrome
-"**Retro gaming is a disease**"
+## Retro gaming is a disease
 Super Nostalgia Entertainment Syndrome (also known as SNES) is a condition where retro games survive long past their era and every depiction of video games involves retro games. It is especially prevalent in Hollywood with many cases of it having appeared in film and television. SNES also appears regularly in the independent video games industry.
+
+
+
+
+
 ## Ideas
 - Add Cave Story-like collectible fragments for no apparent reason
 - Keep track of damage to individual ship parts and have them break off into fragments
