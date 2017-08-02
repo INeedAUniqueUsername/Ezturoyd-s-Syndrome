@@ -371,6 +371,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		boolean left = x_pov + cameraOffset_x - SCREEN_WIDTH < 0;
 		boolean down = y_pov + cameraOffset_y - SCREEN_HEIGHT < 0;
 		ImageObserver observer = null;
+		
+		//Get an image of the universe and draw it
+		//Do not use the lastFrame because that is not the correct one.
+		
 		if(right) {
 			System.out.println("Right");
 			g2D.drawImage(lastFrame, GAME_WIDTH, -GAME_HEIGHT, observer);
