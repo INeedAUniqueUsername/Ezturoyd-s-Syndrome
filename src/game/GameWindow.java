@@ -116,15 +116,17 @@ public class GameWindow implements Runnable {
 		laser.setPosR(-30);
 		generateSprite(laser, "Player Laser");
 		*/
-		/*
+		
 		Starship_NPC enemy = new Starship_NPC();
-		enemy.setPos(0, 0, 45);
+		enemy.setPos(0, 0, 0);
 		enemy.installWeapon(new Weapon(0, 0, 0, 0, 0, 0, 0));
-		generateSprite(enemy, "Enemy");
+		generateSprite(enemy, "Courier v2 (Hostile)");
+		/*
 		Projectile exhaust = new Projectile(0, 0, 0, 5, 10);
 		exhaust.setBody(new Body_StarshipExhaust(exhaust));
 		generateSprite(exhaust, "Exhaust");
-
+		*/
+		/*
 		Projectile exhaust2 = new Projectile(0, 0, 45, 5, 10);
 		exhaust2.setBody(new Body_StarshipExhaust(exhaust2));
 		generateSprite(exhaust2, "Exhaust Enemy");
