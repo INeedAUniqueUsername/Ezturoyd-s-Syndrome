@@ -3,11 +3,10 @@ Welcome to Ezturoyds Syndrome, the simple space combat game that is totally not 
 
 Notice: All commits on this repository were made by one person, but a bug makes them appear to be from different people.
 
-##To Do
+## Ideas
 - Add Cave Story-like collectible fragments for no apparent reason
-- ADD TELEKINESES BECAUSE IT SOUNDS COOL
 - Keep track of damage to individual ship parts and have them break off into fragments
-- REALISTIC TURRET TURNING
+- More realistic turret turning
 - Have weapons break off from damage
 - Add ProjectileType and WeaponType classes that create objects based on parameters
 
