@@ -17,45 +17,57 @@ public class Level_Waves extends Level {
 	public Level_Waves() {
 		Starship player = GamePanel.getWorld().getPlayer();
 		/*
-		 * Starship_NPC enemy_0 = StarshipFactory.createBasicEnemy2(); enemy_0.setPosRectangular(player.polarOffset(9,
-		 * 200)); enemy_0.getController().addOrder(new Order_AttackDirect(enemy_0, player)); Weapon weapon_01 = new
-		 * Weapon(); weapon_01.setProjectileSpeed(30); weapon_01.setProjectileDamage(1);
+		 * Starship_NPC enemy_0 = StarshipFactory.createBasicEnemy2();
+		 * enemy_0.setPosRectangular(player.polarOffset(9, 200));
+		 * enemy_0.getController().addOrder(new Order_AttackDirect(enemy_0,
+		 * player)); Weapon weapon_01 = new Weapon();
+		 * weapon_01.setProjectileSpeed(30); weapon_01.setProjectileDamage(1);
 		 * //enemy_0.installWeapon(weapon_01);
 		 * 
-		 * Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b = createEnemyStarship(), enemy_1c =
-		 * createEnemyStarship();
+		 * Starship_NPC enemy_1a = createEnemyStarship(), enemy_1b =
+		 * createEnemyStarship(), enemy_1c = createEnemyStarship();
 		 * 
-		 * enemy_1a.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60)); enemy_1b.installWeapon(new Weapon(0, 0, 0, 20,
-		 * 20, 2, 60)); enemy_1c.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
+		 * enemy_1a.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
+		 * enemy_1b.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
+		 * enemy_1c.installWeapon(new Weapon(0, 0, 0, 20, 20, 2, 60));
 		 * 
 		 * enemy_1b.setThrust(2); enemy_1b.setMax_speed(5);
 		 * 
-		 * enemy_1a.getController().addOrder(new Order_Escort(enemy_1a, enemy_1b));
-		 * enemy_1a.getController().addOrder(new Order_AttackOrbit(enemy_1a, player));
+		 * enemy_1a.getController().addOrder(new Order_Escort(enemy_1a,
+		 * enemy_1b)); enemy_1a.getController().addOrder(new
+		 * Order_AttackOrbit(enemy_1a, player));
 		 * 
-		 * enemy_1b.getController().addOrder(new Order_AttackOrbit(enemy_1b, player));
+		 * enemy_1b.getController().addOrder(new Order_AttackOrbit(enemy_1b,
+		 * player));
 		 * 
-		 * enemy_1c.getController().addOrder(new Order_Escort(enemy_1c, enemy_1b));
-		 * enemy_1c.getController().addOrder(new Order_AttackOrbit(enemy_1c, player));
+		 * enemy_1c.getController().addOrder(new Order_Escort(enemy_1c,
+		 * enemy_1b)); enemy_1c.getController().addOrder(new
+		 * Order_AttackOrbit(enemy_1c, player));
 		 * 
-		 * Starship_NPC enemy_2a = createEnemyStarship(), enemy_2b = createEnemyStarship(), enemy_2c =
-		 * createEnemyStarship();
-		 * 
-		 * 
-		 * //enemy_2a.addOrderAttackOrbit(player); enemy_2a.setMax_speed(12); enemy_2a.setRotation_max(24);
-		 * enemy_2b.setMax_speed(4); enemy_2b.setThrust(2); enemy_2b.setRotation_accel(0.3);
-		 * enemy_2b.setRotation_decel(0.2); enemy_2c.setMax_speed(10); enemy_2c.setRotation_max(21);
+		 * Starship_NPC enemy_2a = createEnemyStarship(), enemy_2b =
+		 * createEnemyStarship(), enemy_2c = createEnemyStarship();
 		 * 
 		 * 
+		 * //enemy_2a.addOrderAttackOrbit(player); enemy_2a.setMax_speed(12);
+		 * enemy_2a.setRotation_max(24); enemy_2b.setMax_speed(4);
+		 * enemy_2b.setThrust(2); enemy_2b.setRotation_accel(0.3);
+		 * enemy_2b.setRotation_decel(0.2); enemy_2c.setMax_speed(10);
+		 * enemy_2c.setRotation_max(21);
 		 * 
-		 * enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50)); enemy_2b.installWeapon(new Weapon(0, 0, 0, 30,
-		 * 40, 3, 30)); enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50));
 		 * 
-		 * enemy_2a.getController().addOrder(new Order_AttackDirect(enemy_2a, player));
-		 * enemy_2b.getController().addOrder(new Order_AttackDirect(enemy_2b, player));
-		 * enemy_2c.getController().addOrder(new Order_AttackOrbit(enemy_2c, player));
 		 * 
-		 * setWaves( new Wave(enemy_0), new Wave(enemy_1a, enemy_1b, enemy_1c), new Wave(enemy_2a, enemy_2b, enemy_2c));
+		 * enemy_2a.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50));
+		 * enemy_2b.installWeapon(new Weapon(0, 0, 0, 30, 40, 3, 30));
+		 * enemy_2c.installWeapon(new Weapon(0, 0, 0, 10, 20, 3, 50));
+		 * 
+		 * enemy_2a.getController().addOrder(new Order_AttackDirect(enemy_2a,
+		 * player)); enemy_2b.getController().addOrder(new
+		 * Order_AttackDirect(enemy_2b, player));
+		 * enemy_2c.getController().addOrder(new Order_AttackOrbit(enemy_2c,
+		 * player));
+		 * 
+		 * setWaves( new Wave(enemy_0), new Wave(enemy_1a, enemy_1b, enemy_1c),
+		 * new Wave(enemy_2a, enemy_2b, enemy_2c));
 		 */
 		setWaves();
 		int count_waves = 20;

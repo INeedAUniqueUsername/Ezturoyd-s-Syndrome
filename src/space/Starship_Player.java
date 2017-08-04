@@ -45,10 +45,7 @@ public class Starship_Player extends Starship {
 	}
 
 	public void draw(Graphics g) {
-		for (SpaceObject so : GamePanel.getWorld().getStarships()) {
-			if (so.equals(this)) {
-				continue;
-			}
+		GamePanel.getWorld().getStarships().parallelStream().filter(so -> !so.equals(this)).forEach(so -> {
 			Point2D.Double pos = Behavior_Starship.getNearestPosClone(getPos(), so.getPos());
 			double angle = getAngleTowards(so);
 			Point2D.Double velDiff = SpaceHelper.calcDiff(getVel(), so.getVel());
@@ -57,19 +54,19 @@ public class Starship_Player extends Starship {
 			double distance = getDistanceBetweenPos(pos);
 			Point2D.Double arrowStart = polarOffset(angle, 200);
 			double distanceScaled = (distance - 200) / 10;
-			
+
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, angle, distanceScaled), Color.RED);
-			if(so instanceof Starship) {
+			if (so instanceof Starship) {
 				Starship s = (Starship) so;
 				double structureScaled = distanceScaled * s.getStructure() / s.getStructureMax();
 				Point2D structureArrowStart = SpaceHelper.polarOffset(arrowStart, angle + 90, 2);
 				Point2D structureArrowEnd = SpaceHelper.polarOffset(structureArrowStart, angle, structureScaled);
 				SpaceHelper.drawLine(g, structureArrowStart, structureArrowEnd, Color.GREEN);
 			}
-			
+
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, velAngle, velSpeed), Color.YELLOW);
 			SpaceHelper.drawArrow(g, arrowStart, SpaceHelper.polarOffset(arrowStart, so.getPosR(), 10), Color.WHITE);
-		}
+		});
 		super.draw(g);
 	}
 
@@ -128,10 +125,12 @@ public class Starship_Player extends Starship {
 
 	public final void onDamage(double damage) {
 		double structure = getStructure();
-		int[] damageLevels = new int[] { 100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34, 32, 30, 29, 28, 27, 26, 25 };
+		int[] damageLevels = new int[] { 100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34,
+				32, 30, 29, 28, 27, 26, 25 };
 		for (int i = 0; i < damageLevels.length; i++) {
 			int level = damageLevels[i];
-			// If we are looking at a damage level that we have not yet reached, then stop looking
+			// If we are looking at a damage level that we have not yet reached,
+			// then stop looking
 			if (structure < level) {
 				if (structure + damage > level) {
 					for (int j = 0; j < i; j++) {
