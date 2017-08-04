@@ -14,10 +14,11 @@ public interface IStarship {
 	public static final double DECEL_DEFAULT = .2;
 	//public static final double ROTATION_MAX_DEFAULT = 15; //Original
 	public static final double ROTATION_MAX_DEFAULT = 8;
-	//public static final double ROTATION_ACCEL_DEFAULT = .6; //Original
-	public static final double ROTATION_ACCEL_DEFAULT = .75;
 	//public static final double ROTATION_DECEL_DEFAULT = .4;
 	public static final double ROTATION_DECEL_DEFAULT = .6;
+	//public static final double ROTATION_ACCEL_DEFAULT = .6; //Original
+	public static final double ROTATION_ACCEL_DEFAULT = .15;
+	
 
 	public abstract void turnCCW();
 

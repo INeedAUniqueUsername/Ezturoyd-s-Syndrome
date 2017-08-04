@@ -18,12 +18,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import capture.GifSequenceWriter;
 import display.ScreenDamage;
 import factories.StarshipFactory;
 import helpers.SpaceHelper;
@@ -91,10 +96,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private boolean scrollBackToPlayer = true;
 	private static GamePanel world;
 	private BufferedImage lastFrame;
-
-	// private LinkedList<BufferedImage> video = new
-	// LinkedList<BufferedImage>();
-
+	ImageOutputStream output;
+	GifSequenceWriter capture;
+	boolean recording;
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
@@ -112,6 +116,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void newGame() {
+		
+		try {
+			recording = false;
+			output = new FileImageOutputStream(new File("Demo.gif"));
+			capture = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		setTick(0);
 		print("*" + getTick() + "*");
 
@@ -178,6 +191,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			updateDraw(lastFrame.createGraphics());
 			g.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 			g.drawImage(lastFrame, 0, 0, this);
+			if(recording) {
+				try {
+					capture.writeToSequence(lastFrame);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			/*
 			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH,
 			 * GameWindow.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -529,11 +549,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			updateDraw(previewG);
 			GameWindow.writeImage(previewImage, "Preview2");
 			break;
+		case KeyEvent.VK_R:
+			if(state) {
+				recording = !recording;
+			}
+			
+			break;
 		case KeyEvent.VK_X:
 			player.setFiringKey(state);
 			break;
 		case KeyEvent.VK_Z:
-			active = !state;
+			if(state) {
+				active = !active;
+			}
 			break;
 		case KeyEvent.VK_ESCAPE:
 			System.exit(0);

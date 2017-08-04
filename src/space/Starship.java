@@ -105,7 +105,7 @@ public class Starship extends SpaceObject implements IStarship {
 	 */
 	@Override
 	public final void turnCCW() {
-		rotateLeft(rotation_accel);
+		rotateLeft(rotation_accel + rotation_decel); //We add the decel value because decel happens constantly
 	}
 
 	/*
@@ -115,7 +115,7 @@ public class Starship extends SpaceObject implements IStarship {
 	 */
 	@Override
 	public final void turnCW() {
-		rotateRight(rotation_accel);
+		rotateRight(rotation_accel + rotation_decel); //We add the decel value because decel happens constantly
 	}
 
 	/*

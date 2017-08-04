@@ -177,7 +177,6 @@ public class GameWindow implements Runnable {
 
 		/* Total memory currently available to the JVM */
 		System.out.println("Total memory available to JVM (mb): " + Runtime.getRuntime().totalMemory() / 1000000);
-
 		/* Get a list of all filesystem roots on this system */
 		File[] roots = File.listRoots();
 
