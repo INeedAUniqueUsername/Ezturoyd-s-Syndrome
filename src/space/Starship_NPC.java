@@ -104,17 +104,17 @@ public class Starship_NPC extends Starship {
 		{
 			if(faceAngleDiffCW < faceAngleDiffCCW)
 			{
-				printToWorld("Status (Facing): CW");
+				//printToWorld("Status (Facing): CW");
 				return Behavior_Starship.RotatingState.CW;
 			}
 			else if(faceAngleDiffCCW < faceAngleDiffCW)
 			{
-				printToWorld("Status (Facing): CCW");
+				//printToWorld("Status (Facing): CCW");
 				return Behavior_Starship.RotatingState.CCW;
 			}
 			else
 			{
-				printToWorld("Status (Facing): Random");
+				//printToWorld("Status (Facing): Random");
 				if(Math.random() > .5) {
 					return Behavior_Starship.RotatingState.CW;
 				} else {
@@ -124,7 +124,7 @@ public class Starship_NPC extends Starship {
 		}
 		else
 		{
-			printToWorld("Status (Facing): Aligned");
+			//printToWorld("Status (Facing): Aligned");
 			return Behavior_Starship.RotatingState.NONE;
 		}
 	}

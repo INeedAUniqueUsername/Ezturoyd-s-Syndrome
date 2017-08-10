@@ -93,9 +93,9 @@ public class Starship extends SpaceObject implements IStarship {
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
 		accelerateEnergy(pos_r, thrust * 5);
-		printToWorld("Thrust Energy: " + thrust * 5);
-		printToWorld("Thrust Acceleration: " + getAcceleration(thrust * 5));
-		printToWorld("Relativistic Mass: " + getRelativisticMass());
+		//printToWorld("Thrust Energy: " + thrust * 5);
+		//printToWorld("Thrust Acceleration: " + getAcceleration(thrust * 5));
+		//printToWorld("Relativistic Mass: " + getRelativisticMass());
 	}
 
 	/*

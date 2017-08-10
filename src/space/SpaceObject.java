@@ -409,8 +409,8 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		//System.out.println("Speed: " + getVelSpeed());
 		//System.out.println("Size: " + size);
 		//System.out.println("Momentum: " + getVelSpeed()*size);
-		System.out.println("Vel Speed: " + getVelSpeed());
-		System.out.println("Size: " + getMass());
+		//System.out.println("Vel Speed: " + getVelSpeed());
+		//System.out.println("Size: " + getMass());
 		return 0.5*getMass()*Math.pow(getVelSpeed(), 2);
 	}
 	
@@ -432,16 +432,16 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		
 		return getMomentum()*cosDegrees(angleDiff);
 		*/
-		System.out.println("Angle: " + angle);
-		System.out.println("Vel Angle: " + angle);
-		System.out.println("Kinetic Energy: " + getKineticEnergy());
-		System.out.println("Angled Kinetic Energy: " + getKineticEnergy()*SpaceHelper.cosDegrees(getVelAngle()-angle));
+		//System.out.println("Angle: " + angle);
+		//System.out.println("Vel Angle: " + angle);
+		//System.out.println("Kinetic Energy: " + getKineticEnergy());
+		//System.out.println("Angled Kinetic Energy: " + getKineticEnergy()*SpaceHelper.cosDegrees(getVelAngle()-angle));
 		return getKineticEnergy()*SpaceHelper.cosDegrees(getVelAngle()-angle);
 	}
 	
 	public final void print(String message)
 	{
-		System.out.println(GamePanel.getWorld().getTick() + ". " + message);
+		//System.out.println(GamePanel.getWorld().getTick() + ". " + message);
 	}
 	public final boolean exists(Object o)
 	{

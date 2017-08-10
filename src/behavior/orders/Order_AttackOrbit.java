@@ -34,15 +34,15 @@ public class Order_AttackOrbit extends Behavior_Starship {
 	}
 	public void updateAttackOrbit() {
 		Starship_NPC owner = getOwner();
-		printToWorld("AttackOrbit active");
+		//printToWorld("AttackOrbit active");
 		//Problem: Target is dead
 		if(!target.getActive()) {
-			printToWorld("Target dead");
+			//printToWorld("Target dead");
 			setActive(false);
 			return; //Done
 		}
 		if(!owner.hasWeapon()) {
-			printToWorld("No weapon");
+			//printToWorld("No weapon");
 			setActive(false);
 			return;
 		}
@@ -64,19 +64,19 @@ public class Order_AttackOrbit extends Behavior_Starship {
 		if(SpaceHelper.getDistanceBetweenPos(owner.getPos(), target.getPos()) > distance){
 			if(futureFacingDiff > 30) {
 				action_rotation = owner.calcTurnDirection(angle_to_destination);
-				owner.printToWorld("AttackOrbit: Not facing " + target.getName());
+				////printToWorld("AttackOrbit: Not facing " + target.getName());
 			} else {
-				owner.printToWorld("AttackOrbit: Facing " + target.getName());
+				////printToWorld("AttackOrbit: Facing " + target.getName());
 			}
 			action_thrusting = ThrustingState.THRUST;
 			
 		} else {
 			action_rotation = owner.calcTurnDirection(angle_to_aim);
-			owner.printToWorld("AttackOrbit: Aiming at " + target.getName());
+			////printToWorld("AttackOrbit: Aiming at " + target.getName());
 		}
 		if(aimingDiff < 5) {
 			action_weapon = AttackingState.FIRE;
-			owner.printToWorld("AttackOrbit: Firing at " + target.getName());
+			////printToWorld("AttackOrbit: Firing at " + target.getName());
 		}
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
 	}

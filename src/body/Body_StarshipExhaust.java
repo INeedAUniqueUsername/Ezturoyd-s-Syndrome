@@ -24,7 +24,7 @@ public class Body_StarshipExhaust extends Body {
 	}
 	public void draw(Graphics g) {
 		g.setColor(Color.YELLOW);
-		System.out.println("Starship Exhaust");
+		//System.out.println("Starship Exhaust");
 		super.draw(g);
 	}
 }

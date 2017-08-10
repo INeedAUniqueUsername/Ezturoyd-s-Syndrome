@@ -64,7 +64,7 @@ public class Weapon {
 		fire_cooldown_left++;
 	}
 	public void draw(Graphics g) {
-		owner.printToWorld("Drawing Weapon");
+		//owner.printToWorld("Drawing Weapon");
 		body.updateShapes();
 		drawBody(g);
 		

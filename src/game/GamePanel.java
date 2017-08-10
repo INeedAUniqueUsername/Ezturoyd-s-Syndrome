@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -18,9 +19,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.stream.FileImageOutputStream;
@@ -96,9 +101,55 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private boolean scrollBackToPlayer = true;
 	private static GamePanel world;
 	private BufferedImage lastFrame;
-	ImageOutputStream output;
-	GifSequenceWriter capture;
-	boolean recording;
+	
+	public RecordingThread recording;
+	
+	volatile int recordingCount = 0;
+	
+	class RecordingThread extends Thread {
+		GifSequenceWriter capture;
+		List<RenderedImage> framesLeft;
+		public RecordingThread() {
+			try {
+				recordingCount++;
+				ImageOutputStream output = new FileImageOutputStream(new File("Demo" + recordingCount + ".gif"));
+				capture = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, true);
+				framesLeft = Collections.synchronizedList(new LinkedList<RenderedImage>());
+				start();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		public synchronized void addFrame(RenderedImage frame) {
+			framesLeft.add(frame);
+		}
+		int secondsSinceLastFrame = 0;
+		public void run() {
+			while(secondsSinceLastFrame < 6) {
+				if(framesLeft.size() > 0) {
+					System.out.println("Writing Frame");
+					//printToScreen("Writing Frame");
+					try {
+						capture.writeToSequence(framesLeft.remove(0));
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						this.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					secondsSinceLastFrame++;
+				}
+			}
+			System.out.println("Recording Done");
+			System.exit(0);
+		}
+	}
 	public GamePanel() {
 		Timer ticker = new Timer(INTERVAL, this);
 		ticker.start();
@@ -116,15 +167,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void newGame() {
-		
-		try {
-			recording = false;
-			output = new FileImageOutputStream(new File("Demo.gif"));
-			capture = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		setTick(0);
 		print("*" + getTick() + "*");
 
@@ -144,7 +186,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		for (BackgroundStar o : background) {
 			o.draw(backgroundG);
 		}
-		GameWindow.writeImage(backgroundImage, "Background");
+		//GameWindow.writeImage(backgroundImage, "Background");
 		
 		// starships = new ArrayList<Starship>();
 		// projectiles = new ArrayList<Projectile>();
@@ -191,12 +233,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			updateDraw(lastFrame.createGraphics());
 			g.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 			g.drawImage(lastFrame, 0, 0, this);
-			if(recording) {
-				try {
-					capture.writeToSequence(lastFrame);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			if(recording != null) {
+				System.out.println("Recording");
+				//printToScreen("Recording");
+				recording.addFrame(lastFrame);
 			}
 			/*
 			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH,
@@ -228,11 +268,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				for (Weapon w : ((Starship) o1).getWeapon()) {
 					w.update();
 					if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
-						print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
+						//print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 						Projectile shot = w.createShot();
 						createSpaceObject(shot);
 						w.setFireCooldownLeft(0);
-						print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
+						//print("<--" + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 					}
 				}
 			}
@@ -332,25 +372,25 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		if(player.getActive()) {
 			g2D.drawString("Score: " + score, 10, print_y);
-			print_y += line_height;
 
 			//g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
 			g2D.setColor(Color.GREEN);
-			g2D.fillRect(10, print_y, (180 * player.getStructure()) / player.getStructureMax(), line_height);
+			g2D.fillRect(10, print_y + 4, (180 * player.getStructure()) / player.getStructureMax(), line_height - 2);
+			print_y += line_height * 2;
 		} else {
 			if(!gameover) {
 				gameover = true;
 				tick = 0;
 				return;
 			}
-			System.out.println("Dead: " + tick);
+			//System.out.println("Dead: " + tick);
 			if (tick % 90 > 45) {
 				drawStringCentered(g, "Final Score: " + score, 48, Color.red);
 			}
 		}
 		
 		for (String s : debugPrint) {
-			//g2D.drawString(s, 10, print_y);
+			g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
 		debugPrint.clear();
@@ -378,15 +418,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		g2D.scale(1, -1);
 	}
-
-	public void printToScreen(String text) {
+	public synchronized void printToScreen(String text) {
 		debugPrint.add(text);
 	}
 
-	public void drawToScreen(Consumer<Graphics> c) {
+	public synchronized void drawToScreen(Consumer<Graphics> c) {
 		debugDraw.add(c);
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -547,13 +585,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			previewG.scale(scale, scale);
 			//previewG.translate(-SCREEN_WIDTH * 2.5, -SCREEN_HEIGHT * 2.5);
 			updateDraw(previewG);
-			GameWindow.writeImage(previewImage, "Preview2");
+			GameWindow.writeImage(previewImage, "Preview");
 			break;
 		case KeyEvent.VK_R:
 			if(state) {
-				recording = !recording;
+				if(recording == null) {
+					recording = new RecordingThread();
+				} else {
+					recording = null;
+				}
 			}
-			
 			break;
 		case KeyEvent.VK_X:
 			player.setFiringKey(state);

@@ -47,12 +47,12 @@ public class Order_Escort extends Behavior_Starship{
 		}
 		Starship_NPC owner = getOwner();
 		if(!target.getActive()) {
-			owner.printToWorld("Target dead");
+			//printToWorld("Target dead");
 			setActive(false);
 			return;
 		}
 		if(attackMode.getActive() && owner.getDistanceBetween(attackMode.getTarget()) < getMaxDefendRange()) {
-			printToWorld("Attack Mode active");
+			//printToWorld("Attack Mode active");
 			attackMode.update();
 			copyActions(attackMode);
 			return;
@@ -60,7 +60,7 @@ public class Order_Escort extends Behavior_Starship{
 		//If there is an enemy nearby, go into attack mode
 		ArrayList<SpaceObject> nearbyEnemies = getNearbyEnemies();
 		if(nearbyEnemies.size() > 0) {
-			printToWorld("Attacking nearby enemies");
+			//printToWorld("Attacking nearby enemies");
 			
 			//Find closest enemy
 			SpaceObject closest = null;
@@ -109,7 +109,7 @@ public class Order_Escort extends Behavior_Starship{
 		//double distance_to_destination = destination_distance_focus;
 		
 		Point2D.Double velDiff = SpaceHelper.calcDiff(owner.getVel(), target.getVel());
-		printToWorld("Owner thrust: " + owner.getThrust());
+		//printToWorld("Owner thrust: " + owner.getThrust());
 		
 		double angle_current = owner.getAngleTowards(target);
 		double distance_to_destination = SpaceHelper.getDistanceBetweenPos(pos_destination, pos_owner);
@@ -122,21 +122,21 @@ public class Order_Escort extends Behavior_Starship{
 					owner.getAcceleration(20 * owner.getDecel() * owner.getThrust()) * Math.max(5, (GamePanel.LIGHT_SPEED - owner.getVelSpeed()))
 					);
 			
-			printToWorld("Angle to Escort Position: " + angle_to_destination);
-			printToWorld("Distance to Escort Position: " + distance_to_destination);
+			//printToWorld("Angle to Escort Position: " + angle_to_destination);
+			//printToWorld("Distance to Escort Position: " + distance_to_destination);
 			
-			owner.printToWorld("Approaching Escort Position");
+			//printToWorld("Approaching Escort Position");
 			double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_destination);
 			
-			owner.printToWorld("Facing Towards Position");
+			//printToWorld("Facing Towards Position");
 			action_rotation = owner.calcTurnDirection(angle_to_destination);
 			
 			if(faceAngleDiff < 15) {
-				owner.printToWorld("Moving Towards Position");
+				//printToWorld("Moving Towards Position");
 				action_thrusting = ThrustingState.THRUST;
 			}
 		} else {
-			owner.printToWorld("Adjusting Velocity");
+			//printToWorld("Adjusting Velocity");
 			//We are in escort position, so adjust our velocity to match
 			double velAngle_owner = owner.getVelAngle();
 			double velAngle_target = target.getVelAngle();
@@ -151,12 +151,12 @@ public class Order_Escort extends Behavior_Starship{
 			}
 			*/
 			if(Math.abs(velSpeed_owner - velSpeed_target) > 0) {
-				owner.printToWorld("Adjusting Velocity Speed");
+				//printToWorld("Adjusting Velocity Speed");
 				if(velSpeed_owner < velSpeed_target) {
-					owner.printToWorld("Increasing Velocity");
+					//printToWorld("Increasing Velocity");
 					action_thrusting = ThrustingState.THRUST;
 				} else if(velSpeed_owner > velSpeed_target) {
-					owner.printToWorld("Decreasing Velocity");
+					//printToWorld("Decreasing Velocity");
 					action_thrusting = ThrustingState.BRAKE;
 				}
 			} else {

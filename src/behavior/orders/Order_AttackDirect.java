@@ -34,7 +34,7 @@ public class Order_AttackDirect extends Behavior_Starship {
 		Starship_NPC owner = getOwner();
 		//Problem: Target is dead
 		if(!target.getActive()) {
-			printToWorld("Attack order done");
+			//printToWorld("Attack order done");
 			setActive(false);
 			return; //Done
 		}
@@ -122,30 +122,30 @@ public class Order_AttackDirect extends Behavior_Starship {
 		}
 		else
 		{
-			owner.printToWorld("Status (Facing): Aligned");
+			////printToWorld("Status (Facing): Aligned");
 			action_weapon = AttackingState.FIRE;
 		}
 		
 		if(velAngleDiff > 120)
 		{
 			action_thrusting = ThrustingState.BRAKE;
-			owner.printToWorld("Status: Brake");
+			////printToWorld("Status: Brake");
 		}
 		else if(velAngleDiff > 60)
 		{
-			owner.printToWorld("Status: Nothing");
+			////printToWorld("Status: Nothing");
 		}
 		else
 		{
 			action_thrusting = ThrustingState.THRUST;
-			owner.printToWorld("Status: Thrust");
+			////printToWorld("Status: Thrust");
 		}
 		if(distance_to_target > owner.getWeaponPrimary().getProjectileRange()) //owner.getMaxSeparationFromTarget()
 		{
 			//Move towards target
 			action_thrusting = ThrustingState.THRUST;
 			
-			owner.printToWorld("Status (Distance): Far");
+			//printToWorld("Status (Distance): Far");
 		} else if(distance_to_target < owner.getController().getMinSeparationFromTarget()) {
 			//Move away from target
 			action_rotation = owner.calcTurnDirection(owner.getAngleFrom(target));
@@ -155,15 +155,15 @@ public class Order_AttackDirect extends Behavior_Starship {
 			}
 		} else {
 			action_thrusting = ThrustingState.BRAKE;
-			owner.printToWorld("Status (Distance): Close");
+			//printToWorld("Status (Distance): Close");
 		}
-		owner.printToWorld("Angle to Target: " + angle_to_target);
-		owner.printToWorld("Max Facing Angle Difference: " + owner.getController().getMaxAngleDifference());
-		owner.printToWorld("Velocity Angle: " + velAngle);
-		owner.printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
-		owner.printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
-		owner.printToWorld("Velocity Angle Difference: " + velAngleDiff);
-		owner.printToWorld("Weapons: " + action_weapon);
+		//printToWorld("Angle to Target: " + angle_to_target);
+		//printToWorld("Max Facing Angle Difference: " + owner.getController().getMaxAngleDifference());
+		//printToWorld("Velocity Angle: " + velAngle);
+		//printToWorld("Velocity Angle Difference CCW: " + velAngleDiffCCW);
+		//printToWorld("Velocity Angle Difference CW: " + velAngleDiffCW);
+		//printToWorld("Velocity Angle Difference: " + velAngleDiff);
+		//printToWorld("Weapons: " + action_weapon);
 		setActions(action_thrusting, action_rotation, action_strafing, action_weapon);
 	}
 }
