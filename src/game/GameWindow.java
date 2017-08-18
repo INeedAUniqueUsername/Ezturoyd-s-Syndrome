@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -19,7 +22,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -42,7 +47,20 @@ public class GameWindow implements Runnable {
 	public static final int GAME_HEIGHT;
 
 	static {
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		//https://stackoverflow.com/questions/32555329/java-get-maximized-state-window-size
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		Rectangle bounds = gd.getDefaultConfiguration().getBounds();
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(gd.getDefaultConfiguration());
+
+		Rectangle safeBounds = new Rectangle(bounds);
+		safeBounds.x += insets.left;
+		safeBounds.y += insets.top;
+		safeBounds.width -= (insets.left + insets.right);
+		safeBounds.height -= (insets.top + insets.bottom);
+		
+		//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenSize = safeBounds.getBounds();
 		SCREEN_WIDTH = (int) screenSize.getWidth();
 		SCREEN_HEIGHT = (int) screenSize.getHeight();
 
@@ -234,20 +252,29 @@ public class GameWindow implements Runnable {
 		return minTo + inputDiff * rangeRatio;
 	}
 	class InstructionPanel extends JPanel implements KeyListener, MouseListener{
-		String FORMAT = "\t\t%-24s%s";
+		String FORMAT = "\t%-24s%s";
 		int printY;
 		final int PRINT_X = 256;
 		final int FONT_SIZE = 27;
 		{
 			frame.addMouseListener(this);
 			frame.addKeyListener(this);
-			JTextArea text = new JTextArea();
-			text.addMouseListener(this);
-			text.addKeyListener(this);
-			text.setFont(new Font("Monospaced", Font.BOLD, FONT_SIZE));
-			text.setText(
-					"\t\tSuper Nostalgia Entertainment Syndrome" +
-					"\n\n" +
+			
+			setBackground(Color.BLACK);
+			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+			JLabel title = new JLabel("Super Nostalgia Entertainment Syndrome");
+			title.setFont(new Font("Monospaced", Font.BOLD, FONT_SIZE + 6));
+			title.setBackground(Color.BLACK);
+			title.setForeground(Color.RED);
+			title.setAlignmentX(CENTER_ALIGNMENT);
+			add(title);
+			
+			JPanel row = new JPanel();
+			row.setBackground(Color.BLACK);
+			row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+			
+			row.add(createTextArea(
+					"\t\t\t\t\tControls" + "\n" + "\n" +
 					String.format(FORMAT, "\u2191", "Thrust Forward")			+ "\n" +
 					String.format(FORMAT, "\u2193", "Decelerate (Magically)")	+ "\n" + "\n" +
 					
@@ -271,17 +298,35 @@ public class GameWindow implements Runnable {
 					
 					String.format(FORMAT, "\u232B", "Restart Game")			+ "\n" +
 					String.format(FORMAT, "\u238B", "End Game")					+ "\n" +
-					String.format(FORMAT, "Any Click", "Start")
-					);
-			text.setEditable(false);
-			text.setBackground(Color.BLACK);
-			text.setForeground(Color.RED);
-			text.setFocusable(false);
-			text.addKeyListener(this);
-			text.addMouseListener(this);
-			setBackground(Color.BLACK);
+					String.format(FORMAT, "Any Click", "Start")));
+			row.add(createTextArea(
+					"\t\t\t\t\tInstructions" + "\n" + "\n" +
+					"-Enemies attack in waves that spawn around your position." + "\n" +
+					"-Enemies grow progressively stronger after every wave." + "\n" +
+					"-Destroy all enemies to advance to the next wave." + "\n" +
+					"-Your ship takes damage from lasers and collisions" + "\n" +
+					"-Your interface degrades based on your ship's damage." + "\n" +
+					"-Your ship's structure repairs slowly over time."));
+			add(row);
+			
 			requestFocus();
-			add(text);
+			
+		}
+		
+		public JTextArea createTextArea(String text) {
+			JTextArea area = new JTextArea();
+			area.setTabSize(4);
+			area.addMouseListener(this);
+			area.addKeyListener(this);
+			area.setFont(new Font("Monospaced", Font.BOLD, FONT_SIZE));
+			area.setText(text);
+			area.setEditable(false);
+			area.setBackground(Color.BLACK);
+			area.setForeground(Color.RED);
+			area.setFocusable(false);
+			area.addKeyListener(this);
+			area.addMouseListener(this);
+			return area;
 		}
 		public void paintComponent(Graphics g) {
 			//printY = 128;

@@ -89,6 +89,7 @@ public class Level_Waves extends Level {
 	}
 
 	public void setPosOffscreen(Starship s) {
+		/*
 		int x = 0;
 		int y = 0;
 		int borderDistance = 100;
@@ -107,6 +108,8 @@ public class Level_Waves extends Level {
 			y = random() > 0.5 ? GameWindow.GAME_WIDTH + borderDistance : -borderDistance;
 		}
 		s.setPosRectangular(x, y);
+		*/
+		s.setPosRectangular(GamePanel.getWorld().getPlayer().polarOffset(random() * 360, random() * 2400 + 1600));
 	}
 
 	public Starship_NPC createEnemyStarship() {

@@ -128,7 +128,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		public void run() {
 			while(secondsSinceLastFrame < 6) {
 				if(framesLeft.size() > 0) {
-					System.out.println("Writing Frame");
+					if(framesLeft.size()%10 == 0) { 
+						System.out.println("Writing Frame; " + framesLeft.size() + " left.");
+					}
 					//printToScreen("Writing Frame");
 					try {
 						capture.writeToSequence(framesLeft.remove(0));
@@ -147,7 +149,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 			System.out.println("Recording Done");
-			System.exit(0);
 		}
 	}
 	public GamePanel() {
@@ -234,9 +235,14 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			g.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 			g.drawImage(lastFrame, 0, 0, this);
 			if(recording != null) {
-				System.out.println("Recording");
-				//printToScreen("Recording");
-				recording.addFrame(lastFrame);
+				//System.out.println("Recording");
+				printToScreen("Recording");
+				
+				BufferedImage copyFrame = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+				copyFrame.getGraphics().drawImage(lastFrame, 0, 0, null);
+				
+				recording.addFrame(copyFrame);
+				
 			}
 			/*
 			 * BufferedImage b = new BufferedImage(GameWindow.SCREEN_WIDTH,
@@ -244,6 +250,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			 * updateDraw(b.getGraphics()); video.add(b);
 			 */
 			 
+		} else {
+			//updateDraw(lastFrame.createGraphics());
+			g.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+			g.drawImage(lastFrame, 0, 0, this);
+			
+			printToScreen("Paused");
+			drawDebug((Graphics2D) g);
 		}
 
 	}
@@ -389,11 +402,16 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 		}
 		
+		drawDebug(g2D);
+		debugPrint.clear();
+	}
+	public void drawDebug(Graphics2D g2D) {
+		final int line_height = 18;
+		int print_y = line_height * 4;
 		for (String s : debugPrint) {
 			g2D.drawString(s, 10, print_y);
 			print_y += line_height;
 		}
-		debugPrint.clear();
 	}
 
 	public void drawUniverse(Graphics2D g2D) {
@@ -638,6 +656,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public static boolean intersects(Shape shapeA, Shape shapeB) {
+		//Check if bounds intersect
+		if(!shapeA.getBounds2D().intersects(shapeB.getBounds2D())) {
+			return false;
+		}
 		Area areaA = new Area(shapeA);
 		areaA.intersect(new Area(shapeB));
 		return !areaA.isEmpty();
@@ -653,8 +675,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		for (Polygon part : b.getBody().getShapes()) {
 			areaB.add(new Area(part));
 		}
-
-		areaA.intersect(areaB);
+		
+		//Optimize
+		if(!areaA.getBounds2D().intersects(areaB.getBounds2D())) {
+			areaA.reset();
+		} else {
+			areaA.intersect(areaB);
+		}
 		return areaA;
 	}
 
