@@ -1,0 +1,12 @@
+*All universe-accessing functions should be moved to the Controller/Mind, since that is what perceives the world.
+*Turrets: Mount weapons on a turret to make them aimable. Can auto-aim by moving towards a valid target at a limited rate every update
+*Make weapons use KeyListener and MouseListener so that we don't have to go through the playership to control its weapons.
+*Competitive weapon slots: Whenever a weapon is fired, its cooldown time is added to all other competitive weapons.
+*Additive weapon slots: Can be fired independently
+*Assign each weapon slot a category number. Slots with the same category are competitive.
+Pulse cannon: Deals more damage when fired with the rhythm of a heartbeat
+
+Numpad Hotkeys
+Each number is a hotkey for a weapon or usable item.
+There are multiple hotkey menus; press 
+When an item is cooling down, the hotkey displays an Arc2D pie that wipes clockwise starting from the top. It should take exactly one second for a full pie to disappear. If the cooldown is longer than one second, display additional pies underneath the current pie.
