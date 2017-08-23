@@ -236,7 +236,7 @@ public class GameWindow implements Runnable {
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		frame.setTitle("Ezturoyds Syndrome");
+		frame.setTitle("Super Nostalgia Entertainment Syndrome");
 		frame.requestFocus();
 		frame.setVisible(true);
 	}
