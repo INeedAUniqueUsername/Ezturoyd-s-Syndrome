@@ -362,7 +362,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			cameraOffset_y *= 0.88;
 		}
 		int lowerLimit = 25;
-		g.setColor(new Color(0, 0, 0, 25 + (int) (175 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax() - lowerLimit)), 2))));
+		g.setColor(new Color(0, 0, 0, Math.min(255, 75 + (int) (180 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax())), 1.5)))));
 		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 
 		Graphics2D g2D = ((Graphics2D) g);

@@ -20,7 +20,7 @@ public class ExplosionFactory {
 			result.setVelPolar(angle, speed);
 			result.setPosR(angle);
 			result.setVelR((SpaceHelper.random(30) - 15) * 5);
-			result.setLifetime((int) (SpaceHelper.random(240) + 120));
+			result.setLifetime((int) (SpaceHelper.random(180) + 90));
 			result.setActive(true);
 			result.setBody(new Body_Projectile(result) {
 				int maxLife = result.getLifetime();

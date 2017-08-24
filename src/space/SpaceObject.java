@@ -304,20 +304,20 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		
 		if(pos_x < 0)
 		{
-			pos_x = GameWindow.GAME_WIDTH;
+			pos_x += GameWindow.GAME_WIDTH;
 		}
 		else if(pos_x > GameWindow.GAME_WIDTH)
 		{
-			pos_x = 0;
+			pos_x -= GameWindow.GAME_WIDTH;
 		}
 		
 		if(pos_y < 0)
 		{
-			pos_y = GameWindow.GAME_HEIGHT;
+			pos_y += GameWindow.GAME_HEIGHT;
 		}
 		if(pos_y > GameWindow.GAME_HEIGHT)
 		{
-			pos_y = 0;
+			pos_y -= GameWindow.GAME_HEIGHT;
 		}	
 	}
 	public final void updateBody() {

@@ -26,8 +26,11 @@ public class Starship_Player extends Starship {
 	private boolean braking;
 
 	public void update() {
-		GamePanel.getWorld().getScreenDamage().healDisplay();
 		if (getActive()) {
+			if (getStructure() < getStructureMax() && Math.random() < 0.04) {
+				setStructure(getStructure() + 1);
+			}
+			GamePanel.getWorld().getScreenDamage().healDisplay();
 			updateActive();
 			if (thrusting)
 				thrust();

@@ -52,10 +52,6 @@ public class Starship extends SpaceObject implements IStarship {
 	}
 
 	public void updateActive() {
-
-		if (structure < structure_max && Math.random() < 0.1) {
-			structure += 1;
-		}
 		double speed_r = Math.abs(vel_r);
 		if (speed_r > 0)
 			if (speed_r > rotation_max) {
@@ -87,8 +83,9 @@ public class Starship extends SpaceObject implements IStarship {
 		Projectile exhaust = new Projectile(exhaustPos.getX(), exhaustPos.getY(), exhaustAngle, 5, 10);
 		exhaust.setOwner(this);
 		exhaust.setBody(new Body_StarshipExhaust(exhaust));
+		exhaust.incVelPolar(getVelAngle(), getVelSpeed());
 		// exhaust.setVelPolar(velAngle, getVelSpeed());
-		exhaust.incVelPolar(exhaustAngle, 10);
+		exhaust.incVelPolar(exhaustAngle, thrust * 8);
 		// exhaust.incVelPolar(exhaustAngle + (vel_r > 0 ? 90 : -90), vel_r*2);
 		exhaust.setPosR(pos_r);
 		GamePanel.getWorld().createSpaceObject(exhaust);
