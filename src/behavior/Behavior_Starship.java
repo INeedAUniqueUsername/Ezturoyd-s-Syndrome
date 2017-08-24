@@ -160,7 +160,7 @@ public abstract class Behavior_Starship {
 		double target_y_focus = destination.getY();
 		double distance = target_x_focus - pos_x;
 		// Check if the target is more than halfway past the game width. If so, then use a wrap clone
-		while (abs(distance) > GAME_WIDTH / 2) {
+		while (abs(distance) > GAME_WIDTH / 2 + 1) {
 			// Target is east, so we take the west wrap clone.
 			if (distance > 0) {
 				target_x_focus -= GAME_WIDTH;
@@ -171,7 +171,7 @@ public abstract class Behavior_Starship {
 			distance = target_x_focus - pos_x;
 		}
 		distance = target_y_focus - pos_y;
-		while (abs(distance) > GAME_HEIGHT / 2) {
+		while (abs(distance) > GAME_HEIGHT / 2 + 1) {
 			// Target is north, so we take the south wrap clone.
 			if (distance > 0) {
 				target_y_focus -= GAME_HEIGHT;

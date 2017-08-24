@@ -68,9 +68,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	private static final CameraMode camera = CameraMode.FOLLOW_PLAYER;
 	public static final double epsilon = .000000000000000000000000000000000000001;
-	public static final double LIGHT_SPEED = 30;
+	public static final double LIGHT_SPEED = 90;
 	private int cameraOffset_x, cameraOffset_y;
-	final int INTERVAL = 1000/30;
+	//final int INTERVAL = 1;
 	private SpaceObject pov;
 	private Starship_Player player;
 	// private Starship_NPC enemy_test;
@@ -152,8 +152,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 	}
 	public GamePanel() {
-		Timer ticker = new Timer(INTERVAL, this);
-		ticker.start();
+		//Timer ticker = new Timer(INTERVAL, this);
+		//ticker.start();
 		addKeyListener(this);
 		addMouseListener(this);
 		world = this;
@@ -175,7 +175,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		objectsCreated = new ArrayList<SpaceObject>(0);
 		objectsDestroyed = new ArrayList<SpaceObject>(0);
 		background = new ArrayList<BackgroundStar>(0);
-		for (int i = 0; i < 400; i++) {
+		for (int i = 0; i < GameWindow.GAME_WIDTH * GameWindow.GAME_HEIGHT / 40000; i++) {
 			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(),
 					SpaceHelper.random(360), 5));
 		}
@@ -258,7 +258,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			printToScreen("Paused");
 			drawDebug((Graphics2D) g);
 		}
-
+		repaint();
 	}
 
 	public void updateUniverse() {
@@ -289,20 +289,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 					}
 				}
 			}
+			boolean isProjectile = o1 instanceof Projectile;
+			boolean isStarship = o1 instanceof Starship;
 			for (int i2 = i1 + 1; i2 < universe.size(); i2++) {
 				SpaceObject o2 = universe.get(i2);
+				if(isProjectile && o2 instanceof Projectile) {
+					continue;
+				}
 				Area intersection = getIntersection(o1, o2);
 				if (!intersection.isEmpty()) {
-					if (o1 instanceof Starship && o2 instanceof Starship) {
-						System.out.println("Starship Collision");
-						collisionStarshipStarship((Starship) o1, (Starship) o2, intersection);
-					} else if (o1 instanceof Starship && o2 instanceof Projectile) {
-						Starship s = (Starship) o1;
-						Projectile p = (Projectile) o2;
-						if (!p.getOwner().equals(s)) {
-							collisionStarshipProjectile(s, p, intersection);
+					if(isStarship) {
+						if(o2 instanceof Starship) {
+							collisionStarshipStarship((Starship) o1, (Starship) o2, intersection);
+						} else if(o2 instanceof Projectile) {
+							Starship s = (Starship) o1;
+							Projectile p = (Projectile) o2;
+							if (!p.getOwner().equals(s)) {
+								collisionStarshipProjectile(s, p, intersection);
+							}
 						}
-					} else if (o1 instanceof Projectile && o2 instanceof Starship) {
+					} else if (isProjectile && o2 instanceof Starship) {
 						Starship s = (Starship) o2;
 						Projectile p = (Projectile) o1;
 						if (!p.getOwner().equals(s)) {

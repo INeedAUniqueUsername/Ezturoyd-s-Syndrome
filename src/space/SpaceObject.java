@@ -238,7 +238,7 @@ public abstract class SpaceObject implements GameObject, NewtonianMotion {
 		{
 			size += Math.abs(SpaceHelper.polygonArea(part.xpoints, part.ypoints, part.npoints));
 		}
-		//System.out.println("Size: " + size);
+		System.out.println("Size: " + size);
 	}
 	public final void setSize(int size) {
 		this.size = size;

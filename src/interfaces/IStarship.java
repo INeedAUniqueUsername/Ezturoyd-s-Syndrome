@@ -9,7 +9,7 @@ public interface IStarship {
 	final int HEAD_SIZE = 10; //20
 	final int BODY_SIZE = 15; //30
 	 */
-	public static final double THRUST_DEFAULT = 0.5; //1
+	public static final double THRUST_DEFAULT = 2; //1//0.5
 	public static final double MAX_SPEED_DEFAULT = 8;
 	public static final double DECEL_DEFAULT = .2;
 	//public static final double ROTATION_MAX_DEFAULT = 15; //Original

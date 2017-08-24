@@ -43,8 +43,8 @@ public class GameWindow implements Runnable {
 	public static final int SCREEN_WIDTH;
 	public static final int SCREEN_HEIGHT;
 
-	public static final int GAME_WIDTH;
-	public static final int GAME_HEIGHT;
+	public static final int GAME_WIDTH = 3000 + (int) (Math.random() * 1500);
+	public static final int GAME_HEIGHT = 2000 + (int) (Math.random() * 1000);
 
 	static {
 		
@@ -63,9 +63,6 @@ public class GameWindow implements Runnable {
 		Rectangle screenSize = safeBounds.getBounds();
 		SCREEN_WIDTH = (int) screenSize.getWidth();
 		SCREEN_HEIGHT = (int) screenSize.getHeight();
-
-		GAME_WIDTH = SCREEN_WIDTH * 5;
-		GAME_HEIGHT = SCREEN_HEIGHT * 5;
 	}
 
 	public static final int SCREEN_CENTER_X = SCREEN_WIDTH / 2;
