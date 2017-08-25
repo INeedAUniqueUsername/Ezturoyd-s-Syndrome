@@ -30,7 +30,7 @@ public final class StarshipFactory {
 			}
 		});
 		player.installWeapon(new Weapon_Mouse(0, 0, 0, 10, 50, 210, 120));
-		player.installWeapon(new Weapon_Key(0, 25, 0, 5, 40, 110, 90));
+		player.installWeapon(new Weapon_Key(0, 25, 0, 5, 45, 110, 90));
 		player.setName("Player");
 		return player;
 	}
@@ -60,7 +60,7 @@ public final class StarshipFactory {
 	}
 	public static final Starship_NPC createBasicEnemy2() {
 		Starship_NPC result = new Starship_NPC();
-		Weapon w = new Weapon(0, 10, 0, 20, 30, 2, 180);
+		Weapon w = new Weapon(0, 10, 0, 20, 40, 2, 180);
 		result.installWeapon(w);
 		result.setRotation_accel(1.2);
 		result.setRotation_decel(Starship.ROTATION_DECEL_DEFAULT*1.5);
