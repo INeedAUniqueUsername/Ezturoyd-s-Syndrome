@@ -404,7 +404,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			//System.out.println("Dead: " + tick);
 			if (tick % 90 > 45) {
-				drawStringCentered(g, "Final Score: " + score, 48, Color.red);
+				int y = (GameWindow.SCREEN_HEIGHT / 2);
+				drawStringCentered(g, "Final Score: " + score, 48, Color.red, y);
+				drawStringCentered(g, "Press ESC to restart", 24, Color.red, y + 24);
 			}
 		}
 		
@@ -573,60 +575,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			}
 			
 			break;
-		case KeyEvent.VK_E:
-			if (state) {
-				for (int i = 0; i < universe.size(); i++) {
-					SpaceObject o = universe.get(i);
-					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY)
-							&& i > universe.indexOf(pov)) {
-						pov = o;
-						break;
-					}
-				}
-			}
-			break;
-		case KeyEvent.VK_Q:
-			if (state) {
-				for (int i = 0; i < universe.size(); i++) {
-					SpaceObject o = universe.get(i);
-					if (o instanceof Starship && ((Starship) o).getAlignment().equals(Starship.Sovereign.ENEMY)
-							&& i < universe.indexOf(pov)) {
-						pov = o;
-						break;
-					}
-				}
-			}
-			break;
 		case KeyEvent.VK_SHIFT:
 			strafeMode = state;
 			break;
-		case KeyEvent.VK_C:
-			int scale = 2;
-			BufferedImage previewImage = new BufferedImage(SCREEN_WIDTH*scale, SCREEN_HEIGHT*scale, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D previewG = (Graphics2D) previewImage.getGraphics();
-			previewG.setColor(Color.BLACK);
-			previewG.fillRect(0, 0, SCREEN_WIDTH*scale, SCREEN_HEIGHT*scale);
-			previewG.scale(scale, scale);
-			//previewG.translate(-SCREEN_WIDTH * 2.5, -SCREEN_HEIGHT * 2.5);
-			updateDraw(previewG);
-			GameWindow.writeImage(previewImage, "Preview");
-			break;
-		case KeyEvent.VK_R:
-			if(state) {
-				if(recording == null) {
-					recording = new RecordingThread();
-				} else {
-					recording = null;
-				}
-			}
-			break;
 		case KeyEvent.VK_X:
 			player.setFiringKey(state);
-			break;
-		case KeyEvent.VK_Z:
-			if(state) {
-				active = !active;
-			}
 			break;
 		case KeyEvent.VK_ESCAPE:
 			System.exit(0);
@@ -903,11 +856,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		this.tick = tick;
 	}
 
-	public void drawStringCentered(Graphics g, String s, int size, Color color) {
+	public void drawStringCentered(Graphics g, String s, int size, Color color, int y) {
 		g.setFont(new Font("Consolas", Font.BOLD, size));
 		g.setColor(color);
 		g.drawString(s, (GameWindow.SCREEN_WIDTH / 2) - (g.getFontMetrics().stringWidth(s) / 2),
-				(GameWindow.SCREEN_HEIGHT / 2) - (size / 2)
+				y - (size / 2)
 				);
 	}
 
