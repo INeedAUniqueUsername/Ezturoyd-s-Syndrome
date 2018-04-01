@@ -24,6 +24,15 @@ public class Starship_Player extends Starship {
 	private boolean strafingLeft;
 	private boolean strafingRight;
 	private boolean braking;
+	
+	public final void setThrusting(boolean b) { thrusting = b; }
+	public final void setTurningCCW(boolean b) { turningCCW = b; }
+	public final void setTurningCW(boolean b) { turningCW = b; }
+	public final void setBraking(boolean b) { braking = b; }
+	public final void setStrafingLeft(boolean enabled) { strafingLeft = enabled; }
+	public final void setStrafingRight(boolean enabled) { strafingRight = enabled; }
+	public final boolean getStrafingLeft() { return strafingLeft; }
+	public final boolean getStrafingRight() { return strafingRight; }
 
 	public void update() {
 		if (getActive()) {
@@ -46,7 +55,6 @@ public class Starship_Player extends Starship {
 				strafeRight();
 		}
 	}
-
 	public void draw(Graphics g) {
 		for (SpaceObject so : GamePanel.getWorld().getStarships()) {
 			if (so.equals(this)) {
@@ -75,39 +83,6 @@ public class Starship_Player extends Starship {
 		}
 		super.draw(g);
 	}
-
-	public final void setThrusting(boolean b) {
-		thrusting = b;
-	}
-
-	public final void setTurningCCW(boolean b) {
-		turningCCW = b;
-	}
-
-	public final void setTurningCW(boolean b) {
-		turningCW = b;
-	}
-
-	public final void setBraking(boolean b) {
-		braking = b;
-	}
-
-	public final void setStrafingLeft(boolean enabled) {
-		strafingLeft = enabled;
-	}
-
-	public final void setStrafingRight(boolean enabled) {
-		strafingRight = enabled;
-	}
-
-	public final boolean getStrafingLeft() {
-		return strafingLeft;
-	}
-
-	public final boolean getStrafingRight() {
-		return strafingRight;
-	}
-
 	public final void installWeapon(Weapon item) {
 		super.installWeapon(item);
 		if (item instanceof Weapon_Key) {
@@ -116,20 +91,19 @@ public class Starship_Player extends Starship {
 			weapons_mouse.add((Weapon_Mouse) item);
 		}
 	}
-
 	public final void setFiringKey(boolean firing) {
 		for (Weapon_Key w : weapons_key) {
 			w.setFiring(firing);
 		}
 	}
-
 	public final void setFiringMouse(boolean firing) {
 		for (Weapon_Mouse w : weapons_mouse) {
 			w.setFiring(firing);
 		}
 	}
-
 	public final void onDamage(double damage) {
+		if(true) return;
+		
 		double structure = getStructure();
 		int[] damageLevels = new int[] { 100, 95, 90, 85, 80, 75, 71, 67, 63, 59, 55, 52, 49, 46, 43, 40, 38, 36, 34, 32, 30, 29, 28, 27, 26, 25 };
 		for (int i = 0; i < damageLevels.length; i++) {
@@ -146,7 +120,6 @@ public class Starship_Player extends Starship {
 			}
 		}
 	}
-
 	public final void onDestroy() {
 		GamePanel.getWorld().getScreenDamage().clear();
 	}

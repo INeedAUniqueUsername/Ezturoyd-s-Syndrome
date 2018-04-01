@@ -64,7 +64,7 @@ public class BackgroundStar implements GameObject {
 			draw.addPoint(pos_x, pos_y);
 			g.setColor(Color.WHITE);
 			g.drawPolygon(draw);
-			Body.drawWrapClones(g, draw);
+			//Body.drawWrapClones(g, draw);
 			
 		}
 	}

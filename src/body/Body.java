@@ -17,55 +17,26 @@ public class Body implements IBody {
 	public Body(ArrayList<Polygon> ss) {
 		setShapes(ss);
 	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#setShapes(java.util.ArrayList)
-	 */
-	@Override
 	public final void setShapes(ArrayList<Polygon> ss) {
 		shapes = ss;
 	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#setShapes(java.awt.Polygon)
-	 */
-	@Override
 	public final void setShapes(Polygon... pp) {
 		shapes = new ArrayList<>();
 		for(Polygon p : pp) {
 			addShape(p);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#getShapes()
-	 */
-	@Override
-	public final ArrayList<Polygon> getShapes() {
-		return shapes;
-	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#addShape(java.awt.Polygon)
-	 */
-	@Override
-	public final void addShape(Polygon s) {
-		shapes.add(s);
-	}
-	/* (non-Javadoc)
-	 * @see Space.IBody#updateShapes()
-	 */
-	@Override
+	public final ArrayList<Polygon> getShapes() { return shapes; }
+	public final void addShape(Polygon s) { shapes.add(s); }
 	public void updateShapes(){}
-	/* (non-Javadoc)
-	 * @see Space.IBody#draw(java.awt.Graphics)
-	 */
-	@Override
-	public void draw(Graphics g) {
-		drawDefault(g);
-	}
+	public void draw(Graphics g) { drawDefault(g); }
 	public void drawDefault(Graphics g) {
 		for(Polygon p : shapes) {
 			g.drawPolygon(p);
-			drawWrapClones(g, p);
+			//drawWrapClones(g, p);
 		}
 	}
+	/*
 	public static final void drawWrapClones(Graphics g, Polygon p) {
 		//Edge cases
 		drawTranslate(g, p, GameWindow.GAME_WIDTH, 0);
@@ -82,6 +53,7 @@ public class Body implements IBody {
 		drawTranslate(g, p, -GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
 		drawTranslate(g, p, -GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
 	}
+	*/
 	public static final void drawTranslate(Graphics g, Polygon p, int x, int y) {
 		Polygon translated = new Polygon();
 		int[] xPoints = p.xpoints;

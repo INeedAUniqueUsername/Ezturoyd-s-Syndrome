@@ -9,7 +9,6 @@ import behavior.Behavior_Starship.StrafingState;
 import behavior.Behavior_Starship.ThrustingState;
 import game.GamePanel;
 import helpers.SpaceHelper;
-import interfaces.NewtonianMotion;
 import space.SpaceObject;
 import space.Starship_NPC;
 

@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,15 +34,18 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import body.Body_Starship;
 import capture.GifSequenceWriter;
 import display.ScreenDamage;
 import factories.StarshipFactory;
 import helpers.SpaceHelper;
-import interfaces.NewtonianMotion;
+import interfaces.GameObject;
 import space.BackgroundStar;
+import space.Effect;
 import space.Level;
 import space.Level_Waves;
 import space.Projectile;
+import space.RisingText;
 import space.SpaceObject;
 import space.Starship;
 import space.Starship_Player;
@@ -77,10 +81,13 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	private ArrayList<SpaceObject> universe;
 	private ArrayList<SpaceObject> objectsCreated;
 	private ArrayList<SpaceObject> objectsDestroyed;
+	
+	private ArrayList<Effect> effects;
 	private ArrayList<BackgroundStar> background;
 	private Level currentLevel;
 
 	private long score = 0;
+	int hits = 0;
 
 	// ScreenCracking screenEffect = new
 	// ScreenCracking(GameWindow.SCREEN_CENTER_X, GameWindow.SCREEN_CENTER_Y,
@@ -168,13 +175,19 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void newGame() {
+		score = 0;
+		hits = 0;
+		
 		setTick(0);
 		print("*" + getTick() + "*");
 
-		universe = new ArrayList<SpaceObject>(0);
-		objectsCreated = new ArrayList<SpaceObject>(0);
-		objectsDestroyed = new ArrayList<SpaceObject>(0);
-		background = new ArrayList<BackgroundStar>(0);
+		universe = new ArrayList<>(0);
+		objectsCreated = new ArrayList<>(0);
+		objectsDestroyed = new ArrayList<>(0);
+		
+		effects = new ArrayList<>();
+		
+		background = new ArrayList<>(0);
 		for (int i = 0; i < GameWindow.GAME_WIDTH * GameWindow.GAME_HEIGHT / 40000; i++) {
 			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(),
 					SpaceHelper.random(360), 5));
@@ -280,7 +293,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			if (o1 instanceof Starship) {
 				for (Weapon w : ((Starship) o1).getWeapon()) {
 					w.update();
-					if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownMax())) {
+					if (w.getFiring() && (w.getFireCooldownLeft() > w.getFireCooldownTime())) {
 						//print("--> " + (w.getOwner() == player ? "Human" : "Computer") + " Shot First");
 						Projectile shot = w.createShot();
 						createSpaceObject(shot);
@@ -323,9 +336,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
-
-		universe.removeIf((SpaceObject o) -> {
-			return !o.getActive();
+		universe.forEach(o -> {
+			if(!o.getActive()) {
+				objectsDestroyed.add(o);
+			}
 		});
 
 		// Add objects to be created and remove objects to be destroyed
@@ -333,7 +347,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			universeAdd(o);
 		}
 		objectsCreated.clear();
-		for (NewtonianMotion d : objectsDestroyed) {
+		for (SpaceObject d : objectsDestroyed) {
 			universeRemove(d);
 		}
 		objectsDestroyed.clear();
@@ -362,7 +376,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			cameraOffset_y *= 0.88;
 		}
 		int lowerLimit = 25;
-		g.setColor(new Color(0, 0, 0, Math.min(255, 75 + (int) (180 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax())), 1.5)))));
+		//g.setColor(new Color(0, 0, 0, Math.min(255, 75 + (int) (180 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax())), 1.5)))));
+		g.setColor(new Color(0, 0, 0, Math.min(255, 105 + (int) (150 * Math.pow(((double) Math.max(player.getStructure() - lowerLimit, 0) / (player.getStructureMax())), 1.5)))));
 		g.fillRect(0, 0, GameWindow.SCREEN_WIDTH, GameWindow.SCREEN_HEIGHT);
 
 		Graphics2D g2D = ((Graphics2D) g);
@@ -394,8 +409,18 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 			//g2D.drawString("Structure: " + player.getStructure(), 10, print_y);
 			g2D.setColor(Color.GREEN);
-			g2D.fillRect(10, print_y + 4, (180 * player.getStructure()) / player.getStructureMax(), line_height - 2);
-			print_y += line_height * 2;
+			g2D.fillRect(10, print_y + 2, (128 * player.getStructure()) / player.getStructureMax(), line_height - 2);
+			print_y += line_height * 3;
+			g2D.setColor(Color.WHITE);
+			g2D.drawString("Coooldown", 10, print_y);
+			for(Weapon w : player.getWeapon()) {
+				/*
+				g2D.setColor(Color.RED);
+				g2D.fillRect(10, print_y + 2, (int) (128 * Math.min(1, 1.0 * w.getFireCooldownLeft() / w.getFireCooldownTime())), line_height - 2);
+				*/
+				w.drawHUD(g2D, new Rectangle(10, print_y+2, 128, line_height - 2));
+				print_y += line_height;
+			}
 		} else {
 			if(!gameover) {
 				gameover = true;
@@ -424,15 +449,60 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 	public void drawUniverse(Graphics2D g2D) {
 		g2D.scale(1, -1);
-
 		for (Consumer<Graphics> c : debugDraw) {
 			c.accept(g2D);
 		}
 		debugDraw.clear();
-
+		drawObjects(g2D);
+		g2D.scale(1, -1);
+		boolean right = pov.getPosX() + GameWindow.SCREEN_WIDTH/2 > GameWindow.GAME_WIDTH;
+		boolean left = pov.getPosX() - GameWindow.SCREEN_WIDTH/2 < 0;
+		boolean up = pov.getPosY() + GameWindow.SCREEN_HEIGHT/2 > GameWindow.GAME_HEIGHT;
+		boolean down = pov.getPosY() - GameWindow.SCREEN_HEIGHT/2 < 0;
+		if(right) {
+			drawWrap(g2D, GameWindow.GAME_WIDTH, 0);
+			
+			if(up) {
+				drawWrap(g2D, GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+			}
+			if(down) {
+				drawWrap(g2D, GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
+			}
+		}
+		if(left) {
+			drawWrap(g2D, -GameWindow.GAME_WIDTH, 0);
+			
+			if(up) {
+				drawWrap(g2D, -GameWindow.GAME_WIDTH, GameWindow.GAME_HEIGHT);
+			}
+			if(down) {
+				drawWrap(g2D, -GameWindow.GAME_WIDTH, -GameWindow.GAME_HEIGHT);
+			}
+		}
+		if(up) {
+			drawWrap(g2D, 0, GameWindow.GAME_HEIGHT);
+		}
+		if(down) {
+			drawWrap(g2D, 0, -GameWindow.GAME_HEIGHT);
+		}
+	}
+	public void drawWrap(Graphics2D g2D, int translateX, int translateY) {
+		
+		g2D.scale(1, -1);
+		g2D.translate(translateX, translateY);
+		drawObjects(g2D);
+		g2D.translate(-translateX, -translateY);
+		g2D.scale(1, -1);
+	}
+	public void drawObjects(Graphics2D g2D) {
 		for (BackgroundStar b : background) {
 			b.draw(g2D);
 		}
+		effects.removeIf(e -> {
+			e.update();
+			e.draw(g2D);
+			return !e.getActive();
+		});
 		for (SpaceObject o : universe) {
 			o.draw(g2D);
 
@@ -442,7 +512,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}
 		}
-		g2D.scale(1, -1);
 	}
 	public synchronized void printToScreen(String text) {
 		debugPrint.add(text);
@@ -672,7 +741,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		universe.add(so);
 	}
 
-	private void universeRemove(NewtonianMotion so) {
+	private void universeRemove(SpaceObject so) {
 		universe.remove(so);
 	}
 
@@ -706,7 +775,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public ArrayList<Starship> getStarships() {
 		// return starships;
 		ArrayList<Starship> result = new ArrayList<Starship>();
-		for (NewtonianMotion o : universe) {
+		for (SpaceObject o : universe) {
 			if (o instanceof Starship) {
 				result.add((Starship) o);
 			}
@@ -717,7 +786,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public ArrayList<Projectile> getProjectiles() {
 		// return projectiles;
 		ArrayList<Projectile> result = new ArrayList<Projectile>();
-		for (NewtonianMotion o : universe) {
+		for (SpaceObject o : universe) {
 			if (o instanceof Projectile) {
 				result.add((Projectile) o);
 			}
@@ -736,7 +805,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		return what != null;
 	}
 
-	public boolean isAlive(NewtonianMotion what) {
+	public boolean isAlive(SpaceObject what) {
 		boolean result = false;
 		if (what instanceof Starship) {
 			result = getStarships().contains(what);
@@ -790,10 +859,26 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 
 		if (p1.getOwner() == player) {
 			//score += p1.getDamage() * (0.2 * s1.getDistanceBetween(player)) / (0.1 * p1.getLifetime());
+			effects.add(new RisingText(new Point((int) s1.getPosX(), (int) s1.getPosY() + 12), "" + p1.getDamage(), Color.RED));
 			score += p1.getDamage() * ((tick % 300) / 30);
+			hits++;
+			checkHits();
 		} else if (s1 == player) {
+			effects.add(new RisingText(new Point((int) s1.getPosX(), (int) s1.getPosY() + 12), "" + p1.getDamage(), Color.YELLOW));
 			score += p1.getDamage() * ((200 - player.getStructure()) / player.getStructureMax());
 		}
+		
+		
+	}
+
+	private void checkHits() {
+		/*
+		if(hits == 1) {
+			effects.add(new RisingText(new Point((int) player.getPosX(), (int) player.getPosY() + 12), "Level up! Engines upgraded!", Color.WHITE));
+			player.setThrust(player.getThrust() * 1.5);
+			player.setRotationAccel(player.getRotationAccel() * 1.5);
+		}
+		*/
 	}
 
 	public void collisionStarshipStarship(Starship s1, Starship s2, Area intersection) {
@@ -862,6 +947,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		g.drawString(s, (GameWindow.SCREEN_WIDTH / 2) - (g.getFontMetrics().stringWidth(s) / 2),
 				y - (size / 2)
 				);
+	}
+
+	public void addEffect(Effect e) {
+		effects.add(e);
 	}
 
 }

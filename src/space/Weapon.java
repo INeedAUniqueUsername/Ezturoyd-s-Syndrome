@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import body.Body_Weapon;
 import body.IBody;
-import interfaces.NewtonianMotion;
 
 public class Weapon {
 
@@ -80,6 +81,10 @@ public class Weapon {
 		g.drawLine((int) pos_x, (int) pos_y, (int) projectile_end.getX(), (int) projectile_end.getY());
 		*/
 	}
+	public void drawHUD(Graphics g, Rectangle r) {
+		g.setColor(Color.RED);
+		g.fillRect((int) r.getX(), (int) r.getY(), (int) (r.getWidth() * Math.min(1, 1.0 * getFireCooldownLeft() / getFireCooldownTime())), (int) r.getHeight());
+	}
 	public final void drawBody(Graphics g) {
 		body.draw(g);
 	}
@@ -117,10 +122,6 @@ public class Weapon {
 
 	public final void setFireCooldownLeft(int time) {
 		fire_cooldown_left = time;
-	}
-
-	public final int getFireCooldownMax() {
-		return fire_cooldown_time;
 	}
 	public double getFireAngle() {
 		return fire_angle;
@@ -163,7 +164,7 @@ public class Weapon {
 		return projectile_speed * projectile_lifetime;
 	}
 
-	public final NewtonianMotion getOwner() {
+	public final SpaceObject getOwner() {
 		return owner;
 	}
 
@@ -184,15 +185,12 @@ public class Weapon {
 	public double getPosRadius() {
 		return pos_radius;
 	}
-
 	public final void setFireCooldownTime(int time) {
 		fire_cooldown_time = time;
 	}
-
 	public final int getFireCooldownTime() {
 		return fire_cooldown_time;
 	}
-
 	public final Point2D getPos() {
 		return new Point2D.Double(pos_x, pos_y);
 	}
@@ -219,9 +217,7 @@ public class Weapon {
 	public final double sinDegrees(double angle) {
 		return Math.sin(Math.toRadians(angle));
 	}
-	
-	public final boolean exists(Object o)
-	{
+	public final boolean exists(Object o) {
 		return o != null;
 	}
 }

@@ -2,6 +2,9 @@ package space;
 
 import static java.lang.Math.random;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -68,9 +71,9 @@ public class Level_Waves extends Level {
 				Starship_NPC enemy = createEnemyStarship();
 				enemy.setManeuverStats(Starship.THRUST_DEFAULT + i/2.0 + j/5.0, Starship.MAX_SPEED_DEFAULT, Starship.DECEL_DEFAULT + i/3.0 + j/7.0);
 				enemy.setRotationStats(Starship.ROTATION_MAX_DEFAULT + i/2.0 + j/4.0, Starship.ROTATION_ACCEL_DEFAULT + i/4.0 + j/6.0, Starship.ROTATION_DECEL_DEFAULT + i/2.0 + j/4.0);
-				enemy.getController().addOrder(j > count_leaders ? new Order_Escort(enemy, enemies[(int) (random() * count_leaders)]) :
+				//enemy.getController().addOrder(j > count_leaders ? new Order_Escort(enemy, enemies[(int) (random() * count_leaders)]) :
 				// random() * j < count_enemies/4 ?
-						new Order_AttackDirect(enemy, player));
+				enemy.getController().addOrder(new Order_AttackDirect(enemy, player));
 				enemy.installWeapon(new Weapon(0, 0, 0, (int) (5 + random() * 10), (int) (10 + random() * 20), (int) (random() * 4 + 3), (int) (random() * 50 + 20)));
 				enemies[j] = enemy;
 			}
@@ -124,6 +127,8 @@ public class Level_Waves extends Level {
 			System.out.println("Next Wave");
 			waves.remove(0);
 			waves.get(0).activate();
+			Double p = GamePanel.getWorld().getPlayer().getPos();
+			GamePanel.getWorld().addEffect(new RisingText(new Point((int) p.getX(), (int) p.getY()+12), "Wave destroyed!", Color.WHITE, 75));
 		}
 	}
 

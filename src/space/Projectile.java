@@ -9,7 +9,6 @@ import body.Body;
 import body.Body_Projectile;
 import body.IBody;
 import interfaces.GameObject;
-import interfaces.NewtonianMotion;
 
 public class Projectile extends SpaceObject {
 

@@ -60,7 +60,7 @@ public class Order_GoToPos extends Behavior_Starship {
 						0 - owner.getVelX(),
 						0 - owner.getVelY()
 						),
-				owner.getMax_speed()
+				owner.getMaxSpeed()
 				);
 		double faceAngleDiff = owner.calcFutureFacingDifference(angle_to_target);
 		/*

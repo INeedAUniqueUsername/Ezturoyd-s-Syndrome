@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import behavior.Behavior_Starship;
 import game.GamePanel;
 import helpers.SpaceHelper;
-import interfaces.NewtonianMotion;
 import space.SpaceObject;
 public class Projectile_Tracking extends Projectile {
 	SpaceObject target;
@@ -16,7 +15,7 @@ public class Projectile_Tracking extends Projectile {
 	public void setTarget(SpaceObject so) {
 		target = so;
 	}
-	public NewtonianMotion getTarget() {
+	public SpaceObject getTarget() {
 		return target;
 	}
 	public void update() {

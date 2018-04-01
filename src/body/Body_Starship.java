@@ -7,9 +7,18 @@ import space.Starship;
 
 public class Body_Starship extends Body {
 	private Starship owner;
+	private int bodySize, headSize;
 	public Body_Starship(Starship s) {
 		super();
 		setOwner(s);
+		bodySize = 15;
+		headSize = 10;
+	}
+	public Body_Starship(Starship s, int  bodySize, int headSize) {
+		super();
+		setOwner(s);
+		this.bodySize = bodySize;
+		this.headSize = headSize;
 	}
 	public void setOwner(Starship s) {
 		owner = s;
@@ -17,8 +26,10 @@ public class Body_Starship extends Body {
 	public Starship getOwner() {
 		return owner;
 	}
+	
 	public void updateShapes() {
-		
+		setShapes(createTriangle(owner.getPos(), owner.getPosR(), bodySize), createTriangle(owner.polarOffset(owner.getPosR(), bodySize), owner.getPosR(), headSize));
+		/*
 		final int HEAD_SIZE = 10; //20
 		final int BODY_SIZE = 15; //30
 		
@@ -66,5 +77,6 @@ public class Body_Starship extends Body {
 		Polygon head = new Polygon(headX, headY, 4);
 		
 		setShapes(head, middle);
+		*/
 	}
 }

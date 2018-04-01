@@ -7,7 +7,6 @@ import behavior.Behavior_Starship.RotatingState;
 import behavior.Behavior_Starship.StrafingState;
 import behavior.Behavior_Starship.ThrustingState;
 import helpers.SpaceHelper;
-import interfaces.NewtonianMotion;
 import space.SpaceObject;
 import space.Starship_NPC;
 
@@ -55,7 +54,7 @@ public class Order_AttackOrbit extends Behavior_Starship {
 		StrafingState action_strafing = StrafingState.NONE;
 		AttackingState action_weapon = AttackingState.NONE;
 		
-		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMax_speed());
+		double angle_to_destination = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getMaxSpeed());
 		double angle_to_aim = owner.calcFireAngle(target_x, target_y, target.getVelX(), target.getVelY(), owner.getWeaponPrimary().getProjectileSpeed());
 		double futureFacingDiff = owner.calcFutureFacingDifference(angle_to_destination);
 		double aimingDiff = owner.calcFacingDifference(angle_to_aim);

@@ -62,8 +62,8 @@ public final class StarshipFactory {
 		Starship_NPC result = new Starship_NPC();
 		Weapon w = new Weapon(0, 10, 0, 20, 40, 2, 180);
 		result.installWeapon(w);
-		result.setRotation_accel(1.2);
-		result.setRotation_decel(Starship.ROTATION_DECEL_DEFAULT*1.5);
+		result.setRotationAccel(1.2);
+		result.setRotationDecel(Starship.ROTATION_DECEL_DEFAULT*1.5);
 		result.setBody(new Body() {
 			public void updateShapes() {
 				Point2D.Double pos = result.getPos();
