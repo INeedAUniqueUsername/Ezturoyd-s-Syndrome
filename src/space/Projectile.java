@@ -14,7 +14,7 @@ public class Projectile extends SpaceObject {
 
 	private int lifetime;
 	private int damage;
-	private GameObject owner;
+	private SpaceObject owner;
 	public Projectile() {
 		lifetime = 0;
 		damage = 0;
@@ -49,11 +49,10 @@ public class Projectile extends SpaceObject {
 		}
 	}
 
-	public final void setOwner(GameObject object) {
+	public final void setOwner(SpaceObject object) {
 		owner = object;
 	}
-	public final GameObject getOwner()
-	{
+	public final SpaceObject getOwner() {
 		return owner;
 	}
 	public final void setDamage(int d) {

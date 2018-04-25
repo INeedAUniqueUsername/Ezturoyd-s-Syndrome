@@ -115,45 +115,45 @@ public class Order_AttackDirect extends Behavior_Starship {
 		
 		//double velDiff = owner.getVelRadial(angle_to_target) - target.getVelRadial(angle_to_target);
 		
-		if(faceAngleDiff > owner.getController().getMaxAngleDifference())
-		{
+		if(faceAngleDiff > owner.getController().getMaxAngleDifference()) {
 			action_rotation = owner.calcTurnDirection(angle_to_target);
-		}
-		else
-		{
+		} else {
 			////printToWorld("Status (Facing): Aligned");
 			action_weapon = AttackingState.FIRE;
 		}
 		
-		if(velAngleDiff > 120)
-		{
+		if(velAngleDiff > 120) {
 			action_thrusting = ThrustingState.BRAKE;
 			////printToWorld("Status: Brake");
-		}
-		else if(velAngleDiff > 60)
-		{
+		} else if(velAngleDiff > 60) {
 			////printToWorld("Status: Nothing");
-		}
-		else
-		{
+		} else {
 			action_thrusting = ThrustingState.THRUST;
 			////printToWorld("Status: Thrust");
 		}
-		if(distance_to_target > owner.getWeaponPrimary().getProjectileRange()) //owner.getMaxSeparationFromTarget()
-		{
+		if(distance_to_target > owner.getWeaponPrimary().getProjectileRange()) { //owner.getMaxSeparationFromTarget()
 			//Move towards target
 			action_thrusting = ThrustingState.THRUST;
-			
 			//printToWorld("Status (Distance): Far");
 		} else if(distance_to_target < owner.getController().getMinSeparationFromTarget()) {
 			//Move away from target
 			action_rotation = owner.calcTurnDirection(owner.getAngleFrom(target));
-			if(faceAngleDiff > 90)
-			{
+			if(faceAngleDiff > 90) {
 				action_thrusting = ThrustingState.THRUST;
 			}
 		} else {
-			action_thrusting = ThrustingState.BRAKE;
+			if(distance_to_target < owner.getWeaponPrimary().getProjectileRange() * 0.9) {
+				action_thrusting = ThrustingState.BRAKE;
+			} else {
+				Point2D.Double vel = owner.getVel();
+				Point2D.Double vel_target = target.getVel();
+				Point2D.Double decelerated = SpaceHelper.getDecelerated(vel, owner.getDecel());
+				//Brake if it would match our velocity with the target velocity
+				if(vel.distance(vel_target) > decelerated.distance(vel_target)) {
+					action_thrusting = ThrustingState.BRAKE;
+				}
+			}
+			
 			//printToWorld("Status (Distance): Close");
 		}
 		//printToWorld("Angle to Target: " + angle_to_target);

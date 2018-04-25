@@ -172,12 +172,10 @@ public abstract class SpaceObject implements GameObject {
 		vel_x = (vel_x + speed*SpaceHelper.cosDegrees(decelAngle));
 		vel_y = (vel_y + speed*SpaceHelper.sinDegrees(decelAngle));
 		
-		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal))
-		{
+		if(Math.abs(vel_x) > Math.abs(xSpeedOriginal)) {
 			vel_x = 0;
 		}
-		if(Math.abs(vel_y) > Math.abs(ySpeedOriginal))
-		{
+		if(Math.abs(vel_y) > Math.abs(ySpeedOriginal)) {
 			vel_y = 0;
 		}
 	}

@@ -12,16 +12,21 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,12 +44,12 @@ import space.Starship;
 import space.Starship_NPC;
 import space.Weapon;
 
-public class GameWindow implements Runnable {
+public class GameWindow {
 	public static final int SCREEN_WIDTH;
 	public static final int SCREEN_HEIGHT;
 
-	public static final int GAME_WIDTH = 3000 + (int) (Math.random() * 1500);
-	public static final int GAME_HEIGHT = 2000 + (int) (Math.random() * 1000);
+	public static final int GAME_WIDTH = 6000 + (int) (Math.random() * 300);
+	public static final int GAME_HEIGHT = 4000 + (int) (Math.random() * 2000);
 
 	static {
 		
@@ -68,7 +73,8 @@ public class GameWindow implements Runnable {
 	public static final int SCREEN_CENTER_X = SCREEN_WIDTH / 2;
 	public static final int SCREEN_CENTER_Y = SCREEN_HEIGHT / 2;
 	public static final Point SCREEN_CENTER = new Point(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-
+	public static final boolean DEMO = false;
+	
 	private JFrame frame;
 
 	public static void generateSprite(SpaceObject o, String name) {
@@ -120,7 +126,6 @@ public class GameWindow implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		new GamePanel().newGame();
 		/*
 		SpaceObject player = StarshipFactory.createPlayership();
 		player.setPosR(0);
@@ -202,7 +207,7 @@ public class GameWindow implements Runnable {
 			System.out.println("Free space (mb): " + root.getFreeSpace() / 1000000);
 			System.out.println("Usable space (mb): " + root.getUsableSpace() / 1000000);
 		}
-		SwingUtilities.invokeLater(new GameWindow());
+		SwingUtilities.invokeLater(() -> { new GameWindow(); });
 		//GameWindow game = new GameWindow();
 
 	}
@@ -210,28 +215,27 @@ public class GameWindow implements Runnable {
 	public static int randomGameWidth() {
 		return (int) SpaceHelper.random(GAME_WIDTH);
 	}
-
 	public static int randomGameHeight() {
 		return (int) SpaceHelper.random(GAME_HEIGHT);
 	}
-
 	public static double randomScreenWidth() {
 		return (int) SpaceHelper.random(SCREEN_WIDTH);
 	}
-
 	public static double randomScreenHeight() {
 		return (int) SpaceHelper.random(SCREEN_HEIGHT);
 	}
 
 	public GameWindow() {
 		frame = new JFrame();
-		frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		frame.setUndecorated(true);
+		//frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		// frame.setExtendedState(frame.getExtendedState() |
 		// JFrame.MAXIMIZED_BOTH);
 		frame.setBackground(Color.BLACK);
 		frame.add(new InstructionPanel());
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.setDefaultCloseOperation(DEMO ? JFrame.DO_NOTHING_ON_CLOSE : JFrame.EXIT_ON_CLOSE);
 
 		frame.setTitle("Super Nostalgia Entertainment Syndrome");
 		frame.requestFocus();
@@ -248,15 +252,11 @@ public class GameWindow implements Runnable {
 
 		return minTo + inputDiff * rangeRatio;
 	}
-	class InstructionPanel extends JPanel implements KeyListener, MouseListener{
+	class InstructionPanel extends JPanel implements MouseListener{
 		String FORMAT = "\t%-24s%s";
-		int printY;
-		final int PRINT_X = 256;
 		final int FONT_SIZE = 27;
-		{
-			frame.addMouseListener(this);
-			frame.addKeyListener(this);
-			
+		
+		public InstructionPanel() {
 			setBackground(Color.BLACK);
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			JLabel title = new JLabel("Super Nostalgia Entertainment Syndrome");
@@ -293,9 +293,10 @@ public class GameWindow implements Runnable {
 					
 					String.format(FORMAT, "X", "Fire Cannon")					+ "\n" + "\n" +
 					
-					String.format(FORMAT, "\u232B", "Restart Game")			+ "\n" +
-					String.format(FORMAT, "\u238B", "End Game")					+ "\n" +
-					String.format(FORMAT, "Any Click", "Start")));
+					String.format(FORMAT, "\u232B", "Restart Game")				+ "\n" +
+					String.format(FORMAT, "\u238B", "Quit Game")				+ "\n" +
+					String.format(FORMAT, "Right Click", "Exit")				+ "\n" +
+					String.format(FORMAT, "Left Click", "Start")));
 			row.add(createTextArea(
 					"\t\t\t\t\tInstructions" + "\n" + "\n" +
 					"-Enemies attack in waves that spawn around your position." + "\n" +
@@ -314,20 +315,16 @@ public class GameWindow implements Runnable {
 			JTextArea area = new JTextArea();
 			area.setTabSize(4);
 			area.addMouseListener(this);
-			area.addKeyListener(this);
 			area.setFont(new Font("Monospaced", Font.BOLD, FONT_SIZE));
 			area.setText(text);
 			area.setEditable(false);
 			area.setBackground(Color.BLACK);
 			area.setForeground(Color.RED);
 			area.setFocusable(false);
-			area.addKeyListener(this);
-			area.addMouseListener(this);
 			return area;
 		}
 		public void paintComponent(Graphics g) {
 			//printY = 128;
-			
 			super.paintComponent(g);
 		}
 		/*
@@ -337,49 +334,57 @@ public class GameWindow implements Runnable {
 		}
 		*/
 		public void beginGame() {
-			frame.removeMouseListener(this);
-			frame.removeKeyListener(this);
 			frame.remove(this);
+			
 			GamePanel game = new GamePanel();
 			frame.add(game);
-			frame.addMouseListener(game);
-			frame.addKeyListener(game);
+			game.addKeyListener(new KeyListener() {
+				public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						frame.remove(game);
+						InstructionPanel panel = new InstructionPanel();
+						frame.add(panel);
+						Dimension frameSize = frame.getSize();
+						panel.setPreferredSize(frameSize);
+						frame.pack();
+						frame.setSize(frameSize);
+						
+						SwingUtilities.invokeLater(() -> {
+							panel.requestFocus();
+						});
+					}
+				}
+				public void keyReleased(KeyEvent e) { }
+				public void keyTyped(KeyEvent e) { }
+			});
+			
 			Dimension frameSize = frame.getSize();
 			frame.pack();
 			frame.setSize(frameSize);
-			game.requestFocus();
-			game.newGame();
+			SwingUtilities.invokeLater(() -> {
+				game.requestFocus();
+				game.newGame();
+			});
+			
 		}
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			beginGame();
-		}
+		public void mouseClicked(MouseEvent e) { }
 		public void mousePressed(MouseEvent e) {
-			beginGame();			
+			switch(e.getButton()) {
+			case MouseEvent.BUTTON3:
+				if(!DEMO) {
+					System.exit(0);
+				}
+				break;
+			case MouseEvent.BUTTON1:
+				beginGame();
+				break;
+			}
 		}
-		public void mouseReleased(MouseEvent e) {
-			beginGame();			
-		}
+		public void mouseReleased(MouseEvent e) {}
 		public void mouseEntered(MouseEvent e) {
 		}
 		public void mouseExited(MouseEvent e) {
 		}
-		public void keyTyped(KeyEvent e) {
-			System.out.println("Type");
-			beginGame();
-		}
-		public void keyPressed(KeyEvent e) {
-			System.out.println("Pressed");
-			beginGame();
-		}
-		public void keyReleased(KeyEvent e) {
-			System.out.println("Released");
-			beginGame();
-		}
-	}
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 }

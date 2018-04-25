@@ -23,17 +23,14 @@ public class Projectile_Tracking extends Projectile {
 		updateTracking();
 	}
 	public void updateTracking() {
-		/*
-		if(target == null) {
-			return;
-		} else if(!target.getActive()) {
-			target = null;
-			return;
-		}
-		*/
 		ArrayList<Starship> universe = GamePanel.getWorld().getStarships();
-		if(target == null && universe.size() > 0) {
-			target = GamePanel.getWorld().getStarships().get((int)(Math.random()*universe.size()));
+		universe.remove(getOwner());
+		if(target == null) {
+			if(universe.size() > 0) {
+				target = universe.get((int) (universe.size() * Math.random()));
+			} else {
+				return;
+			}
 		}
 		int turnRate = 3;
 		Point2D.Double pos = getPos();

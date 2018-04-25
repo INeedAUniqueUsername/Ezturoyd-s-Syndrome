@@ -14,6 +14,24 @@ import space.SpaceObject;
 
 public class SpaceHelper {
 
+	public static final Point2D.Double getDecelerated(final Point2D.Double vel, double speed) {
+		Point2D.Double v = new Point2D.Double(vel.x, vel.y);
+		int velAngle = (int) SpaceHelper.arctanDegrees(v.y, v.x);
+		int decelAngle = velAngle + 180;
+		double xSpeedOriginal = v.x;
+		double ySpeedOriginal = v.y;
+		
+		v.x = (v.x + speed*SpaceHelper.cosDegrees(decelAngle));
+		v.y = (v.y + speed*SpaceHelper.sinDegrees(decelAngle));
+		
+		if(Math.abs(v.x) > Math.abs(xSpeedOriginal)) {
+			v.x = 0;
+		}
+		if(Math.abs(vel.y) > Math.abs(ySpeedOriginal)) {
+			v.y = 0;
+		}
+		return v;
+	}
 	public static final void drawArrow(Graphics g, Point2D origin, Point2D dest, Color color)
 	{
 		g.setColor(color);

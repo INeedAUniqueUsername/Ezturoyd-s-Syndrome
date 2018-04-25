@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -46,13 +47,14 @@ import space.Level;
 import space.Level_Waves;
 import space.Projectile;
 import space.RisingText;
+import space.Seeker;
 import space.SpaceObject;
 import space.Starship;
 import space.Starship_Player;
 import space.Weapon;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, KeyListener {
-	private boolean active = true;
+	private boolean active = false;
 	private boolean cheat_playerActive = true;
 	private boolean strafeMode = false;
 
@@ -161,9 +163,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public GamePanel() {
 		//Timer ticker = new Timer(INTERVAL, this);
 		//ticker.start();
+		
 		addKeyListener(this);
 		addMouseListener(this);
 		world = this;
+		clear();
+	}
+	
+	public void clear() {
+		score = 0;
+		hits = 0;
+		setTick(0);
+		universe = new ArrayList<>(0);
+		objectsCreated = new ArrayList<>(0);
+		objectsDestroyed = new ArrayList<>(0);
+		effects = new ArrayList<>(0);
+		background = new ArrayList<>(0);
 	}
 
 	public static GamePanel getWorld() {
@@ -175,19 +190,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	public void newGame() {
-		score = 0;
-		hits = 0;
-		
-		setTick(0);
-		print("*" + getTick() + "*");
-
-		universe = new ArrayList<>(0);
-		objectsCreated = new ArrayList<>(0);
-		objectsDestroyed = new ArrayList<>(0);
-		
-		effects = new ArrayList<>();
-		
-		background = new ArrayList<>(0);
+		clear();
+		active = true;
 		for (int i = 0; i < GameWindow.GAME_WIDTH * GameWindow.GAME_HEIGHT / 40000; i++) {
 			background.add(new BackgroundStar(GameWindow.randomGameWidth(), GameWindow.randomGameHeight(),
 					SpaceHelper.random(360), 5));
@@ -227,7 +231,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		setBackground(Color.BLACK);
 	}
-
 	public void paintComponent(Graphics g) {
 		// g.clearRect(0, 0, GameWindow.WIDTH, GameWindow.HEIGHT);
 		/*
@@ -241,6 +244,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		 * g.setColor(Color.WHITE); g.drawLine(x, y, x2, y2);
 		 */
 		super.paintComponent(g);
+		repaint();
+		
 		if (active) {
 			tick++;
 			updateUniverse();
@@ -271,7 +276,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			printToScreen("Paused");
 			drawDebug((Graphics2D) g);
 		}
-		repaint();
 	}
 
 	public void updateUniverse() {
@@ -431,7 +435,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			if (tick % 90 > 45) {
 				int y = (GameWindow.SCREEN_HEIGHT / 2);
 				drawStringCentered(g, "Final Score: " + score, 48, Color.red, y);
-				drawStringCentered(g, "Press ESC to restart", 24, Color.red, y + 24);
+				drawStringCentered(g, "Press Backspace to restart", 24, Color.red, y + 24);
+				drawStringCentered(g, "Press ESC for Title Screen", 24, Color.red, y + 48);
 			}
 		}
 		
